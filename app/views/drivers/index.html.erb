@@ -1,14 +1,46 @@
-<p style="color: green"><%= notice %></p>
 
-<h1>Drivers</h1>
 
-<div id="drivers">
-  <% @drivers.each do |driver| %>
-    <%= render driver %>
-    <p>
-      <%= link_to "Show this driver", driver %>
-    </p>
+<div id="drivers" class="container">
+  <% if notice %>
+    <div class="alert alert-success" role="alert">
+      <%= notice %>
+    </div>
   <% end %>
+
+  <div class="mt-4">
+    <h1>Choferes</h1>
+  </div>
+  <div class="mt-4">
+    <%= link_to "Nuevo Chofer", new_driver_path, { class: "btn btn-success" } %>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">CUIT</th>
+            <th scope="col">Telefono</th>
+            <th scope="col">Direccion</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @drivers.each do |driver| %>
+            <tr>
+              <th scope="row"><%= driver.name %></th>
+              <td><%= driver.cuit %></td>
+              <td><%= driver.phone_number %></td>
+              <td><%= driver.address %></td>
+              <td>
+                <%= link_to "Editar", edit_driver_path(driver), { class: "btn btn-primary" } %> 
+                <%= button_to "Eliminar", driver, { class: "btn btn-danger",  method: :delete } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<%= link_to "New driver", new_driver_path %>
