@@ -11,32 +11,36 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
+  <div class="card col-4">
+    <div class="card-body">
+      <div class="mb-3">
+        <%= form.label :name, { class: "form-label" } %>
+        <%= form.text_field :name, { class: "form-control" } %>
+      </div>
 
-  <div>
-    <%= form.label :birth_date, style: "display: block" %>
-    <%= form.date_field :birth_date %>
-  </div>
+      <div class="mb-3">
+        <%= form.label :birth_date, { class: "form-label" } %>
+        <%= form.date_field :birth_date, { class: "form-control" } %>
+      </div>
 
-  <div>
-    <%= form.label :phone_number, style: "display: block" %>
-    <%= form.text_field :phone_number %>
-  </div>
+      <div class="mb-3">
+        <%= form.label :phone_number, { class: "form-label" } %>
+        <%= form.text_field :phone_number, { class: "form-control" } %>
+      </div>
 
-  <div>
-    <%= form.label :address, style: "display: block" %>
-    <%= form.text_field :address %>
-  </div>
+      <div class="mb-3">
+        <%= form.label :address, { class: "form-label" } %>
+        <%= form.text_field :address, { class: "form-control" } %>
+      </div>
 
-  <div>
-    <%= form.label :cuit, style: "display: block" %>
-    <%= form.text_field :cuit %>
-  </div>
+      <div class="mb-3">
+        <%= form.label :cuit, { class: "form-label" } %>
+        <%= form.text_field :cuit, { class: "form-control" } %>
+      </div>
 
-  <div>
-    <%= form.submit %>
+      <div>
+        <%= form.submit "Aceptar", :class => 'btn btn-primary' %>
+      </div>
+    </div>
   </div>
 <% end %>
