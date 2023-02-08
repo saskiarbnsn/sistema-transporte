@@ -1,0 +1,42 @@
+<%= form_with(model: driver) do |form| %>
+      <div class="mb-3">
+        <%= form.label :name, { class: "form-label" } %>
+        <%= form.text_field :name, { class: "form-control" } %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :birth_date, { class: "form-label" } %>
+        <%= form.date_field :birth_date, { class: "form-control" } %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :phone_number, { class: "form-label" } %>
+        <%= form.text_field :phone_number, { class: "form-control" } %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :address, { class: "form-label" } %>
+        <%= form.text_field :address, { class: "form-control" } %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :cuit, { class: "form-label" } %>
+        <%= form.text_field :cuit, { class: "form-control" } %>
+      </div>
+
+      <div>
+        <%= form.submit "Aceptar", :class => 'btn btn-primary' %>
+      </div>
+
+      <% if driver.errors.any? %>
+      <div class="alert alert-danger mt-4" role="alert">
+        <p><%= pluralize(driver.errors.count, "error") %> prohibited this driver from being saved:</h2>
+
+        <ul>
+          <% driver.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+<% end %>
