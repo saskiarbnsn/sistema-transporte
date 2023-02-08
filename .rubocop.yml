@@ -1,0 +1,19 @@
+require: rubocop-rails
+
+Style/StringLiterals:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 300
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Layout/EndOfLine:
+  Enabled: false

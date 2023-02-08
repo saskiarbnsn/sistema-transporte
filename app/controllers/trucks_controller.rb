@@ -1,5 +1,5 @@
 class TrucksController < ApplicationController
-  before_action :set_truck, only: %i[ show edit update destroy ]
+  before_action :set_truck, only: %i[show edit update destroy]
 
   # GET /trucks or /trucks.json
   def index
@@ -7,8 +7,7 @@ class TrucksController < ApplicationController
   end
 
   # GET /trucks/1 or /trucks/1.json
-  def show
-  end
+  def show; end
 
   # GET /trucks/new
   def new
@@ -16,8 +15,7 @@ class TrucksController < ApplicationController
   end
 
   # GET /trucks/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /trucks or /trucks.json
   def create
@@ -58,13 +56,14 @@ class TrucksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_truck
-      @truck = Truck.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def truck_params
-      params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_truck
+    @truck = Truck.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def truck_params
+    params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres)
+  end
 end

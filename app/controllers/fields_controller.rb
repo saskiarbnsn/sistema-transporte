@@ -1,5 +1,5 @@
 class FieldsController < ApplicationController
-  before_action :set_field, only: %i[ show edit update destroy ]
+  before_action :set_field, only: %i[show edit update destroy]
 
   # GET /fields or /fields.json
   def index
@@ -7,8 +7,7 @@ class FieldsController < ApplicationController
   end
 
   # GET /fields/1 or /fields/1.json
-  def show
-  end
+  def show; end
 
   # GET /fields/new
   def new
@@ -16,8 +15,7 @@ class FieldsController < ApplicationController
   end
 
   # GET /fields/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /fields or /fields.json
   def create
@@ -58,13 +56,14 @@ class FieldsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_field
-      @field = Field.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def field_params
-      params.require(:field).permit(:name, :address, :customer_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_field
+    @field = Field.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def field_params
+    params.require(:field).permit(:name, :address, :customer_id)
+  end
 end
