@@ -31,3 +31,7 @@
 
 en:
   hello: "Hello world"
+  devise:
+    passwords:
+      new: 
+        forgot_your_password: forgot kkkkk??
