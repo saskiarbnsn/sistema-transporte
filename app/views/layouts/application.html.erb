@@ -11,8 +11,14 @@
   </head>
 
   <body>
-  <div id="drivers" class="container mt-4">
-    <%= yield %>
-    </div>
+  <div class="container-fluid">
+  <div class="row">
+      <div class="col-sm-auto bg-light sticky-top">
+        <%= render partial: "layouts/navbar" %>                 <!-- mostrar navbar desde layouts -->
+      <div class="col-sm p-3 min-vh-100">
+        <%= yield %>
+      </div>
+  </div>
+</div>
   </body>
 </html>
