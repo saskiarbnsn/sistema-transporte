@@ -29,7 +29,7 @@
               <th scope="row"><%= driver.name %></th>
               <td><%= driver.cuit %></td>
               <td><%= driver.phone_number %></td>
-              <td><%= driver.address %></td>
+              <td><%= driver.location %></td>
               <td>
                 <%= link_to "Editar", edit_driver_path(driver), { class: "btn btn-primary" } %> 
                 <%= button_to "Eliminar", driver, { class: "btn btn-danger",  method: :delete } %>

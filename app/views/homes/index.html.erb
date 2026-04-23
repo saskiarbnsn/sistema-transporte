@@ -1,65 +1,102 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col">
+      <div class="p-4 bg-white rounded shadow-sm">
+        <h1 class="h3 mb-1">Hola, <%= current_user.email %></h1>
+        <p class="text-muted mb-0">Bienvenida al sistema de gestión de transporte.</p>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-sm-auto bg-light sticky-top">
-            <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-                <a href="/" class="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                    <i class="bi-bootstrap fs-1"></i>
-                </a>
-                <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                            <i class="bi-house fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                            <i class="bi-speedometer2 fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
-                            <i class="bi-table fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
-                            <i class="bi-heart fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers">
-                            <i class="bi-people fs-1"></i>
-                        </a>
-                    </li>
-                </ul>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi-person-circle h2"></i>
-                    </a>
-                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
-                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                    </ul>
-                </div>
-            </div>
+  <div class="row g-4 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="bi bi-people fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Clientes</h5>
+          <p class="display-6 fw-bold"><%= @customers_count %></p>
+          <%= link_to "Ver clientes", customers_path, class: "btn btn-primary btn-sm" %>
         </div>
+      </div>
+    </div>
 
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="bi bi-person-badge fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Choferes</h5>
+          <p class="display-6 fw-bold"><%= @drivers_count %></p>
+          <%= link_to "Ver choferes", drivers_path, class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
 
- # <p class="navbar-text float-right">
-  #   <% if user_signed_in? %>
-  #     Hola <strong><%= current_user.email %></strong>.
-  #     <%= button_to "Cerrar Sesion", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-  #   <% else %>
-  #     <%= link_to "Registrarse", new_user_registration_path, :class => 'navbar-link'  %> |
-  #     <%= link_to "Iniciar Sesion", new_user_session_path, :class => 'navbar-link'  %>
-  #   <% end %>
-  # </p>
-  # <div id="drivers" class="container mt-4">
-  #   <% if notice %>
-  #     <p class="alert alert-success"><%= notice %></p>
-  #   <% end %>
-  #   <% if alert %>
-  #     <p class="alert alert-danger"><%= alert %></p>
-  #   <% end %>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="bi bi-truck fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Camiones</h5>
+          <p class="display-6 fw-bold"><%= @trucks_count %></p>
+          <%= link_to "Ver camiones", trucks_path, class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
 
-  
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Destinos</h5>
+          <p class="display-6 fw-bold"><%= @destinations_count %></p>
+          <%= link_to "Ver destinos", destinations_path, class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Últimos clientes cargados</h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_customers.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_customers.each do |customer| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span><%= customer.name %></span>
+                  <small class="text-muted"><%= customer.cuit %></small>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted mb-0">No hay clientes cargados.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Últimos choferes cargados</h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_drivers.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_drivers.each do |driver| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span><%= driver.name %></span>
+                  <small class="text-muted"><%= driver.cuit %></small>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted mb-0">No hay choferes cargados.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

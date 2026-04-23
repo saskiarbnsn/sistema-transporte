@@ -7,18 +7,49 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </head>
 
   <body>
-  <div class="container-fluid">
-  <div class="row">
-      <div class="col-sm-auto bg-light sticky-top">
-        <%= render partial: "layouts/navbar" %>                 <!-- mostrar navbar desde layouts -->
-      <div class="col-sm p-3 min-vh-100">
-        <%= yield %>
+    <div class="container-fluid">
+      <div class="row flex-nowrap main-shell">
+        <aside id="app-sidebar" class="col-auto bg-light border-end px-0 sidebar-shell">
+          <%= render "layouts/navbar" %>
+        </aside>
+
+        <div class="col px-0 content-shell">
+          <div class="d-flex align-items-center justify-content-between border-bottom bg-white px-3 py-2">
+            <div class="small text-muted">
+              <%= current_user.email if user_signed_in? %>
+            </div>
+          </div>
+
+          <main class="p-4">
+            <% if notice %>
+              <p class="alert alert-success"><%= notice %></p>
+            <% end %>
+
+            <% if alert %>
+              <p class="alert alert-danger"><%= alert %></p>
+            <% end %>
+
+            <%= yield %>
+          </main>
+        </div>
       </div>
-  </div>
-</div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("app-sidebar");
+        const toggle = document.getElementById("sidebar-toggle");
+
+        if (toggle && sidebar) {
+          toggle.addEventListener("click", function () {
+          });
+        }
+      });
+    </script>
   </body>
 </html>
