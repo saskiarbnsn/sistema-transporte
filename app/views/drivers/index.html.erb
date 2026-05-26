@@ -20,6 +20,8 @@
             <th scope="col">CUIT</th>
             <th scope="col">Telefono</th>
             <th scope="col">Direccion</th>
+            <th scope="col">Ciudad</th>
+            <th scope="col">Provincia</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -30,6 +32,8 @@
               <td><%= driver.cuit %></td>
               <td><%= driver.phone_number %></td>
               <td><%= driver.address %></td>
+              <td><%= driver.city %></td>
+              <td><%= driver.province %></td>
               <td>
                 <%= link_to "Editar", edit_driver_path(driver), { class: "btn btn-primary" } %> 
                 <%= button_to "Eliminar", driver, { class: "btn btn-danger",  method: :delete } %>
