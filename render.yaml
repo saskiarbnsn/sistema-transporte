@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: tesis
+    runtime: ruby
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    healthCheckPath: /users/login
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: APP_HOST
+        sync: false
+      - key: DEVISE_MAILER_SENDER
+        sync: false
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
