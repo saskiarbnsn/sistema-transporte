@@ -1,4 +1,13 @@
-<div class="form-page form-page--single">
+<% fields_data       = Field.all.map       { |f| { id: f.id, latitude: f.latitude, longitude: f.longitude, name: f.name, province: f.province } } %>
+<% destinations_data = Destination.all.map { |d| { id: d.id, latitude: d.latitude, longitude: d.longitude, name: d.name, location: d.location } } %>
+
+<div class="form-page"
+     data-controller="trip-map"
+     data-trip-map-api-key-value="<%= ENV['GOOGLE_MAPS_API_KEY'] %>"
+     data-trip-map-fields-value="<%= fields_data.to_json %>"
+     data-trip-map-destinations-value="<%= destinations_data.to_json %>">
+
+  <%# ── Columna izquierda: formulario ── %>
   <div class="ui-form-card">
     <div class="ui-form-card__header">
       <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
@@ -8,4 +17,55 @@
       <%= render "form", trip: @trip %>
     </div>
   </div>
+
+  <%# ── Columna derecha: mapa de ruta ── %>
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-truck"></i></div>
+      <h2 class="ui-form-card__title">Ruta del viaje</h2>
+    </div>
+    <div class="ui-form-card__body" style="padding: 0.75rem 0.75rem 1rem;">
+
+      <iframe
+        data-trip-map-target="frame"
+        width="100%"
+        height="440"
+        style="border:0; border-radius:10px; display:none;"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="about:blank">
+      </iframe>
+
+      <div class="map-placeholder"
+           data-trip-map-target="placeholder"
+           style="min-height:440px; border-radius:10px; flex-direction:column; gap:0.75rem;">
+        <i class="bi bi-map" style="font-size:3.5rem;"></i>
+        <p data-trip-map-target="placeholderMsg"
+           style="font-size:0.85rem; text-align:center; padding:0 1rem; margin:0;">
+          Seleccioná un campo de origen y un destino para ver la ruta.
+        </p>
+        <a data-trip-map-target="mapsLink"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn-pill-primary"
+           style="display:none; width:auto; padding:0.6rem 1.5rem;">
+          <i class="bi bi-truck me-1"></i> Ver ruta en Google Maps
+        </a>
+      </div>
+
+      <div data-trip-map-target="openLinkWrap" style="display:none; margin-top:0.5rem;">
+        <a data-trip-map-target="openLink"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn-pill-secondary">
+          <i class="bi bi-box-arrow-up-right me-1"></i> Abrir en Google Maps
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>

@@ -9,14 +9,11 @@ export default class extends Controller {
 
   toggle() {
     const expanded = this.element.classList.toggle("is-expanded")
-    // Hide tooltips when sidebar expands, show when collapsed
     this.tooltips?.forEach(t => expanded ? t.disable() : t.enable())
   }
 
   clearBadge() {
-    if (this.hasBadgeTarget) {
-      this.badgeTarget.remove()
-    }
+    if (this.hasBadgeTarget) this.badgeTarget.remove()
   }
 
   initTooltips() {

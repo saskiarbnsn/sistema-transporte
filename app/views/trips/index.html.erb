@@ -1,7 +1,13 @@
 <div class="dash-panel" data-controller="trip-status">
   <div class="dash-panel__header">
-    <h1 class="dash-panel__title">Historial de viajes</h1>
-    <%= link_to "Cargar viaje", new_trip_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
+    <h1 class="dash-panel__title">
+      <i class="bi bi-map-fill"></i>
+      Historial de viajes
+      <span class="dash-count"><%= @trips.size %></span>
+    </h1>
+    <%= link_to new_trip_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" do %>
+      <i class="bi bi-plus-lg me-1"></i> Cargar viaje
+    <% end %>
   </div>
 
   <table class="dash-table">
@@ -11,25 +17,32 @@
         <th>Destino</th>
         <th>Chofer</th>
         <th>Camión</th>
+        <th>Producto</th>
         <th>Tarifa</th>
         <th>Fecha inicio</th>
-        <th>Fecha fin</th>
+        <th>Estado</th>
       </tr>
     </thead>
     <tbody>
       <% @trips.each do |trip| %>
         <tr class="dash-table__row" onclick="window.location='<%= trip_path(trip) %>'" style="cursor:pointer">
-          <td><%= trip.field&.name || trip.customer&.name %></td>
+          <td><strong><%= trip.field&.name || trip.customer&.name %></strong></td>
           <td><%= trip.destination&.name %></td>
           <td><%= trip.driver&.name %></td>
           <td><%= trip.truck&.plate %></td>
+          <td><%= trip.product %></td>
           <td><%= trip.tariff %></td>
           <td><%= trip.date&.strftime("%d/%m/%Y") %></td>
           <td onclick="event.stopPropagation()"><%= render "trips/status_button", trip: trip %></td>
         </tr>
       <% end %>
       <% if @trips.empty? %>
-        <tr><td colspan="7" class="text-center text-muted py-3">No hay viajes registrados.</td></tr>
+        <tr>
+          <td colspan="8" class="text-center py-4">
+            <i class="bi bi-map" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+            <span class="text-muted" style="font-size:.875rem">No hay viajes registrados.</span>
+          </td>
+        </tr>
       <% end %>
     </tbody>
   </table>
@@ -56,14 +69,8 @@
           </p>
         </div>
         <div class="modal-footer border-0 pt-0 flex-column gap-2">
-          <button type="button"
-                  class="btn-pill-primary"
-                  data-action="click->trip-status#confirm">
-            Aceptar
-          </button>
-          <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">
-            Cancelar
-          </button>
+          <button type="button" class="btn-pill-primary" data-action="click->trip-status#confirm">Aceptar</button>
+          <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>

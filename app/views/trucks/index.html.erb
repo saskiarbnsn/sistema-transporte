@@ -1,14 +1,72 @@
-<p style="color: green"><%= notice %></p>
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <h1 class="dash-panel__title">
+      <i class="bi bi-truck-front-fill"></i>
+      Camiones
+      <span class="dash-count"><%= @trucks.size %></span>
+    </h1>
+    <%= link_to new_truck_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" do %>
+      <i class="bi bi-plus-lg me-1"></i> Nuevo camión
+    <% end %>
+  </div>
 
-<h1>Trucks</h1>
-
-<div id="trucks">
-  <% @trucks.each do |truck| %>
-    <%= render truck %>
-    <p>
-      <%= link_to "Show this truck", truck %>
-    </p>
-  <% end %>
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>Patente</th>
+        <th>Marca / Modelo</th>
+        <th>Combustible</th>
+        <th>Capacidad</th>
+        <th>Km totales</th>
+        <th>Estado servicio</th>
+        <th class="dash-table__actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @trucks.each do |truck| %>
+        <tr class="dash-table__row" onclick="window.location='<%= truck_path(truck) %>'" style="cursor:pointer">
+          <td><strong><%= truck.plate %></strong></td>
+          <td><%= [truck.brand, truck.model].compact.join(" ") %></td>
+          <td><%= truck.fuel %></td>
+          <td><%= "#{truck.capacity.to_i} t" if truck.capacity %></td>
+          <td><%= "#{truck.kilometres.to_i} km" if truck.kilometres %></td>
+          <td>
+            <% svc = truck.service_kilometres.to_f %>
+            <% if svc >= 20_000 %>
+              <span class="status-badge status-badge--danger"><i class="bi bi-wrench me-1"></i>Servicio requerido</span>
+            <% elsif svc >= 15_000 %>
+              <span class="status-badge status-badge--warning"><%= svc.to_i %> km</span>
+            <% else %>
+              <span class="status-badge status-badge--ok"><%= svc.to_i %> km</span>
+            <% end %>
+          </td>
+          <td class="dash-table__actions">
+            <div class="d-flex gap-1 justify-content-end">
+              <%= link_to edit_truck_path(truck),
+                    class: "dash-action dash-action--edit",
+                    title: "Editar",
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-pencil-fill"></i>
+              <% end %>
+              <%= button_to truck_path(truck), method: :delete,
+                    class: "dash-action dash-action--delete",
+                    title: "Eliminar",
+                    form: { data: { turbo_confirm: "¿Eliminar este camión?" }, style: "display:inline-flex" },
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-trash-fill"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+      <% if @trucks.empty? %>
+        <tr>
+          <td colspan="7" class="text-center py-4">
+            <i class="bi bi-truck" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+            <span class="text-muted" style="font-size:.875rem">No hay camiones cargados todavía.</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
-
-<%= link_to "New truck", new_truck_path %>

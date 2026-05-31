@@ -315,21 +315,100 @@ body { background: $surface; margin: 0; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  color: #999;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 2px solid $border;
 }
 
-.dash-panel__title { font-size: 1rem; font-weight: 600; color: $accent; margin: 0; }
+.dash-panel__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  i { color: $accent; font-size: 1.1rem; }
+}
+
+.dash-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  background: $accent-light;
+  color: $accent;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0 6px;
+}
 
 .dash-table {
   width: 100%;
   font-size: 0.875rem;
   border-collapse: collapse;
 
-  th { font-weight: 600; color: #333; padding: 0.4rem 0.5rem; border-bottom: 2px solid $border; }
-  td { padding: 0.6rem 0.5rem; border-bottom: 1px solid $border; color: #555; }
+  th {
+    font-weight: 600;
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid $border;
+    white-space: nowrap;
+  }
+  td { padding: 0.75rem 0.75rem; border-bottom: 1px solid $border; color: #444; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
+  &__row { transition: background 0.12s; }
   &__row:hover td { background: $accent-light; }
+  &__actions { width: 1%; white-space: nowrap; }
+}
+
+// Botones de acción en tablas
+.dash-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  vertical-align: middle;
+  padding: 0;
+
+  &--edit {
+    color: $accent;
+    background: $accent-light;
+    &:hover { background: darken(#e8edff, 6%); color: $accent; }
+  }
+
+  &--delete {
+    color: #c92a2a;
+    background: #fff0f0;
+    &:hover { background: #ffe0e0; color: #c92a2a; }
+  }
+}
+
+// Badges de estado en tablas
+.status-badge {
+  display: inline-block;
+  padding: 0.18rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--ok      { background: #d3f9d8; color: #2b6d31; }
+  &--warning { background: #fff3bf; color: #7b5e00; }
+  &--danger  { background: #ffe0e0; color: #c92a2a; }
+  &--neutral { background: #e9ecef; color: #666; }
 }
 
 // ── Form cards ─────────────────────────────────────────────────
@@ -382,15 +461,35 @@ body { background: $surface; margin: 0; }
 
 .ui-form-card .form-label { color: $accent; font-weight: 500; font-size: 0.85rem; margin-bottom: 0.3rem; }
 
-.ui-form-card .form-control,
-.ui-form-card .form-select {
+// Campos de solo lectura (show) — aspecto plano sin borde
+.ui-form-card div.form-control {
   background: #f4f6fc;
   border: none;
   border-radius: 10px;
   padding: 0.6rem 0.85rem;
   color: #333;
   font-size: 0.95rem;
-  &:focus { background: #eef1fb; box-shadow: 0 0 0 2px rgba($accent,.2); outline: none; }
+  cursor: default;
+}
+
+// Inputs y selects editables (edit / new) — borde visible, fondo blanco
+.ui-form-card input.form-control,
+.ui-form-card textarea.form-control,
+.ui-form-card .form-select {
+  background: #fff;
+  border: 1.5px solid #c8d0e7;
+  border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  color: #1a1a2e;
+  font-size: 0.95rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  &:hover:not(:focus) { border-color: #a8b4d4; }
+  &:focus {
+    background: #fff;
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba($accent, .15);
+    outline: none;
+  }
 }
 
 .ui-form-grid {

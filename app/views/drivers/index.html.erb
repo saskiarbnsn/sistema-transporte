@@ -1,37 +1,81 @@
 <div class="dash-panel">
   <div class="dash-panel__header">
-    <h1 class="dash-panel__title">Choferes</h1>
-    <%= link_to "Nuevo chofer", new_driver_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
+    <h1 class="dash-panel__title">
+      <i class="bi bi-person-badge-fill"></i>
+      Choferes
+      <span class="dash-count"><%= @drivers.size %></span>
+    </h1>
+    <%= link_to new_driver_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" do %>
+      <i class="bi bi-plus-lg me-1"></i> Nuevo chofer
+    <% end %>
   </div>
+
   <table class="dash-table">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>CUIT</th>
         <th>Teléfono</th>
-        <th>Domicilio</th>
         <th>Apto físico</th>
         <th>Venc. licencia</th>
-        <th></th>
+        <th class="dash-table__actions"></th>
       </tr>
     </thead>
     <tbody>
+      <% today = Date.current %>
       <% @drivers.each do |driver| %>
         <tr class="dash-table__row" onclick="window.location='<%= driver_path(driver) %>'" style="cursor:pointer">
-          <td><%= driver.name %></td>
+          <td><strong><%= driver.name %></strong></td>
           <td><%= driver.cuit %></td>
           <td><%= driver.phone_number %></td>
-          <td><%= driver.location %></td>
-          <td><%= driver.aptofisico ? "Sí" : "No" %></td>
-          <td><%= driver.licencia_vencimiento&.strftime("%d/%m/%Y") %></td>
           <td>
-            <%= link_to "Editar", edit_driver_path(driver), class: "btn btn-sm btn-outline-primary", onclick: "event.stopPropagation()" %>
-            <%= button_to "Eliminar", driver_path(driver), method: :delete, class: "btn btn-sm btn-outline-danger", onclick: "event.stopPropagation()", form: { data: { turbo_confirm: "¿Eliminar este chofer?" } } %>
+            <% if driver.apto_vencimiento.nil? %>
+              <span class="status-badge status-badge--neutral">Sin fecha</span>
+            <% elsif driver.apto_vencimiento < today %>
+              <span class="status-badge status-badge--danger">Vencido</span>
+            <% elsif driver.apto_vencimiento <= today + 30 %>
+              <span class="status-badge status-badge--warning">Vence <%= driver.apto_vencimiento.strftime("%d/%m/%Y") %></span>
+            <% else %>
+              <span class="status-badge status-badge--ok">Vigente</span>
+            <% end %>
+          </td>
+          <td>
+            <% if driver.licencia_vencimiento.nil? %>
+              <span class="status-badge status-badge--neutral">Sin fecha</span>
+            <% elsif driver.licencia_vencimiento < today %>
+              <span class="status-badge status-badge--danger">Vencida</span>
+            <% elsif driver.licencia_vencimiento <= today + 30 %>
+              <span class="status-badge status-badge--warning">Vence <%= driver.licencia_vencimiento.strftime("%d/%m/%Y") %></span>
+            <% else %>
+              <span class="status-badge status-badge--ok"><%= driver.licencia_vencimiento.strftime("%d/%m/%Y") %></span>
+            <% end %>
+          </td>
+          <td class="dash-table__actions">
+            <div class="d-flex gap-1 justify-content-end">
+              <%= link_to edit_driver_path(driver),
+                    class: "dash-action dash-action--edit",
+                    title: "Editar",
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-pencil-fill"></i>
+              <% end %>
+              <%= button_to driver_path(driver), method: :delete,
+                    class: "dash-action dash-action--delete",
+                    title: "Eliminar",
+                    form: { data: { turbo_confirm: "¿Eliminar este chofer?" }, style: "display:inline-flex" },
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-trash-fill"></i>
+              <% end %>
+            </div>
           </td>
         </tr>
       <% end %>
       <% if @drivers.empty? %>
-        <tr><td colspan="7" class="text-center text-muted py-3">No hay choferes cargados todavía.</td></tr>
+        <tr>
+          <td colspan="6" class="text-center py-4">
+            <i class="bi bi-person-badge" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+            <span class="text-muted" style="font-size:.875rem">No hay choferes cargados todavía.</span>
+          </td>
+        </tr>
       <% end %>
     </tbody>
   </table>

@@ -5,12 +5,11 @@
   </div>
 
   <div class="app-topbar__actions">
-    <div class="dropdown">
+    <div class="dropdown" data-action="show.bs.dropdown->shell#clearBadge">
       <button class="app-topbar__icon-btn position-relative"
               data-bs-toggle="dropdown"
               aria-expanded="false"
-              title="Notificaciones"
-              data-action="click->shell#clearBadge">
+              title="Notificaciones">
         <i class="bi bi-bell"></i>
         <% if @notifications&.any? %>
           <span class="app-topbar__badge" data-shell-target="badge"><%= @notifications.size %></span>

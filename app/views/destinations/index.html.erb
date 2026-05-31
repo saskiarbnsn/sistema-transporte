@@ -1,31 +1,64 @@
 <div class="dash-panel">
   <div class="dash-panel__header">
-    <h1 class="dash-panel__title">Destinos</h1>
-    <%= link_to "Nuevo destino", new_destination_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
+    <h1 class="dash-panel__title">
+      <i class="bi bi-building-fill"></i>
+      Destinos
+      <span class="dash-count"><%= @destinations.size %></span>
+    </h1>
+    <%= link_to new_destination_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" do %>
+      <i class="bi bi-plus-lg me-1"></i> Nuevo destino
+    <% end %>
   </div>
+
   <table class="dash-table">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>CUIT</th>
         <th>Ubicación</th>
-        <th></th>
+        <th>Coordenadas</th>
+        <th class="dash-table__actions"></th>
       </tr>
     </thead>
     <tbody>
       <% @destinations.each do |destination| %>
         <tr class="dash-table__row" onclick="window.location='<%= destination_path(destination) %>'" style="cursor:pointer">
-          <td><%= destination.name %></td>
+          <td><strong><%= destination.name %></strong></td>
           <td><%= destination.cuit %></td>
           <td><%= destination.location %></td>
           <td>
-            <%= link_to "Editar", edit_destination_path(destination), class: "btn btn-sm btn-outline-primary", onclick: "event.stopPropagation()" %>
-            <%= button_to "Eliminar", destination_path(destination), method: :delete, class: "btn btn-sm btn-outline-danger", onclick: "event.stopPropagation()", form: { data: { turbo_confirm: "¿Eliminar este destino?" } } %>
+            <% if destination.latitude && destination.longitude %>
+              <span class="status-badge status-badge--ok"><i class="bi bi-pin-map-fill me-1"></i>Ubicado</span>
+            <% else %>
+              <span class="status-badge status-badge--neutral">Sin ubicación</span>
+            <% end %>
+          </td>
+          <td class="dash-table__actions">
+            <div class="d-flex gap-1 justify-content-end">
+              <%= link_to edit_destination_path(destination),
+                    class: "dash-action dash-action--edit",
+                    title: "Editar",
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-pencil-fill"></i>
+              <% end %>
+              <%= button_to destination_path(destination), method: :delete,
+                    class: "dash-action dash-action--delete",
+                    title: "Eliminar",
+                    form: { data: { turbo_confirm: "¿Eliminar este destino?" }, style: "display:inline-flex" },
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-trash-fill"></i>
+              <% end %>
+            </div>
           </td>
         </tr>
       <% end %>
       <% if @destinations.empty? %>
-        <tr><td colspan="4" class="text-center text-muted py-3">No hay destinos cargados todavía.</td></tr>
+        <tr>
+          <td colspan="5" class="text-center py-4">
+            <i class="bi bi-building" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+            <span class="text-muted" style="font-size:.875rem">No hay destinos cargados todavía.</span>
+          </td>
+        </tr>
       <% end %>
     </tbody>
   </table>

@@ -19,5 +19,10 @@ Rails.application.configure do
                        "https://*.googleapis.com",
                        "https://*.gstatic.com",
                        "https://*.google.com"
+    policy.frame_src   :self,
+                       "https://www.google.com",
+                       "https://maps.google.com",
+                       "https://*.google.com",
+                       "https://*.googleapis.com"
   end
 end

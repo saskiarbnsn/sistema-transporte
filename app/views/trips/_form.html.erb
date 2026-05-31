@@ -16,12 +16,14 @@
     <div>
       <%= form.label :field_id, "Campo (origen)", class: "form-label" %>
       <%= form.collection_select :field_id, Field.order(:name), :id, :name,
-          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+          { prompt: "Seleccionar..." },
+          { class: "form-select", data: { "trip-map-target": "fieldSelect", action: "change->trip-map#update" } } %>
     </div>
     <div>
       <%= form.label :destination_id, "Destino", class: "form-label" %>
       <%= form.collection_select :destination_id, Destination.order(:name), :id, :name,
-          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+          { prompt: "Seleccionar..." },
+          { class: "form-select", data: { "trip-map-target": "destinationSelect", action: "change->trip-map#update" } } %>
     </div>
     <div>
       <%= form.label :driver_id, "Chofer", class: "form-label" %>
