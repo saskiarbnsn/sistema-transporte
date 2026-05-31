@@ -1,32 +1,29 @@
 <%= form_with(model: field) do |form| %>
   <% if field.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(field.errors.count, "error") %> prohibited this field from being saved:</h2>
-
-      <ul>
-        <% field.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="alert alert-danger mt-3">
+      <ul class="mb-0 ps-3">
+        <% field.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="mb-3">
+    <%= form.label :name, "Nombre del campo", class: "form-label" %>
+    <%= form.text_field :name, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.label :address, style: "display: block" %>
-    <%= form.text_field :address %>
+  <div class="mb-3">
+    <%= form.label :province, "Provincia", class: "form-label" %>
+    <%= form.text_field :province, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.label :customer_id, style: "display: block" %>
-    <%= form.text_field :customer_id %>
+  <div class="mb-3">
+    <%= form.label :customer_id, "Cliente", class: "form-label" %>
+    <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+        { prompt: "Seleccionar cliente" }, { class: "form-select" } %>
   </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
+  <%= form.submit "Guardar", class: "btn btn-primary" %>
 <% end %>

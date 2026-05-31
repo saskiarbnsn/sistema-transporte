@@ -23,7 +23,7 @@ class FieldsController < ApplicationController
 
     respond_to do |format|
       if @field.save
-        format.html { redirect_to field_url(@field), notice: "Field was successfully created." }
+        format.html { redirect_to field_url(@field), notice: "El campo se registró correctamente." }
         format.json { render :show, status: :created, location: @field }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,7 +36,7 @@ class FieldsController < ApplicationController
   def update
     respond_to do |format|
       if @field.update(field_params)
-        format.html { redirect_to field_url(@field), notice: "Field was successfully updated." }
+        format.html { redirect_to field_url(@field), notice: "El campo se actualizó correctamente." }
         format.json { render :show, status: :ok, location: @field }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,7 +50,7 @@ class FieldsController < ApplicationController
     @field.destroy
 
     respond_to do |format|
-      format.html { redirect_to fields_url, notice: "Field was successfully destroyed." }
+      format.html { redirect_to fields_url, notice: "El campo se eliminó correctamente." }
       format.json { head :no_content }
     end
   end
@@ -64,6 +64,6 @@ class FieldsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def field_params
-    params.require(:field).permit(:name, :address, :customer_id)
+    params.require(:field).permit(:name, :province, :customer_id, :latitude, :longitude)
   end
 end

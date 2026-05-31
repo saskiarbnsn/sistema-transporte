@@ -1,47 +1,40 @@
 <%= form_with(model: truck) do |form| %>
   <% if truck.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(truck.errors.count, "error") %> prohibited this truck from being saved:</h2>
-
-      <ul>
-        <% truck.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% truck.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :plate, style: "display: block" %>
-    <%= form.text_field :plate %>
+  <div class="ui-form-grid">
+    <div>
+      <%= form.label :plate, "Patente", class: "form-label" %>
+      <%= form.text_field :plate, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :capacity, "Capacidad", class: "form-label" %>
+      <div class="ui-input-unit">
+        <%= form.number_field :capacity, class: "form-control", step: "any" %>
+        <span class="ui-input-unit__label">Kg</span>
+      </div>
+    </div>
+    <div>
+      <%= form.label :brand, "Marca", class: "form-label" %>
+      <%= form.text_field :brand, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :fuel, "Combustible", class: "form-label" %>
+      <%= form.text_field :fuel, class: "form-control" %>
+    </div>
+    <div class="ui-form-grid--span-2">
+      <%= form.label :model, "Modelo", class: "form-label" %>
+      <%= form.text_field :model, class: "form-control" %>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :brand, style: "display: block" %>
-    <%= form.text_field :brand %>
-  </div>
-
-  <div>
-    <%= form.label :model, style: "display: block" %>
-    <%= form.text_field :model %>
-  </div>
-
-  <div>
-    <%= form.label :capacity, style: "display: block" %>
-    <%= form.text_field :capacity %>
-  </div>
-
-  <div>
-    <%= form.label :fuel, style: "display: block" %>
-    <%= form.text_field :fuel %>
-  </div>
-
-  <div>
-    <%= form.label :kilometres, style: "display: block" %>
-    <%= form.text_field :kilometres %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="ui-form-actions">
+    <%= form.submit "Continuar", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", trucks_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

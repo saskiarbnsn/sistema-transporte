@@ -23,7 +23,7 @@ class TrucksController < ApplicationController
 
     respond_to do |format|
       if @truck.save
-        format.html { redirect_to truck_url(@truck), notice: "Truck was successfully created." }
+        format.html { redirect_to truck_url(@truck), notice: "El camión se registró correctamente." }
         format.json { render :show, status: :created, location: @truck }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,7 +36,7 @@ class TrucksController < ApplicationController
   def update
     respond_to do |format|
       if @truck.update(truck_params)
-        format.html { redirect_to truck_url(@truck), notice: "Truck was successfully updated." }
+        format.html { redirect_to truck_url(@truck), notice: "El camión se actualizó correctamente." }
         format.json { render :show, status: :ok, location: @truck }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,7 +50,7 @@ class TrucksController < ApplicationController
     @truck.destroy
 
     respond_to do |format|
-      format.html { redirect_to trucks_url, notice: "Truck was successfully destroyed." }
+      format.html { redirect_to trucks_url, notice: "El camión se eliminó correctamente." }
       format.json { head :no_content }
     end
   end

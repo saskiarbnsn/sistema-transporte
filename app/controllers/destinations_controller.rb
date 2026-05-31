@@ -25,7 +25,7 @@ class DestinationsController < ApplicationController
 
     respond_to do |format|
       if @destination.save
-        format.html { redirect_to destination_url(@destination), notice: "Destination was successfully created." }
+        format.html { redirect_to destination_url(@destination), notice: "El destino se registró correctamente." }
         format.json { render :show, status: :created, location: @destination }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class DestinationsController < ApplicationController
   def update
     respond_to do |format|
       if @destination.update(destination_params)
-        format.html { redirect_to destination_url(@destination), notice: "Destination was successfully updated." }
+        format.html { redirect_to destination_url(@destination), notice: "El destino se actualizó correctamente." }
         format.json { render :show, status: :ok, location: @destination }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class DestinationsController < ApplicationController
     @destination.destroy
 
     respond_to do |format|
-      format.html { redirect_to destinations_url, notice: "Destination was successfully destroyed." }
+      format.html { redirect_to destinations_url, notice: "El destino se eliminó correctamente." }
       format.json { head :no_content }
     end
   end
@@ -65,6 +65,6 @@ class DestinationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def destination_params
-      params.require(:destination).permit(:cuit, :name, :location, :city, :province)
+      params.require(:destination).permit(:cuit, :name, :location, :latitude, :longitude)
     end
 end

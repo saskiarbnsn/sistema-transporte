@@ -23,7 +23,7 @@ class DriversController < ApplicationController
 
     respond_to do |format|
       if @driver.save
-        format.html { redirect_to drivers_url, notice: "Driver was successfully created." }
+        format.html { redirect_to drivers_url, notice: "El chofer se registró correctamente." }
         format.json { render :show, status: :created, location: @driver }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,7 +36,7 @@ class DriversController < ApplicationController
   def update
     respond_to do |format|
       if @driver.update(driver_params)
-        format.html { redirect_to drivers_url, notice: "Driver was successfully updated." }
+        format.html { redirect_to drivers_url, notice: "El chofer se actualizó correctamente." }
         format.json { render :show, status: :ok, location: @driver }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,7 +50,7 @@ class DriversController < ApplicationController
     @driver.destroy
 
     respond_to do |format|
-      format.html { redirect_to drivers_url, notice: "Driver was successfully destroyed." }
+      format.html { redirect_to drivers_url, notice: "El chofer se eliminó correctamente." }
       format.json { head :no_content }
     end
   end
@@ -64,6 +64,8 @@ class DriversController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def driver_params
-    params.require(:driver).permit(:name, :birth_date, :phone_number, :address, :city, :province, :cuit)
+    params.require(:driver).permit(:name, :birth_date, :phone_number, :location, :cuit,
+                                   :licencia_vencimiento, :aptofisico, :apto_vencimiento,
+                                   :latitude, :longitude)
   end
 end

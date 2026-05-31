@@ -1,27 +1,25 @@
 <%= form_with(model: customer) do |form| %>
   <% if customer.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(customer.errors.count, "error") %> prohibited this customer from being saved:</h2>
-
-      <ul>
-        <% customer.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% customer.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :cuit, style: "display: block" %>
-    <%= form.text_field :cuit %>
+  <div class="ui-form-grid ui-form-grid--single">
+    <div>
+      <%= form.label :cuit, "CUIT", class: "form-label" %>
+      <%= form.text_field :cuit, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :name, "Propietario", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="ui-form-actions">
+    <%= form.submit "Continuar", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", customers_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

@@ -1,65 +1,99 @@
+<div class="dashboard">
 
-        <div class="col-sm-auto bg-light sticky-top">
-            <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-                <a href="/" class="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                    <i class="bi-bootstrap fs-1"></i>
-                </a>
-                <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                            <i class="bi-house fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                            <i class="bi-speedometer2 fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
-                            <i class="bi-table fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
-                            <i class="bi-heart fs-1"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers">
-                            <i class="bi-people fs-1"></i>
-                        </a>
-                    </li>
-                </ul>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi-person-circle h2"></i>
-                    </a>
-                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
-                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+  <%# Hero banner %>
+  <div class="dashboard-hero">
+    <div>
+      <h1 class="dashboard-hero__greeting">
+        Hola, <%= current_user&.email&.split("@")&.first&.split(/[._-]/)&.map(&:capitalize)&.join(" ") %>!
+      </h1>
+    </div>
+    <div class="dashboard-hero__weather">
+      <i class="bi bi-sun-fill"></i>
+    </div>
+  </div>
 
+  <%# Quick action cards %>
+  <div class="dashboard-actions">
+    <%= link_to new_driver_path, class: "action-card" do %>
+      <div class="action-card__icon">
+        <i class="bi bi-person-vcard"></i>
+      </div>
+      <span class="action-card__label">Cargar chofer</span>
+    <% end %>
 
- # <p class="navbar-text float-right">
-  #   <% if user_signed_in? %>
-  #     Hola <strong><%= current_user.email %></strong>.
-  #     <%= button_to "Cerrar Sesion", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-  #   <% else %>
-  #     <%= link_to "Registrarse", new_user_registration_path, :class => 'navbar-link'  %> |
-  #     <%= link_to "Iniciar Sesion", new_user_session_path, :class => 'navbar-link'  %>
-  #   <% end %>
-  # </p>
-  # <div id="drivers" class="container mt-4">
-  #   <% if notice %>
-  #     <p class="alert alert-success"><%= notice %></p>
-  #   <% end %>
-  #   <% if alert %>
-  #     <p class="alert alert-danger"><%= alert %></p>
-  #   <% end %>
+    <%= link_to new_truck_path, class: "action-card" do %>
+      <div class="action-card__icon">
+        <i class="bi bi-truck"></i>
+      </div>
+      <span class="action-card__label">Cargar camión</span>
+    <% end %>
 
-  
+    <%= link_to new_customer_path, class: "action-card" do %>
+      <div class="action-card__icon">
+        <i class="bi bi-people"></i>
+      </div>
+      <span class="action-card__label">Cargar cliente</span>
+    <% end %>
+
+    <%= link_to new_destination_path, class: "action-card" do %>
+      <div class="action-card__icon">
+        <i class="bi bi-geo-alt"></i>
+      </div>
+      <span class="action-card__label">Cargar destino</span>
+    <% end %>
+
+    <%= link_to fields_path, class: "action-card" do %>
+      <div class="action-card__icon">
+        <i class="bi bi-sign-turn-slight-right"></i>
+      </div>
+      <span class="action-card__label">Ver campos</span>
+    <% end %>
+  </div>
+
+  <%# Bottom panels %>
+  <div class="dashboard-panels">
+    <section class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title">Rentabilidad</h2>
+        <i class="bi bi-three-dots-vertical"></i>
+      </div>
+      <div class="dash-panel__placeholder">
+        <p class="text-muted text-center mt-4">Próximamente</p>
+      </div>
+    </section>
+
+    <section class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title">Historial de viajes</h2>
+        <i class="bi bi-three-dots-vertical"></i>
+      </div>
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Fecha</th>
+            <th>Chofer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @recent_drivers.any? %>
+            <% @recent_drivers.each do |driver| %>
+              <tr>
+                <td colspan="3"><%= link_to driver.name, driver_path(driver) %></td>
+                <td><%= driver.name %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                No hay viajes registrados todavía.
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+</div>

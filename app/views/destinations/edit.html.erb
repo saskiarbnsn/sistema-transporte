@@ -1,10 +1,14 @@
-<h1>Editing destination</h1>
-
-<%= render "form", destination: @destination %>
-
-<br>
-
-<div>
-  <%= link_to "Show this destination", @destination %> |
-  <%= link_to "Back to destinations", destinations_path %>
+<div class="form-page">
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-geo-alt"></i></div>
+      <h1 class="ui-form-card__title">Editar destino</h1>
+    </div>
+    <div class="ui-form-card__body">
+      <%= render "form", destination: @destination %>
+    </div>
+  </div>
+  <div class="map-placeholder">
+    <i class="bi bi-map" style="font-size:2rem; opacity:0.3"></i>
+  </div>
 </div>

@@ -1,52 +1,51 @@
-<div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-              <a href="/" class="d-block p-3  text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-                  <i class="bi-list fs-2"></i>
-              </a>
-              <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
-                  <li class="nav-item">
-                      <a href="#" class="nav-link py-2 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                          <i class="bi-house fs-3"></i>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="#" class="nav-link py-2 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                        <i class="bi-geo-alt fs-3"></i>
-                      </a>
-                  </li>
-                  <li>
-                    <%= link_to(drivers_path, class:"nav-link py-2 px-2") do %>
-                        <!--<a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Drivers"> -->
-                        <i class="bi-person-plus fs-3"></i>
-                    <% end %>
-                  </li>
-                  <li>
-                    <%= link_to(trucks_path, class:"nav-link py-2 px-2") do %>
-                        <!--<a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Trucks"> -->
-                        <i class="bi-truck fs-3"></i>
-                    <% end %>
-                  </li>
-                  <li>
-                    <%= link_to(customers_path, class:"nav-link py-2 px-2") do %>
-                        <!--<a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers"> -->
-                        <i class="bi-people fs-3"></i>
-                    <% end %>
-                  </li>
-                  <li>
-                    <%= link_to(destinations_path, class:"nav-link py-2 px-2") do %>
-                        <!-- <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Destinations"> -->
-                        <i class="bi-pin-map fs-3"></i>
-                    <% end %>
-                  </li>       
-              </ul>
-              <div class="dropdown">
-                  <a href="#" class="d-flex align-items-center justify-content-center py-5 px-2 text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi-person-circle fs-3"></i>
-                  </a>
-                  <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
-                      <li><a class="dropdown-item" href="#">New project...</a></li>
-                      <li><a class="dropdown-item" href="#">Settings</a></li>
-                      <li><a class="dropdown-item" href="#">Profile</a></li>
-                  </ul>
-              </div>
-          </div>
-      </div>
+<aside class="app-sidebar" data-shell-target="sidebar">
+  <div class="app-sidebar__header">
+    <button class="app-sidebar__toggle" type="button"
+            data-action="click->shell#toggle"
+            aria-label="Abrir menú">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+
+  <nav class="app-sidebar__nav">
+    <%= link_to root_path, class: "app-sidebar__item #{controller_name == 'homes' ? 'is-active' : ''}" do %>
+      <i class="bi bi-house"></i>
+      <span class="app-sidebar__label">Inicio</span>
+    <% end %>
+
+    <%= link_to new_driver_path, class: "app-sidebar__item #{controller_name == 'drivers' && action_name == 'new' ? 'is-active' : ''}" do %>
+      <i class="bi bi-person-vcard"></i>
+      <span class="app-sidebar__label">Cargar chofer</span>
+    <% end %>
+
+    <%= link_to new_truck_path, class: "app-sidebar__item #{controller_name == 'trucks' && action_name == 'new' ? 'is-active' : ''}" do %>
+      <i class="bi bi-truck"></i>
+      <span class="app-sidebar__label">Cargar camión</span>
+    <% end %>
+
+    <%= link_to new_customer_path, class: "app-sidebar__item #{controller_name == 'customers' && action_name == 'new' ? 'is-active' : ''}" do %>
+      <i class="bi bi-people"></i>
+      <span class="app-sidebar__label">Cargar cliente</span>
+    <% end %>
+
+    <%= link_to new_destination_path, class: "app-sidebar__item #{controller_name == 'destinations' && action_name == 'new' ? 'is-active' : ''}" do %>
+      <i class="bi bi-geo-alt"></i>
+      <span class="app-sidebar__label">Cargar destino</span>
+    <% end %>
+
+    <div class="app-sidebar__divider"></div>
+
+    <%= link_to drivers_path, class: "app-sidebar__item #{controller_name == 'drivers' && action_name == 'index' ? 'is-active' : ''}" do %>
+      <i class="bi bi-clock-history"></i>
+      <span class="app-sidebar__label">Historial</span>
+    <% end %>
+  </nav>
+
+  <div class="app-sidebar__footer">
+    <%= link_to destroy_user_session_path, class: "app-sidebar__item app-sidebar__item--muted",
+        data: { turbo_method: :delete } do %>
+      <i class="bi bi-box-arrow-left"></i>
+      <span class="app-sidebar__label">Cerrar sesión</span>
+    <% end %>
+  </div>
+</aside>

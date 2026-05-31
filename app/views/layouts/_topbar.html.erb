@@ -1,0 +1,35 @@
+<header class="app-topbar">
+  <div class="app-topbar__date">
+    <span class="app-topbar__day">
+      <%= Time.zone.today.strftime("%A %-d").upcase %>
+    </span>
+    <span class="app-topbar__month">
+      <%= Time.zone.today.strftime("%B, %Y").upcase %>
+    </span>
+  </div>
+
+  <div class="app-topbar__actions">
+    <button class="app-topbar__icon-btn" title="Notificaciones">
+      <i class="bi bi-bell"></i>
+    </button>
+    <button class="app-topbar__icon-btn" title="Mensajes">
+      <i class="bi bi-envelope"></i>
+    </button>
+  </div>
+
+  <div class="dropdown">
+    <button class="app-topbar__user dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      <div class="app-topbar__avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <span class="app-topbar__username">
+        <%= current_user&.email&.split("@")&.first&.split(/[._-]/)&.map(&:capitalize)&.join(" ") %>
+      </span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+      <%= link_to "Cerrar sesión", destroy_user_session_path,
+          class: "dropdown-item text-danger",
+          data: { turbo_method: :delete } %>
+    </ul>
+  </div>
+</header>

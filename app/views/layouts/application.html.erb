@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Tesis</title>
+    <title>Sistema de Transporte</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
   <body>
-  <div class="container-fluid">
-  <div class="row">
-      <div class="col-sm-auto bg-light sticky-top">
-        <%= render partial: "layouts/navbar" %>                 <!-- mostrar navbar desde layouts -->
-      <div class="col-sm p-3 min-vh-100">
-        <%= yield %>
+    <div class="app-shell" data-controller="shell">
+      <%= render "layouts/navbar" %>
+
+      <div class="app-main">
+        <%= render "layouts/topbar" %>
+
+        <% if flash[:notice] || flash[:alert] %>
+          <div class="app-flash-wrap">
+            <% if flash[:notice] %>
+              <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
+                <%= flash[:notice] %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            <% end %>
+            <% if flash[:alert] %>
+              <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
+                <%= flash[:alert] %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <main class="app-content">
+          <%= yield %>
+        </main>
       </div>
-  </div>
-</div>
+    </div>
   </body>
 </html>
