@@ -1,14 +1,32 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Fields</h1>
-
-<div id="fields">
-  <% @fields.each do |field| %>
-    <%= render field %>
-    <p>
-      <%= link_to "Show this field", field %>
-    </p>
-  <% end %>
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <h1 class="dash-panel__title">Campos</h1>
+    <%= link_to "Nuevo campo", new_field_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
+  </div>
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Provincia</th>
+        <th>Cliente</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @fields.each do |field| %>
+        <tr class="dash-table__row" onclick="window.location='<%= field_path(field) %>'" style="cursor:pointer">
+          <td><%= field.name %></td>
+          <td><%= field.province %></td>
+          <td><%= field.customer&.name %></td>
+          <td>
+            <%= link_to "Editar", edit_field_path(field), class: "btn btn-sm btn-outline-primary", onclick: "event.stopPropagation()" %>
+            <%= button_to "Eliminar", field_path(field), method: :delete, class: "btn btn-sm btn-outline-danger", onclick: "event.stopPropagation()", form: { data: { turbo_confirm: "¿Eliminar este campo?" } } %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @fields.empty? %>
+        <tr><td colspan="4" class="text-center text-muted py-3">No hay campos cargados todavía.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
-
-<%= link_to "New field", new_field_path %>

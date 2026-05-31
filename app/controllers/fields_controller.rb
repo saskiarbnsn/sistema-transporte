@@ -64,6 +64,6 @@ class FieldsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def field_params
-    params.require(:field).permit(:name, :address, :customer_id)
+    params.require(:field).permit(:name, :province, :customer_id, :latitude, :longitude)
   end
 end

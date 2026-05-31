@@ -1,14 +1,32 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Destinations</h1>
-
-<div id="destinations">
-  <% @destinations.each do |destination| %>
-    <%= render destination %>
-    <p>
-      <%= link_to "Show this destination", destination %>
-    </p>
-  <% end %>
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <h1 class="dash-panel__title">Destinos</h1>
+    <%= link_to "Nuevo destino", new_destination_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
+  </div>
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>CUIT</th>
+        <th>Ubicación</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @destinations.each do |destination| %>
+        <tr class="dash-table__row" onclick="window.location='<%= destination_path(destination) %>'" style="cursor:pointer">
+          <td><%= destination.name %></td>
+          <td><%= destination.cuit %></td>
+          <td><%= destination.location %></td>
+          <td>
+            <%= link_to "Editar", edit_destination_path(destination), class: "btn btn-sm btn-outline-primary", onclick: "event.stopPropagation()" %>
+            <%= button_to "Eliminar", destination_path(destination), method: :delete, class: "btn btn-sm btn-outline-danger", onclick: "event.stopPropagation()", form: { data: { turbo_confirm: "¿Eliminar este destino?" } } %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @destinations.empty? %>
+        <tr><td colspan="4" class="text-center text-muted py-3">No hay destinos cargados todavía.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
-
-<%= link_to "New destination", new_destination_path %>

@@ -1,47 +1,38 @@
-
-  <% if notice %>
-    <div class="alert alert-success" role="alert">
-      <%= notice %>
-    </div>
-  <% end %>
-
-  <div class="mt-4">
-    <h1>Choferes</h1>
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <h1 class="dash-panel__title">Choferes</h1>
+    <%= link_to "Nuevo chofer", new_driver_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" %>
   </div>
-  <div class="mt-4">
-    <%= link_to "Nuevo Chofer", new_driver_path, { class: "btn btn-success" } %>
-  </div>
-  <div class="row mt-4">
-    <div class="col-12">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">CUIT</th>
-            <th scope="col">Telefono</th>
-            <th scope="col">Direccion</th>
-            <th scope="col">Ciudad</th>
-            <th scope="col">Provincia</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @drivers.each do |driver| %>
-            <tr>
-              <th scope="row"><%= driver.name %></th>
-              <td><%= driver.cuit %></td>
-              <td><%= driver.phone_number %></td>
-              <td><%= driver.address %></td>
-              <td><%= driver.city %></td>
-              <td><%= driver.province %></td>
-              <td>
-                <%= link_to "Editar", edit_driver_path(driver), { class: "btn btn-primary" } %> 
-                <%= button_to "Eliminar", driver, { class: "btn btn-danger",  method: :delete } %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>CUIT</th>
+        <th>Teléfono</th>
+        <th>Domicilio</th>
+        <th>Apto físico</th>
+        <th>Venc. licencia</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @drivers.each do |driver| %>
+        <tr class="dash-table__row" onclick="window.location='<%= driver_path(driver) %>'" style="cursor:pointer">
+          <td><%= driver.name %></td>
+          <td><%= driver.cuit %></td>
+          <td><%= driver.phone_number %></td>
+          <td><%= driver.location %></td>
+          <td><%= driver.aptofisico ? "Sí" : "No" %></td>
+          <td><%= driver.licencia_vencimiento&.strftime("%d/%m/%Y") %></td>
+          <td>
+            <%= link_to "Editar", edit_driver_path(driver), class: "btn btn-sm btn-outline-primary", onclick: "event.stopPropagation()" %>
+            <%= button_to "Eliminar", driver_path(driver), method: :delete, class: "btn btn-sm btn-outline-danger", onclick: "event.stopPropagation()", form: { data: { turbo_confirm: "¿Eliminar este chofer?" } } %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @drivers.empty? %>
+        <tr><td colspan="7" class="text-center text-muted py-3">No hay choferes cargados todavía.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,60 @@
+<div class="form-page form-page--single">
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
+      <h1 class="ui-form-card__title">Detalle del viaje</h1>
+    </div>
+    <div class="ui-form-card__body">
+      <div class="ui-form-grid">
+        <div>
+          <span class="form-label d-block">Origen</span>
+          <div class="form-control"><%= @trip.field&.name || @trip.customer&.name %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Destino</span>
+          <div class="form-control"><%= @trip.destination&.name %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Chofer</span>
+          <div class="form-control"><%= @trip.driver&.name %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Camión</span>
+          <div class="form-control"><%= @trip.truck&.plate %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Producto</span>
+          <div class="form-control"><%= @trip.product %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Peso (Kg)</span>
+          <div class="form-control"><%= @trip.weight %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Tarifa</span>
+          <div class="form-control"><%= @trip.tariff %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Kilómetros</span>
+          <div class="form-control"><%= @trip.kilometres %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Fecha de inicio</span>
+          <div class="form-control"><%= @trip.date&.strftime("%d/%m/%Y") || "—" %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Fecha de finalización</span>
+          <div class="form-control">
+            <%= @trip.date_end&.strftime("%d/%m/%Y") || "En viaje" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_trip_path(@trip), class: "btn-pill-primary" %>
+        <%= link_to "Volver al historial", trips_path, class: "btn-pill-secondary" %>
+      </div>
+    </div>
+  </div>
+
+</div>

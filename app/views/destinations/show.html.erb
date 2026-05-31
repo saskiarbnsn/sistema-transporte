@@ -1,10 +1,29 @@
-<p style="color: green"><%= notice %></p>
+<div class="form-page"
+     data-controller="field-map"
+     data-field-map-api-key-value="<%= google_maps_api_key %>"
+     data-field-map-readonly-value="true">
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-geo-alt"></i></div>
+      <h1 class="ui-form-card__title">Detalle del destino</h1>
+    </div>
+    <div class="ui-form-card__body">
+      <div class="ui-form-grid ui-form-grid--single">
+        <div><span class="form-label d-block">CUIT</span><div class="form-control"><%= @destination.cuit %></div></div>
+        <div><span class="form-label d-block">Nombre</span><div class="form-control"><%= @destination.name %></div></div>
+        <div><span class="form-label d-block">Ubicación</span><div class="form-control"><%= @destination.location %></div></div>
+      </div>
+      <%= hidden_field_tag :latitude,  @destination.latitude,  data: { "field-map-target": "latitude" } %>
+      <%= hidden_field_tag :longitude, @destination.longitude, data: { "field-map-target": "longitude" } %>
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_destination_path(@destination), class: "btn-pill-primary" %>
+        <%= link_to "Volver", destinations_path, class: "btn-pill-secondary" %>
+      </div>
+    </div>
+  </div>
 
-<%= render @destination %>
-
-<div>
-  <%= link_to "Edit this destination", edit_destination_path(@destination) %> |
-  <%= link_to "Back to destinations", destinations_path %>
-
-  <%= button_to "Destroy this destination", @destination, method: :delete %>
+  <div class="map-panel">
+    <div class="map-canvas" data-field-map-target="canvas"></div>
+    <p class="map-status" data-field-map-target="status"></p>
+  </div>
 </div>

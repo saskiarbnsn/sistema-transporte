@@ -1,0 +1,70 @@
+<%= form_with model: trip do |form| %>
+  <% if trip.errors.any? %>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="ui-form-grid">
+    <div>
+      <%= form.label :customer_id, "Cliente", class: "form-label" %>
+      <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :field_id, "Campo (origen)", class: "form-label" %>
+      <%= form.collection_select :field_id, Field.order(:name), :id, :name,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :destination_id, "Destino", class: "form-label" %>
+      <%= form.collection_select :destination_id, Destination.order(:name), :id, :name,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :driver_id, "Chofer", class: "form-label" %>
+      <%= form.collection_select :driver_id, Driver.order(:name), :id, :name,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :truck_id, "Camión", class: "form-label" %>
+      <%= form.collection_select :truck_id, Truck.order(:plate), :id, :plate,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :product, "Producto", class: "form-label" %>
+      <%= form.text_field :product, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :weight, "Peso", class: "form-label" %>
+      <div class="ui-input-unit">
+        <%= form.number_field :weight, class: "form-control", step: "any" %>
+        <span class="ui-input-unit__label">Kg</span>
+      </div>
+    </div>
+    <div>
+      <%= form.label :tariff, "Tarifa", class: "form-label" %>
+      <%= form.number_field :tariff, class: "form-control", step: "any" %>
+    </div>
+    <div>
+      <%= form.label :kilometres, "Kilómetros", class: "form-label" %>
+      <%= form.number_field :kilometres, class: "form-control", step: "any" %>
+    </div>
+    <%# Fechas juntas %>
+    <div>
+      <%= form.label :date, "Fecha de inicio", class: "form-label" %>
+      <%= form.date_field :date, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
+      <%= form.date_field :date_end, class: "form-control", min: trip.date %>
+    </div>
+  </div>
+
+  <div class="ui-form-actions">
+    <%= form.submit trip.persisted? ? "Guardar cambios" : "Confirmar", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", trip.persisted? ? trip_path(trip) : trips_path, class: "btn-pill-secondary" %>
+  </div>
+<% end %>

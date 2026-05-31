@@ -1,3 +1,3 @@
 class Driver < ApplicationRecord
-  validates :name, :address, :city, :province, :phone_number, :cuit, presence: true
+  validates :name, :location, :phone_number, :cuit, presence: true
 end

@@ -6,3 +6,12 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import ShellController from "./shell_controller"
+application.register("shell", ShellController)
+
+import FieldMapController from "./field_map_controller"
+application.register("field-map", FieldMapController)
+
+import TripStatusController from "./trip_status_controller"
+application.register("trip-status", TripStatusController)

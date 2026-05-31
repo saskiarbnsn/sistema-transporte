@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sistema de Transporte</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+  <body class="auth-page">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <i class="bi bi-truck"></i>
+          <span>Sistema de Transporte</span>
+        </div>
+        <% if flash[:alert] %>
+          <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <%= flash[:alert] %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% end %>
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>
