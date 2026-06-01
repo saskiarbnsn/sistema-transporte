@@ -94,5 +94,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Permitir el dominio de Render
-  config.hosts << /.*\.onrender\.com/
+  config.hosts << "sistema-transporte-f84o.onrender.com"
 end
