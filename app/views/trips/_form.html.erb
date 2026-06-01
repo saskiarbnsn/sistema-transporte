@@ -1,9 +1,13 @@
-<%= form_with model: trip do |form| %>
+<%= form_with model: trip, html: { multipart: true } do |form| %>
   <% if trip.errors.any? %>
-    <div class="alert alert-danger mb-3">
-      <ul class="mb-0 ps-3">
-        <% trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
-      </ul>
+    <div class="form-errors">
+      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+      <div class="form-errors__body">
+        <p class="form-errors__title"><%= trip.errors.count == 1 ? "1 error" : "#{trip.errors.count} errores" %> impidieron guardar:</p>
+        <ul class="form-errors__list">
+          <% trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+        </ul>
+      </div>
     </div>
   <% end %>
 
@@ -62,6 +66,34 @@
     <div>
       <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
       <%= form.date_field :date_end, class: "form-control", min: trip.date %>
+    </div>
+  </div>
+
+    <div class="ui-form-grid--span-2">
+      <%= form.label :carta_de_porte, "Carta de porte", class: "form-label" %>
+      <div class="file-field">
+        <% if trip.carta_de_porte.attached? %>
+          <span class="file-field__existing">
+            <i class="bi bi-paperclip"></i> <%= trip.carta_de_porte.filename %>
+            <span style="color:#aaa;">(subir otro para reemplazar)</span>
+          </span>
+        <% end %>
+        <%= form.file_field :carta_de_porte, class: "file-field__input",
+            accept: ".pdf,.jpg,.jpeg,.png" %>
+      </div>
+    </div>
+    <div class="ui-form-grid--span-2">
+      <%= form.label :factura, "Factura", class: "form-label" %>
+      <div class="file-field">
+        <% if trip.factura.attached? %>
+          <span class="file-field__existing">
+            <i class="bi bi-paperclip"></i> <%= trip.factura.filename %>
+            <span style="color:#aaa;">(subir otro para reemplazar)</span>
+          </span>
+        <% end %>
+        <%= form.file_field :factura, class: "file-field__input",
+            accept: ".pdf,.jpg,.jpeg,.png" %>
+      </div>
     </div>
   </div>
 

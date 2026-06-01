@@ -1,20 +1,31 @@
-<div class="form-page"
-     data-controller="field-map"
-     data-field-map-api-key-value="<%= google_maps_api_key %>"
-     data-field-map-readonly-value="true">
+<% trips = Trip.where(destination_id: @destination.id).includes(:field, :driver, :truck).order(date: :desc).limit(50) %>
+
+<div class="form-page">
   <div class="ui-form-card">
     <div class="ui-form-card__header">
-      <div class="ui-form-card__badge"><i class="bi bi-geo-alt"></i></div>
-      <h1 class="ui-form-card__title">Detalle del destino</h1>
+      <div class="ui-form-card__badge"><i class="bi bi-building-fill"></i></div>
+      <div>
+        <h1 class="ui-form-card__title"><%= @destination.name %></h1>
+        <p style="margin:0;font-size:0.8rem;color:#888;">CUIT <%= @destination.cuit %></p>
+      </div>
     </div>
     <div class="ui-form-card__body">
-      <div class="ui-form-grid ui-form-grid--single">
-        <div><span class="form-label d-block">CUIT</span><div class="form-control"><%= @destination.cuit %></div></div>
-        <div><span class="form-label d-block">Nombre</span><div class="form-control"><%= @destination.name %></div></div>
-        <div><span class="form-label d-block">Ubicación</span><div class="form-control"><%= @destination.location %></div></div>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Nombre</span>
+          <span class="detail-value"><%= @destination.name %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">CUIT</span>
+          <span class="detail-value"><%= @destination.cuit %></span>
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">Ubicación</span>
+          <span class="detail-value"><%= @destination.location.presence || "—" %></span>
+        </div>
       </div>
-      <%= hidden_field_tag :latitude,  @destination.latitude,  data: { "field-map-target": "latitude" } %>
-      <%= hidden_field_tag :longitude, @destination.longitude, data: { "field-map-target": "longitude" } %>
+
       <div class="ui-form-actions">
         <%= link_to "Editar", edit_destination_path(@destination), class: "btn-pill-primary" %>
         <%= link_to "Volver", destinations_path, class: "btn-pill-secondary" %>
@@ -22,8 +33,5 @@
     </div>
   </div>
 
-  <div class="map-panel">
-    <div class="map-canvas" data-field-map-target="canvas"></div>
-    <p class="map-status" data-field-map-target="status"></p>
-  </div>
+  <%= render "trips/related_trips", trips: trips %>
 </div>

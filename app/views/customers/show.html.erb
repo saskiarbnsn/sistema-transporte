@@ -1,10 +1,62 @@
-<p style="color: green"><%= notice %></p>
+<% trips = Trip.where(customer_id: @customer.id).includes(:field, :destination, :driver, :truck).order(date: :desc).limit(50) %>
 
-<%= render @customer %>
+<div class="form-page">
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-people-fill"></i></div>
+      <div>
+        <h1 class="ui-form-card__title"><%= @customer.name %></h1>
+        <p style="margin:0;font-size:0.8rem;color:#888;">CUIT <%= @customer.cuit %></p>
+      </div>
+      <span class="dash-count ms-auto" style="font-size:0.8rem;padding:0 10px;height:26px;"><%= @customer.fields.count %> campos</span>
+    </div>
+    <div class="ui-form-card__body">
 
-<div>
-  <%= link_to "Edit this customer", edit_customer_path(@customer) %> |
-  <%= link_to "Back to customers", customers_path %>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Propietario</span>
+          <span class="detail-value"><%= @customer.name %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">CUIT</span>
+          <span class="detail-value"><%= @customer.cuit %></span>
+        </div>
+      </div>
 
-  <%= button_to "Destroy this customer", @customer, method: :delete %>
+      <% if @customer.fields.any? %>
+        <p class="detail-label" style="margin-bottom:0.5rem;">Campos asociados</p>
+        <table class="dash-table" style="margin-bottom:1.25rem;">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Provincia</th>
+              <th>Coordenadas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @customer.fields.each do |field| %>
+              <tr class="dash-table__row" onclick="window.location='<%= field_path(field) %>'" style="cursor:pointer">
+                <td><%= field.name %></td>
+                <td><%= field.province %></td>
+                <td style="font-size:0.82rem;color:#666;">
+                  <% if field.latitude && field.longitude %>
+                    <%= field.latitude %>, <%= field.longitude %>
+                  <% else %>
+                    <span style="color:#ccc;">—</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_customer_path(@customer), class: "btn-pill-primary" %>
+        <%= link_to "Volver", customers_path, class: "btn-pill-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <%= render "trips/related_trips", trips: trips %>
 </div>

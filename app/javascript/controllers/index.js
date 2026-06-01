@@ -18,3 +18,6 @@ application.register("trip-status", TripStatusController)
 
 import TripMapController from "./trip_map_controller"
 application.register("trip-map", TripMapController)
+
+import TripCalculatorController from "./trip_calculator_controller"
+application.register("trip-calculator", TripCalculatorController)

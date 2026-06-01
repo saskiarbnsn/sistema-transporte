@@ -11,7 +11,7 @@ class FieldsController < ApplicationController
 
   # GET /fields/new
   def new
-    @field = Field.new
+    @field = Field.new(customer_id: params[:customer_id])
   end
 
   # GET /fields/1/edit

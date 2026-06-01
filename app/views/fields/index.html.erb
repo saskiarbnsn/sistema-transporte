@@ -26,11 +26,11 @@
           <td><strong><%= field.name %></strong></td>
           <td><%= field.province %></td>
           <td><%= field.customer&.name %></td>
-          <td>
+          <td style="font-size:0.82rem;color:#666;">
             <% if field.latitude && field.longitude %>
-              <span class="status-badge status-badge--ok"><i class="bi bi-pin-map-fill me-1"></i>Ubicado</span>
+              <%= field.latitude %>, <%= field.longitude %>
             <% else %>
-              <span class="status-badge status-badge--neutral">Sin ubicación</span>
+              <span style="color:#ccc;">—</span>
             <% end %>
           </td>
           <td class="dash-table__actions">

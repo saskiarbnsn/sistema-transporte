@@ -1,0 +1,48 @@
+<%# locals: trips %>
+<div class="dash-panel" style="height:100%;">
+  <div class="dash-panel__header">
+    <h2 class="dash-panel__title">
+      <i class="bi bi-map-fill"></i>
+      Viajes
+      <span class="dash-count"><%= trips.size %></span>
+    </h2>
+  </div>
+
+  <% if trips.any? %>
+    <table class="dash-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Chofer</th>
+          <th>Camión</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% trips.each do |trip| %>
+          <tr class="dash-table__row" onclick="window.location='<%= trip_path(trip) %>'" style="cursor:pointer">
+            <td><%= trip.date&.strftime("%d/%m/%Y") %></td>
+            <td><%= trip.field&.name || trip.customer&.name %></td>
+            <td><%= trip.destination&.name %></td>
+            <td><%= trip.driver&.name %></td>
+            <td><%= trip.truck&.plate %></td>
+            <td>
+              <% if trip.date_end %>
+                <span class="status-badge status-badge--ok">Finalizado</span>
+              <% else %>
+                <span class="status-badge status-badge--warning">En viaje</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="text-center py-5">
+      <i class="bi bi-map" style="font-size:2.5rem;color:#ddd;display:block;margin-bottom:0.75rem;"></i>
+      <p class="text-muted mb-0" style="font-size:0.875rem;">Sin viajes registrados.</p>
+    </div>
+  <% end %>
+</div>

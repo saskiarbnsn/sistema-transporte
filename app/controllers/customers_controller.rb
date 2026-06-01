@@ -23,7 +23,7 @@ class CustomersController < ApplicationController
 
     respond_to do |format|
       if @customer.save
-        format.html { redirect_to customer_url(@customer), notice: "El cliente se registró correctamente." }
+        format.html { redirect_to new_field_url(customer_id: @customer.id), notice: "Cliente registrado. Ahora agregá un campo." }
         format.json { render :show, status: :created, location: @customer }
       else
         format.html { render :new, status: :unprocessable_entity }

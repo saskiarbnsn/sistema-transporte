@@ -5,6 +5,9 @@ class Trip < ApplicationRecord
   belongs_to :driver
   belongs_to :truck
 
+  has_one_attached :carta_de_porte
+  has_one_attached :factura
+
   validate :date_end_not_before_date
 
   private

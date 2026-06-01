@@ -1,10 +1,58 @@
-<p style="color: green"><%= notice %></p>
+<% svc = @truck.service_kilometres.to_f %>
+<% trips = Trip.where(truck_id: @truck.id).includes(:field, :destination, :driver).order(date: :desc).limit(50) %>
 
-<%= render @truck %>
+<div class="form-page">
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-truck-front-fill"></i></div>
+      <div>
+        <h1 class="ui-form-card__title"><%= @truck.plate %></h1>
+        <p style="margin:0;font-size:0.8rem;color:#888;"><%= [@truck.brand, @truck.model].compact.join(" ") %></p>
+      </div>
+    </div>
+    <div class="ui-form-card__body">
 
-<div>
-  <%= link_to "Edit this truck", edit_truck_path(@truck) %> |
-  <%= link_to "Back to trucks", trucks_path %>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Patente</span>
+          <span class="detail-value"><%= @truck.plate %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Marca / Modelo</span>
+          <span class="detail-value"><%= [@truck.brand, @truck.model].compact.join(" ").presence || "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Combustible</span>
+          <span class="detail-value"><%= @truck.fuel.presence || "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Capacidad</span>
+          <span class="detail-value"><%= @truck.capacity ? "#{number_with_delimiter(@truck.capacity.to_i)} toneladas" : "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Kilómetros totales</span>
+          <span class="detail-value"><%= @truck.kilometres ? "#{number_with_delimiter(@truck.kilometres.to_i)} km" : "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Km desde último servicio</span>
+          <span class="detail-value">
+            <% if svc >= 20_000 %>
+              <span class="status-badge status-badge--danger"><i class="bi bi-wrench me-1"></i><%= number_with_delimiter(svc.to_i) %> km</span>
+            <% elsif svc >= 15_000 %>
+              <span class="status-badge status-badge--warning"><%= number_with_delimiter(svc.to_i) %> km</span>
+            <% else %>
+              <span class="status-badge status-badge--ok"><%= number_with_delimiter(svc.to_i) %> km</span>
+            <% end %>
+          </span>
+        </div>
+      </div>
 
-  <%= button_to "Destroy this truck", @truck, method: :delete %>
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_truck_path(@truck), class: "btn-pill-primary" %>
+        <%= link_to "Volver", trucks_path, class: "btn-pill-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <%= render "trips/related_trips", trips: trips %>
 </div>

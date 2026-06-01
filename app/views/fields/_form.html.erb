@@ -1,29 +1,55 @@
 <%= form_with(model: field) do |form| %>
   <% if field.errors.any? %>
-    <div class="alert alert-danger mt-3">
-      <ul class="mb-0 ps-3">
-        <% field.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
+    <div class="form-errors">
+      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+      <div class="form-errors__body">
+        <p class="form-errors__title"><%= field.errors.count == 1 ? "1 error" : "#{field.errors.count} errores" %> impidieron guardar:</p>
+        <ul class="form-errors__list">
+          <% field.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+        </ul>
+      </div>
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= form.label :name, "Nombre del campo", class: "form-label" %>
-    <%= form.text_field :name, class: "form-control" %>
+  <div class="ui-form-grid">
+    <div>
+      <%= form.label :name, "Nombre del campo", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
+    <div>
+      <%= form.label :province, "Provincia", class: "form-label" %>
+      <%= form.select :province, [
+            "Buenos Aires", "Catamarca", "Chaco", "Chubut", "Córdoba",
+            "Corrientes", "Entre Ríos", "Formosa", "Jujuy", "La Pampa",
+            "La Rioja", "Mendoza", "Misiones", "Neuquén", "Río Negro",
+            "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
+            "Santiago del Estero", "Tierra del Fuego", "Tucumán",
+            "Ciudad Autónoma de Buenos Aires"
+          ], { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div class="ui-form-grid--span-2">
+      <%= form.label :customer_id, "Cliente (propietario)", class: "form-label" %>
+      <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+          { prompt: "Seleccionar..." }, { class: "form-select" } %>
+    </div>
+    <div>
+      <%= form.label :latitude, "Latitud", class: "form-label" %>
+      <%= form.text_field :latitude, class: "form-control",
+          inputmode: "decimal",
+          oninput: "this.value=this.value.replace(/[^0-9.,-]/g,'')",
+          data: { "field-map-target": "latitude" } %>
+    </div>
+    <div>
+      <%= form.label :longitude, "Longitud", class: "form-label" %>
+      <%= form.text_field :longitude, class: "form-control",
+          inputmode: "decimal",
+          oninput: "this.value=this.value.replace(/[^0-9.,-]/g,'')",
+          data: { "field-map-target": "longitude" } %>
+    </div>
   </div>
 
-  <div class="mb-3">
-    <%= form.label :province, "Provincia", class: "form-label" %>
-    <%= form.text_field :province, class: "form-control" %>
+  <div class="ui-form-actions">
+    <%= form.submit field.persisted? ? "Guardar cambios" : "Confirmar", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", field.persisted? ? field_path(field) : fields_path, class: "btn-pill-secondary" %>
   </div>
-
-  <div class="mb-3">
-    <%= form.label :customer_id, "Cliente", class: "form-label" %>
-    <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
-        { prompt: "Seleccionar cliente" }, { class: "form-select" } %>
-  </div>
-
-  <%= form.submit "Guardar", class: "btn btn-primary" %>
 <% end %>

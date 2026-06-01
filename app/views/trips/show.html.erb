@@ -30,50 +30,84 @@
       <h1 class="ui-form-card__title">Detalle del viaje</h1>
     </div>
     <div class="ui-form-card__body">
-      <div class="ui-form-grid">
-        <div>
-          <span class="form-label d-block">Origen</span>
-          <div class="form-control"><%= @trip.field&.name || @trip.customer&.name %></div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Origen</span>
+          <span class="detail-value"><%= @trip.field&.name || @trip.customer&.name || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Destino</span>
-          <div class="form-control"><%= @trip.destination&.name %></div>
+        <div class="detail-item">
+          <span class="detail-label">Destino</span>
+          <span class="detail-value"><%= @trip.destination&.name || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Chofer</span>
-          <div class="form-control"><%= @trip.driver&.name %></div>
+        <div class="detail-item">
+          <span class="detail-label">Chofer</span>
+          <span class="detail-value"><%= @trip.driver&.name || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Camión</span>
-          <div class="form-control"><%= @trip.truck&.plate %></div>
+        <div class="detail-item">
+          <span class="detail-label">Camión</span>
+          <span class="detail-value"><%= @trip.truck&.plate || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Producto</span>
-          <div class="form-control"><%= @trip.product %></div>
+        <div class="detail-item">
+          <span class="detail-label">Producto</span>
+          <span class="detail-value"><%= @trip.product.presence || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Peso (Kg)</span>
-          <div class="form-control"><%= @trip.weight %></div>
+        <div class="detail-item">
+          <span class="detail-label">Peso</span>
+          <span class="detail-value"><%= @trip.weight ? "#{@trip.weight} Kg" : "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Tarifa</span>
-          <div class="form-control"><%= @trip.tariff %></div>
+        <div class="detail-item">
+          <span class="detail-label">Tarifa ($/Kg)</span>
+          <span class="detail-value"><%= @trip.tariff || "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Kilómetros</span>
-          <div class="form-control"><%= @trip.kilometres %></div>
+        <div class="detail-item">
+          <span class="detail-label">Kilómetros</span>
+          <span class="detail-value"><%= @trip.kilometres ? "#{@trip.kilometres} km" : "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Fecha de inicio</span>
-          <div class="form-control"><%= @trip.date&.strftime("%d/%m/%Y") || "—" %></div>
+        <div class="detail-item">
+          <span class="detail-label">Neto</span>
+          <span class="detail-value"><%= @trip.net ? number_to_currency(@trip.net, unit: "$", separator: ",", delimiter: ".") : "—" %></span>
         </div>
-        <div>
-          <span class="form-label d-block">Fecha de finalización</span>
-          <div class="form-control">
-            <%= @trip.date_end&.strftime("%d/%m/%Y") || "En viaje" %>
-          </div>
+        <div class="detail-item">
+          <span class="detail-label">Total con IVA (21%)</span>
+          <span class="detail-value" style="font-weight:600;color:#1a1a2e;"><%= @trip.importeiva ? number_to_currency(@trip.importeiva, unit: "$", separator: ",", delimiter: ".") : "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Fecha de inicio</span>
+          <span class="detail-value"><%= @trip.date&.strftime("%d/%m/%Y") || "—" %></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Fecha de finalización</span>
+          <span class="detail-value">
+            <% if @trip.date_end %>
+              <%= @trip.date_end.strftime("%d/%m/%Y") %>
+            <% else %>
+              <span class="status-badge status-badge--warning">En viaje</span>
+            <% end %>
+          </span>
         </div>
       </div>
+
+      <% if @trip.carta_de_porte.attached? || @trip.factura.attached? %>
+        <div class="detail-item detail-item--full" style="border-bottom:none; padding-bottom:0;">
+          <span class="detail-label">Documentación</span>
+          <div class="d-flex gap-2 flex-wrap mt-1">
+            <% if @trip.carta_de_porte.attached? %>
+              <%= link_to rails_blob_path(@trip.carta_de_porte, disposition: "inline"),
+                    class: "doc-chip", title: @trip.carta_de_porte.filename.to_s,
+                    target: "_blank", rel: "noopener noreferrer" do %>
+                <i class="bi bi-file-earmark-text"></i> Carta de porte
+              <% end %>
+            <% end %>
+            <% if @trip.factura.attached? %>
+              <%= link_to rails_blob_path(@trip.factura, disposition: "inline"),
+                    class: "doc-chip", title: @trip.factura.filename.to_s,
+                    target: "_blank", rel: "noopener noreferrer" do %>
+                <i class="bi bi-file-earmark-invoice"></i> Factura
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
 
       <div class="ui-form-actions">
         <%= link_to "Editar", edit_trip_path(@trip), class: "btn-pill-primary" %>

@@ -16,15 +16,21 @@
         <% if flash[:notice] || flash[:alert] %>
           <div class="app-flash-wrap">
             <% if flash[:notice] %>
-              <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
-                <%= flash[:notice] %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              <div class="flash-alert flash-alert--success" role="alert">
+                <i class="bi bi-check-circle-fill flash-alert__icon"></i>
+                <span class="flash-alert__text"><%= flash[:notice] %></span>
+                <button class="flash-alert__close" onclick="this.closest('.flash-alert').remove()" aria-label="Cerrar">
+                  <i class="bi bi-x-lg"></i>
+                </button>
               </div>
             <% end %>
             <% if flash[:alert] %>
-              <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                <%= flash[:alert] %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              <div class="flash-alert flash-alert--error" role="alert">
+                <i class="bi bi-exclamation-circle-fill flash-alert__icon"></i>
+                <span class="flash-alert__text"><%= flash[:alert] %></span>
+                <button class="flash-alert__close" onclick="this.closest('.flash-alert').remove()" aria-label="Cerrar">
+                  <i class="bi bi-x-lg"></i>
+                </button>
               </div>
             <% end %>
           </div>

@@ -42,11 +42,17 @@ export default class extends Controller {
     window.addEventListener('maps:ready', () => this.initMap(), { once: true })
   }
 
+  // ── Helpers ──────────────────────────────────────────────────
+
+  parseCoord(val) {
+    return parseFloat(String(val).replace(',', '.')) || null
+  }
+
   // ── Map initialisation ───────────────────────────────────────
 
   initMap() {
-    const lat = parseFloat(this.hasLatitudeTarget  ? this.latitudeTarget.value  : '') || null
-    const lng = parseFloat(this.hasLongitudeTarget ? this.longitudeTarget.value : '') || null
+    const lat = this.parseCoord(this.hasLatitudeTarget  ? this.latitudeTarget.value  : '')
+    const lng = this.parseCoord(this.hasLongitudeTarget ? this.longitudeTarget.value : '')
     const hasCoords = lat && lng
 
     const center = hasCoords ? { lat, lng } : { lat: -33.0, lng: -64.0 }
@@ -63,6 +69,7 @@ export default class extends Controller {
 
     if (!this.readonlyValue) {
       this.initSearch()
+      this.initCoordInputs()
       this.map.addListener('click', (e) => {
         const pos = e.latLng.toJSON()
         this.placeMarker(pos)
@@ -70,30 +77,69 @@ export default class extends Controller {
       })
     }
 
-    this.showStatus(hasCoords ? "Ubicación guardada." : "Buscá o hacé click en el mapa para fijar la ubicación.")
+    const defaultMsg = hasCoords
+      ? "Ubicación guardada."
+      : this.hasSearchTarget
+        ? "Buscá o hacé click en el mapa para fijar la ubicación."
+        : "Escribí el domicilio o hacé click en el mapa para fijar la ubicación."
+    this.showStatus(defaultMsg)
   }
 
-  // ── Search box ───────────────────────────────────────────────
+  // ── Search / Autocomplete ────────────────────────────────────
 
   initSearch() {
-    if (!this.hasSearchTarget) return
+    if (this.hasSearchTarget) {
+      // Buscador separado (campos, destinos)
+      const searchBox = new google.maps.places.SearchBox(this.searchTarget)
+      searchBox.addListener('places_changed', () => {
+        const places = searchBox.getPlaces()
+        if (!places?.length) return
+        const place = places[0]
+        if (!place.geometry?.location) return
+        const pos = place.geometry.location.toJSON()
+        this.placeMarker(pos)
+        this.map.panTo(place.geometry.location)
+        this.map.setZoom(15)
+        this.updateFields(pos, place.formatted_address)
+        this.showStatus("Ubicación seleccionada.")
+      })
+    } else if (this.hasLocationTarget && this.locationTarget.tagName === 'INPUT') {
+      // Autocomplete directo sobre el campo domicilio (choferes)
+      const autocomplete = new google.maps.places.Autocomplete(this.locationTarget, {
+        fields: ['geometry', 'formatted_address'],
+      })
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace()
+        if (!place.geometry?.location) return
+        const pos = place.geometry.location.toJSON()
+        this.placeMarker(pos)
+        this.map.panTo(place.geometry.location)
+        this.map.setZoom(15)
+        if (this.hasLatitudeTarget)  this.latitudeTarget.value  = pos.lat
+        if (this.hasLongitudeTarget) this.longitudeTarget.value = pos.lng
+        this.locationTarget.value = place.formatted_address
+        this.showStatus("Ubicación seleccionada.")
+      })
+    }
+  }
 
-    const searchBox = new google.maps.places.SearchBox(this.searchTarget)
+  // ── Coord inputs → map ──────────────────────────────────────
 
-    searchBox.addListener('places_changed', () => {
-      const places = searchBox.getPlaces()
-      if (!places?.length) return
-
-      const place = places[0]
-      if (!place.geometry?.location) return
-
-      const pos = place.geometry.location.toJSON()
+  initCoordInputs() {
+    if (!this.hasLatitudeTarget || !this.hasLongitudeTarget) return
+    const update = () => {
+      const lat = this.parseCoord(this.latitudeTarget.value)
+      const lng = this.parseCoord(this.longitudeTarget.value)
+      if (!lat || !lng) return
+      if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return
+      const pos = { lat, lng }
       this.placeMarker(pos)
-      this.map.panTo(place.geometry.location)
-      this.map.setZoom(15)
-      this.updateFields(pos, place.formatted_address)
-      this.showStatus("Ubicación seleccionada.")
-    })
+      this.map.panTo(pos)
+      this.map.setZoom(14)
+      this.showStatus("Ubicación actualizada.")
+    }
+    this.latitudeTarget.addEventListener('input',  update)
+    this.longitudeTarget.addEventListener('input', update)
   }
 
   // ── Marker ───────────────────────────────────────────────────
@@ -132,8 +178,8 @@ export default class extends Controller {
   // ── Field updates ────────────────────────────────────────────
 
   updateFields(latLng, address) {
-    if (this.hasLatitudeTarget)  this.latitudeTarget.value  = latLng.lat
-    if (this.hasLongitudeTarget) this.longitudeTarget.value = latLng.lng
+    if (this.hasLatitudeTarget)  this.latitudeTarget.value  = String(latLng.lat).replace(',', '.')
+    if (this.hasLongitudeTarget) this.longitudeTarget.value = String(latLng.lng).replace(',', '.')
     if (this.hasLocationTarget) {
       const el = this.locationTarget
       el.tagName === 'INPUT' ? (el.value = address) : (el.textContent = address)

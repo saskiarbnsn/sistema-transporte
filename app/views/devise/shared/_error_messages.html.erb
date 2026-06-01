@@ -1,9 +1,15 @@
 <% if resource.errors.any? %>
-  <div class="alert alert-danger">
-    <ul class="mb-0 ps-3">
-      <% resource.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
+  <div class="form-errors">
+    <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+    <div class="form-errors__body">
+      <p class="form-errors__title">
+        <%= resource.errors.count == 1 ? "1 error" : "#{resource.errors.count} errores" %> impidieron continuar:
+      </p>
+      <ul class="form-errors__list">
+        <% resource.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
   </div>
 <% end %>

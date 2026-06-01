@@ -36,18 +36,18 @@
       <span class="app-sidebar__label">Cliente</span>
     <% end %>
 
-    <%= link_to destinations_path,
-        class: "app-sidebar__item #{'is-active' if controller_name == 'destinations'}",
-        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Destino" } do %>
-      <i class="bi bi-geo-alt"></i>
-      <span class="app-sidebar__label">Destino</span>
-    <% end %>
-
     <%= link_to fields_path,
         class: "app-sidebar__item #{'is-active' if controller_name == 'fields'}",
         data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Campo" } do %>
       <i class="bi bi-sign-turn-slight-right"></i>
       <span class="app-sidebar__label">Campo</span>
+    <% end %>
+
+    <%= link_to destinations_path,
+        class: "app-sidebar__item #{'is-active' if controller_name == 'destinations'}",
+        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Destino" } do %>
+      <i class="bi bi-geo-alt"></i>
+      <span class="app-sidebar__label">Destino</span>
     <% end %>
 
     <div class="app-sidebar__divider"></div>

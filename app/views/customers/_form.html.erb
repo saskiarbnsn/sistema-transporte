@@ -1,9 +1,17 @@
 <%= form_with(model: customer) do |form| %>
   <% if customer.errors.any? %>
-    <div class="alert alert-danger mb-3"><ul class="mb-0 ps-3"><% customer.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
+    <div class="form-errors">
+      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+      <div class="form-errors__body">
+        <p class="form-errors__title"><%= customer.errors.count == 1 ? "1 error" : "#{customer.errors.count} errores" %> impidieron guardar:</p>
+        <ul class="form-errors__list">
+          <% customer.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+        </ul>
+      </div>
+    </div>
   <% end %>
   <div class="ui-form-grid ui-form-grid--single">
-    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control" %></div>
+    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control", inputmode: "numeric", placeholder: "20-12345678-9", oninput: "var d=this.value.replace(/[^0-9]/g,'').slice(0,11);this.value=d.length<=2?d:d.length<=10?d.slice(0,2)+'-'+d.slice(2):d.slice(0,2)+'-'+d.slice(2,10)+'-'+d.slice(10)" %></div>
     <div><%= form.label :name, "Propietario", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
   </div>
   <div class="ui-form-actions">

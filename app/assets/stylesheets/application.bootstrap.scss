@@ -411,6 +411,50 @@ body { background: $surface; margin: 0; }
   &--neutral { background: #e9ecef; color: #666; }
 }
 
+// ── Detail / Show pages ────────────────────────────────────────
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid #f0f2f8;
+  margin-bottom: 1.5rem;
+
+  &--single { grid-template-columns: 1fr; }
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f0f2f8;
+
+  &:nth-child(odd)  { border-right: 1px solid #f0f2f8; padding-left: 0; }
+  &:nth-child(even) { }
+
+  &--full {
+    grid-column: span 2;
+    padding-left: 0;
+    border-right: none;
+  }
+}
+
+.detail-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #bbb;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  font-weight: 400;
+  line-height: 1.4;
+
+  &--empty { color: #ccc; font-style: italic; }
+}
+
 // ── Form cards ─────────────────────────────────────────────────
 .form-page {
   display: grid;
@@ -627,6 +671,188 @@ body { background: $surface; margin: 0; }
   font-size: 0.8rem;
   color: #888;
   text-align: center;
+}
+
+// ── Trip sidebar (right column) ────────────────────────────────
+.trip-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.trip-summary-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.1rem 1.4rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f2f8;
+    font-size: 0.95rem;
+    color: #444;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__label { font-weight: 500; color: #666; }
+  &__value { font-weight: 600; color: #1a1a2e; }
+}
+
+.trip-docs-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.1rem 1.4rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+  }
+
+  &__buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  background: $accent-light;
+  color: $accent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px dashed #bac8ff;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: center;
+
+  &:hover { background: darken(#e8edff, 5%); border-color: $accent; }
+
+  &--attached {
+    background: #d3f9d8;
+    color: #2b6d31;
+    border-color: #b2f2bb;
+    border-style: solid;
+  }
+}
+
+// ── File upload fields ─────────────────────────────────────────
+.file-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &__input {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.875rem;
+    color: #555;
+    background: #fff;
+    border: 1.5px dashed #c8d0e7;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    &:hover { border-color: $accent; }
+    &:focus { outline: none; border-color: $accent; box-shadow: 0 0 0 3px rgba($accent,.15); }
+  }
+
+  &__existing {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: #666;
+    background: #f4f6fc;
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+  }
+}
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  background: $accent-light;
+  color: $accent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+  &:hover { background: darken(#e8edff, 6%); color: $accent; }
+}
+
+// ── Flash messages ────────────────────────────────────────────
+.flash-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+
+  &__icon { font-size: 1.05rem; flex-shrink: 0; margin-top: 0.1rem; }
+  &__text { flex: 1; line-height: 1.5; }
+  &__close {
+    background: none; border: none; cursor: pointer;
+    padding: 0; color: inherit; opacity: 0.5; font-size: 0.9rem;
+    line-height: 1; flex-shrink: 0;
+    &:hover { opacity: 1; }
+  }
+
+  &--success { background: #d3f9d8; color: #2b6d31; border: 1px solid #b2f2bb; }
+  &--error   { background: #ffe0e0; color: #c92a2a; border: 1px solid #ffc9c9; }
+  &--warning { background: #fff3bf; color: #7b5e00; border: 1px solid #ffec99; }
+  &--info    { background: #e8edff; color: $accent;  border: 1px solid #bac8ff; }
+}
+
+// ── Form errors ───────────────────────────────────────────────
+.form-errors {
+  display: flex;
+  gap: 0.75rem;
+  background: #fff5f5;
+  border: 1.5px solid #ffc9c9;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+
+  &__icon { font-size: 1.15rem; color: #c92a2a; flex-shrink: 0; margin-top: 0.1rem; }
+
+  &__body { flex: 1; }
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #c92a2a;
+    margin: 0 0 0.35rem;
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.82rem;
+    color: #c92a2a;
+    li { margin-bottom: 0.15rem; }
+    li:last-child { margin-bottom: 0; }
+  }
 }
 
 // ── Auth / Login ───────────────────────────────────────────────
