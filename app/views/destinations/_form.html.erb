@@ -1,26 +1,14 @@
 <%= form_with(model: destination) do |form| %>
   <% if destination.errors.any? %>
-    <div class="alert alert-danger mb-3">
-      <ul class="mb-0 ps-3">
-        <% destination.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-      </ul>
-    </div>
+    <div class="alert alert-danger mb-3"><ul class="mb-0 ps-3"><% destination.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
   <% end %>
-
   <div class="ui-form-grid ui-form-grid--single">
-    <div>
-      <%= form.label :cuit, "CUIT", class: "form-label" %>
-      <%= form.text_field :cuit, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :name, "Nombre", class: "form-label" %>
-      <%= form.text_field :name, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :location, "Ubicación", class: "form-label" %>
-      <%= form.text_field :location, class: "form-control" %>
-    </div>
+    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control" %></div>
+    <div><%= form.label :name, "Nombre", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
+    <div><%= form.label :location, "Ubicación", class: "form-label" %><%= form.text_field :location, class: "form-control", data: { "field-map-target": "location" } %></div>
   </div>
+  <%= form.hidden_field :latitude,  data: { "field-map-target": "latitude" } %>
+  <%= form.hidden_field :longitude, data: { "field-map-target": "longitude" } %>
 
   <div class="ui-form-actions">
     <%= form.submit "Continuar", class: "btn-pill-primary" %>

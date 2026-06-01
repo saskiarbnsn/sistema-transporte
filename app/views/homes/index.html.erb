@@ -1,65 +1,53 @@
 <div class="dashboard">
 
-  <%# Hero banner %>
   <div class="dashboard-hero">
-    <div>
-      <h1 class="dashboard-hero__greeting">
-        Hola, <%= current_user&.email&.split("@")&.first&.split(/[._-]/)&.map(&:capitalize)&.join(" ") %>!
-      </h1>
-    </div>
+    <h1 class="dashboard-hero__greeting">
+      Hola, <%= current_user&.username&.presence || current_user&.email&.split("@")&.first&.split(/[._-]/)&.map(&:capitalize)&.join(" ") %>!
+    </h1>
     <div class="dashboard-hero__weather">
       <i class="bi bi-sun-fill"></i>
     </div>
   </div>
 
-  <%# Quick action cards %>
   <div class="dashboard-actions">
+    <%= link_to new_trip_path, class: "action-card" do %>
+      <div class="action-card__icon"><i class="bi bi-map"></i></div>
+      <span class="action-card__label">Cargar viaje</span>
+    <% end %>
+
     <%= link_to new_driver_path, class: "action-card" do %>
-      <div class="action-card__icon">
-        <i class="bi bi-person-vcard"></i>
-      </div>
+      <div class="action-card__icon"><i class="bi bi-person-vcard"></i></div>
       <span class="action-card__label">Cargar chofer</span>
     <% end %>
 
     <%= link_to new_truck_path, class: "action-card" do %>
-      <div class="action-card__icon">
-        <i class="bi bi-truck"></i>
-      </div>
+      <div class="action-card__icon"><i class="bi bi-truck"></i></div>
       <span class="action-card__label">Cargar camión</span>
     <% end %>
 
     <%= link_to new_customer_path, class: "action-card" do %>
-      <div class="action-card__icon">
-        <i class="bi bi-people"></i>
-      </div>
+      <div class="action-card__icon"><i class="bi bi-people"></i></div>
       <span class="action-card__label">Cargar cliente</span>
     <% end %>
 
     <%= link_to new_destination_path, class: "action-card" do %>
-      <div class="action-card__icon">
-        <i class="bi bi-geo-alt"></i>
-      </div>
+      <div class="action-card__icon"><i class="bi bi-geo-alt"></i></div>
       <span class="action-card__label">Cargar destino</span>
     <% end %>
 
-    <%= link_to fields_path, class: "action-card" do %>
-      <div class="action-card__icon">
-        <i class="bi bi-sign-turn-slight-right"></i>
-      </div>
-      <span class="action-card__label">Ver campos</span>
+    <%= link_to new_field_path, class: "action-card" do %>
+      <div class="action-card__icon"><i class="bi bi-sign-turn-slight-right"></i></div>
+      <span class="action-card__label">Cargar campo</span>
     <% end %>
   </div>
 
-  <%# Bottom panels %>
   <div class="dashboard-panels">
     <section class="dash-panel">
       <div class="dash-panel__header">
         <h2 class="dash-panel__title">Rentabilidad</h2>
         <i class="bi bi-three-dots-vertical"></i>
       </div>
-      <div class="dash-panel__placeholder">
-        <p class="text-muted text-center mt-4">Próximamente</p>
-      </div>
+      <p class="text-muted text-center mt-4 mb-4">Próximamente</p>
     </section>
 
     <section class="dash-panel">
@@ -74,21 +62,25 @@
             <th>Destino</th>
             <th>Fecha</th>
             <th>Chofer</th>
+            <th>Tarifa</th>
           </tr>
         </thead>
         <tbody>
-          <% if @recent_drivers.any? %>
-            <% @recent_drivers.each do |driver| %>
-              <tr>
-                <td colspan="3"><%= link_to driver.name, driver_path(driver) %></td>
-                <td><%= driver.name %></td>
+          <% if @recent_trips.any? %>
+            <% @recent_trips.each do |trip| %>
+              <%= link_to trip_path(trip), data: { turbo_frame: "_top" } do %>
+              <% end %>
+              <tr class="dash-table__row" onclick="window.location='<%= trip_path(trip) %>'" style="cursor:pointer">
+                <td><%= trip.field&.name || trip.customer&.name %></td>
+                <td><%= trip.destination&.name %></td>
+                <td><%= trip.date&.strftime("%d/%m/%Y") %></td>
+                <td><%= trip.driver&.name %></td>
+                <td><%= trip.tariff %></td>
               </tr>
             <% end %>
           <% else %>
             <tr>
-              <td colspan="4" class="text-center text-muted py-3">
-                No hay viajes registrados todavía.
-              </td>
+              <td colspan="5" class="text-center text-muted py-3">No hay viajes registrados todavía.</td>
             </tr>
           <% end %>
         </tbody>

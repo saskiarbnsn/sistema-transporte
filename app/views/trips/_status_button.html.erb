@@ -1,0 +1,13 @@
+<div id="trip_status_<%= trip.id %>">
+  <% if trip.date_end.present? %>
+    <%= trip.date_end.strftime("%d/%m/%Y") %>
+  <% else %>
+    <button type="button"
+            class="trip-status-btn trip-status-btn--active"
+            data-action="click->trip-status#open"
+            data-trip-id="<%= trip.id %>"
+            data-trip-start="<%= trip.date %>">
+      En viaje
+    </button>
+  <% end %>
+</div>

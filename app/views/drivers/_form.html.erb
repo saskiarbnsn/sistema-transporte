@@ -1,55 +1,25 @@
 <%= form_with(model: driver) do |form| %>
   <% if driver.errors.any? %>
-    <div class="alert alert-danger mb-3">
-      <ul class="mb-0 ps-3">
-        <% driver.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-      </ul>
-    </div>
+    <div class="alert alert-danger mb-3"><ul class="mb-0 ps-3"><% driver.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
   <% end %>
-
   <div class="ui-form-grid">
-    <div>
-      <%= form.label :cuit, "CUIT", class: "form-label" %>
-      <%= form.text_field :cuit, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :phone_number, "Teléfono", class: "form-label" %>
-      <%= form.text_field :phone_number, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :name, "Nombre completo", class: "form-label" %>
-      <%= form.text_field :name, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :location, "Domicilio", class: "form-label" %>
-      <%= form.text_field :location, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :birth_date, "Fecha de nacimiento", class: "form-label" %>
-      <%= form.date_field :birth_date, class: "form-control" %>
-    </div>
+    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control" %></div>
+    <div><%= form.label :phone_number, "Teléfono", class: "form-label" %><%= form.text_field :phone_number, class: "form-control" %></div>
+    <div><%= form.label :name, "Nombre completo", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
+    <div><%= form.label :location, "Domicilio", class: "form-label" %><%= form.text_field :location, class: "form-control", data: { "field-map-target": "location" } %></div>
+    <div><%= form.label :birth_date, "Fecha de nacimiento", class: "form-label" %><%= form.date_field :birth_date, class: "form-control" %></div>
     <div>
       <span class="form-label d-block">Apto Físico</span>
       <div class="ui-radio-group mt-1">
-        <label>
-          <%= form.radio_button :aptofisico, true %>
-          Sí
-        </label>
-        <label>
-          <%= form.radio_button :aptofisico, false %>
-          No
-        </label>
+        <label><%= form.radio_button :aptofisico, true %> Sí</label>
+        <label><%= form.radio_button :aptofisico, false %> No</label>
       </div>
     </div>
-    <div>
-      <%= form.label :licencia_vencimiento, "Fecha vencimiento de licencia", class: "form-label" %>
-      <%= form.date_field :licencia_vencimiento, class: "form-control" %>
-    </div>
-    <div>
-      <%= form.label :apto_vencimiento, "Vencimiento apto físico", class: "form-label" %>
-      <%= form.date_field :apto_vencimiento, class: "form-control" %>
-    </div>
+    <div><%= form.label :licencia_vencimiento, "Venc. licencia", class: "form-label" %><%= form.date_field :licencia_vencimiento, class: "form-control" %></div>
+    <div><%= form.label :apto_vencimiento, "Venc. apto físico", class: "form-label" %><%= form.date_field :apto_vencimiento, class: "form-control" %></div>
   </div>
+  <%= form.hidden_field :latitude,  data: { "field-map-target": "latitude" } %>
+  <%= form.hidden_field :longitude, data: { "field-map-target": "longitude" } %>
 
   <div class="ui-form-actions">
     <%= form.submit "Continuar", class: "btn-pill-primary" %>

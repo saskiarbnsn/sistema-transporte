@@ -8,7 +8,6 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
-
   <body class="auth-page">
     <div class="auth-wrapper">
       <div class="auth-card">
@@ -16,21 +15,12 @@
           <i class="bi bi-truck"></i>
           <span>Sistema de Transporte</span>
         </div>
-
         <% if flash[:alert] %>
           <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
             <%= flash[:alert] %>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           </div>
         <% end %>
-
-        <% if flash[:notice] %>
-          <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-            <%= flash[:notice] %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        <% end %>
-
         <%= yield %>
       </div>
     </div>
