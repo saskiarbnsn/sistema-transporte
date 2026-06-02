@@ -55,35 +55,46 @@
           <span class="detail-label">Peso</span>
           <span class="detail-value"><%= @trip.weight ? "#{@trip.weight} Kg" : "—" %></span>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Tarifa ($/Kg)</span>
-          <span class="detail-value"><%= @trip.tariff || "—" %></span>
+        <div>
+          <span class="form-label d-block">Tarifa</span>
+          <div class="form-control"><%= @trip.tariff %> $/t</div>
         </div>
         <div class="detail-item">
           <span class="detail-label">Kilómetros</span>
           <span class="detail-value"><%= @trip.kilometres ? "#{@trip.kilometres} km" : "—" %></span>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Neto</span>
-          <span class="detail-value"><%= @trip.net ? number_to_currency(@trip.net, unit: "$", separator: ",", delimiter: ".") : "—" %></span>
+        <div>
+          <span class="form-label d-block">Neto</span>
+          <div class="form-control">$&thinsp;<%= number_with_delimiter(@trip.net.to_f.round(2)) %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Total con IVA (21%)</span>
-          <span class="detail-value" style="font-weight:600;color:#1a1a2e;"><%= @trip.importeiva ? number_to_currency(@trip.importeiva, unit: "$", separator: ",", delimiter: ".") : "—" %></span>
+        <div>
+          <span class="form-label d-block">Importe con IVA (21%)</span>
+          <div class="form-control" style="font-weight:700;color:#3b5bdb">
+            $&thinsp;<%= number_with_delimiter(@trip.importeiva.to_f.round(2)) %>
+          </div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Fecha de inicio</span>
-          <span class="detail-value"><%= @trip.date&.strftime("%d/%m/%Y") || "—" %></span>
+        <div>
+          <span class="form-label d-block">Fecha de inicio</span>
+          <div class="form-control"><%= @trip.date&.strftime("%d/%m/%Y") || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Fecha de finalización</span>
-          <span class="detail-value">
-            <% if @trip.date_end %>
+        <div>
+          <span class="form-label d-block">Fecha de finalización</span>
+          <div class="form-control d-flex align-items-center gap-2">
+            <% if @trip.date_end.present? && @trip.date_end > Date.today %>
               <%= @trip.date_end.strftime("%d/%m/%Y") %>
+              <span class="status-badge status-badge--warning ms-1">
+                <i class="bi bi-clock me-1"></i>En viaje hasta esa fecha
+              </span>
+            <% elsif @trip.date_end.present? %>
+              <span class="status-badge status-badge--ok">
+                <i class="bi bi-check-circle-fill me-1"></i><%= @trip.date_end.strftime("%d/%m/%Y") %>
+              </span>
             <% else %>
-              <span class="status-badge status-badge--warning">En viaje</span>
+              <span class="status-badge status-badge--warning">
+                <i class="bi bi-truck me-1"></i>En viaje
+              </span>
             <% end %>
-          </span>
+          </div>
         </div>
       </div>
 
@@ -161,7 +172,126 @@
         </div>
       <% end %>
 
+      <div class="mt-3">
+        <span class="form-label d-block mb-2">Documentación</span>
+        <div class="trip-docs-section__buttons">
+          <% if @trip.factura.attached? %>
+            <button type="button"
+                    class="upload-btn upload-btn--attached"
+                    data-bs-toggle="modal"
+                    data-bs-target="#docViewerModal"
+                    data-doc-url="<%= rails_blob_path(@trip.factura, disposition: 'inline') %>"
+                    data-doc-download-url="<%= rails_blob_path(@trip.factura, disposition: 'attachment') %>"
+                    data-doc-name="<%= @trip.factura.filename %>"
+                    data-doc-type="<%= @trip.factura.content_type %>">
+              <i class="bi bi-file-earmark-invoice"></i>
+              <span>Factura</span>
+            </button>
+          <% else %>
+            <button type="button" class="upload-btn" disabled style="opacity:0.4;cursor:not-allowed;">
+              <i class="bi bi-file-earmark-invoice"></i>
+              <span>Sin Factura</span>
+            </button>
+          <% end %>
+
+          <% if @trip.carta_de_porte.attached? %>
+            <button type="button"
+                    class="upload-btn upload-btn--attached"
+                    data-bs-toggle="modal"
+                    data-bs-target="#docViewerModal"
+                    data-doc-url="<%= rails_blob_path(@trip.carta_de_porte, disposition: 'inline') %>"
+                    data-doc-download-url="<%= rails_blob_path(@trip.carta_de_porte, disposition: 'attachment') %>"
+                    data-doc-name="<%= @trip.carta_de_porte.filename %>"
+                    data-doc-type="<%= @trip.carta_de_porte.content_type %>">
+              <i class="bi bi-file-earmark-text"></i>
+              <span>Carta de Porte</span>
+            </button>
+          <% else %>
+            <button type="button" class="upload-btn" disabled style="opacity:0.4;cursor:not-allowed;">
+              <i class="bi bi-file-earmark-text"></i>
+              <span>Sin Carta de Porte</span>
+            </button>
+          <% end %>
+        </div>
+      </div>
+      
     </div>
   </div>
 
 </div>
+
+<%# ── Modal visor de documentos ── %>
+<div class="modal fade" id="docViewerModal" tabindex="-1"
+     aria-labelledby="docViewerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px;overflow:hidden;">
+      <div class="modal-header" style="border-bottom:1px solid #eee;padding:1rem 1.25rem;">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-file-earmark-text" id="docViewerIcon" style="font-size:1.3rem;color:#3b5bdb;"></i>
+          <h5 class="modal-title mb-0" id="docViewerModalLabel" style="font-size:1rem;font-weight:600;"></h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="docViewerBody"
+           style="padding:0;min-height:520px;background:#f4f4f8;display:flex;align-items:center;justify-content:center;">
+        <div class="doc-viewer-loading">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #eee;padding:0.75rem 1.25rem;gap:0.5rem;">
+        <a id="docDownloadBtn" href="#"
+           class="btn-pill-primary" style="width:auto;padding:0.55rem 1.4rem;font-size:0.9rem;">
+          <i class="bi bi-download me-1"></i> Descargar
+        </a>
+        <button type="button" class="btn-pill-secondary"
+                data-bs-dismiss="modal" style="width:auto;padding:0.55rem 1.4rem;font-size:0.9rem;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const modal = document.getElementById('docViewerModal')
+  if (!modal) return
+
+  modal.addEventListener('show.bs.modal', function (event) {
+    const btn         = event.relatedTarget
+    const url         = btn.dataset.docUrl
+    const downloadUrl = btn.dataset.docDownloadUrl
+    const name        = btn.dataset.docName
+    const type        = btn.dataset.docType || ''
+
+    document.getElementById('docViewerModalLabel').textContent = name
+    document.getElementById('docDownloadBtn').href = downloadUrl
+
+    const icon = document.getElementById('docViewerIcon')
+    icon.className = type.startsWith('image/') ? 'bi bi-file-earmark-image' : 'bi bi-file-earmark-text'
+    icon.style.color = '#3b5bdb'
+
+    const body = document.getElementById('docViewerBody')
+    body.innerHTML = '<div class="doc-viewer-loading"><div class="spinner-border text-primary" role="status"></div></div>'
+
+    if (type.startsWith('image/')) {
+      const img = document.createElement('img')
+      img.src   = url
+      img.style.cssText = 'max-width:100%;max-height:75vh;display:block;border-radius:4px;'
+      img.onload  = () => { body.innerHTML = ''; body.style.padding = '1rem'; body.appendChild(img) }
+      img.onerror = () => { body.innerHTML = '<p style="color:#888;padding:2rem;">No se pudo cargar la imagen.</p>' }
+    } else {
+      const iframe = document.createElement('iframe')
+      iframe.src   = url
+      iframe.style.cssText = 'width:100%;height:72vh;border:0;display:block;'
+      setTimeout(() => { body.innerHTML = ''; body.appendChild(iframe) }, 120)
+    }
+  })
+
+  modal.addEventListener('hidden.bs.modal', function () {
+    const body = document.getElementById('docViewerBody')
+    body.innerHTML = '<div class="doc-viewer-loading"><div class="spinner-border text-primary" role="status"></div></div>'
+    body.style.padding = ''
+  })
+})()
+</script>

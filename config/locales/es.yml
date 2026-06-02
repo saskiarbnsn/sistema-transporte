@@ -1,6 +1,83 @@
 es:
   activerecord:
+    errors:
+      messages:
+        blank: no puede estar en blanco
+        taken: ya está en uso
+        invalid: no es válido
+        required: es obligatorio
+        too_short:
+          one: es demasiado corto (mínimo 1 carácter)
+          other: es demasiado corto (mínimo %{count} caracteres)
+        too_long:
+          one: es demasiado largo (máximo 1 carácter)
+          other: es demasiado largo (máximo %{count} caracteres)
+        not_a_number: debe ser un número
+        greater_than: debe ser mayor a %{count}
+        less_than: debe ser menor a %{count}
+        greater_than_or_equal_to: debe ser mayor o igual a %{count}
+        less_than_or_equal_to: debe ser menor o igual a %{count}
+        inclusion: no está incluido en la lista
+        exclusion: está reservado
+        empty: no puede estar vacío
+        present: debe estar en blanco
+    models:
+      customer:    { one: Cliente,    other: Clientes    }
+      driver:      { one: Chofer,     other: Choferes    }
+      truck:       { one: Camión,     other: Camiones    }
+      field:       { one: Campo,      other: Campos      }
+      destination: { one: Destino,    other: Destinos    }
+      trip:        { one: Viaje,      other: Viajes      }
+      user:        { one: Usuario,    other: Usuarios    }
     attributes:
+      customer:
+        cuit: CUIT
+        name: Propietario
+      driver:
+        name: Nombre completo
+        cuit: CUIT
+        phone_number: Teléfono
+        location: Domicilio
+        birth_date: Fecha de nacimiento
+        licencia_vencimiento: Vencimiento de licencia
+        aptofisico: Apto físico
+        apto_vencimiento: Vencimiento de apto físico
+      truck:
+        plate: Patente
+        brand: Marca
+        model: Modelo
+        fuel: Combustible
+        capacity: Capacidad
+        kilometres: Kilómetros totales
+        service_kilometres: Km desde servicio
+      field:
+        name: Nombre del campo
+        province: Provincia
+        customer_id: Cliente propietario
+        customer: Cliente propietario
+        latitude: Latitud
+        longitude: Longitud
+      destination:
+        cuit: CUIT
+        name: Nombre
+        location: Ubicación
+      trip:
+        field_id: Campo de origen
+        field: Campo de origen
+        customer_id: Cliente
+        customer: Cliente
+        destination_id: Destino
+        destination: Destino
+        driver_id: Chofer
+        driver: Chofer
+        truck_id: Camión
+        truck: Camión
+        weight: Peso (Kg)
+        product: Producto
+        date: Fecha de inicio
+        date_end: Fecha de finalización
+        kilometres: Kilómetros
+        tariff: Tarifa
       user:
         confirmation_sent_at: Confirmación enviada a
         confirmation_token: Código de confirmación
@@ -25,10 +102,6 @@ es:
         unconfirmed_email: Email no confirmado
         unlock_token: Código de desbloqueo
         updated_at: Actualizado en
-    models:
-      user:
-        one: Usuario
-        other: Usuarios
   devise:
     confirmations:
       confirmed: Tu cuenta ha sido confirmada satisfactoriamente.

@@ -1,36 +1,84 @@
-<%= form_with(model: driver) do |form| %>
+<%= form_with(model: driver, data: { controller: "driver-form" }) do |form| %>
   <% if driver.errors.any? %>
-    <div class="form-errors">
-      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
-      <div class="form-errors__body">
-        <p class="form-errors__title"><%= driver.errors.count == 1 ? "1 error" : "#{driver.errors.count} errores" %> impidieron guardar:</p>
-        <ul class="form-errors__list">
-          <% driver.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
-        </ul>
-      </div>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% driver.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
+
   <div class="ui-form-grid">
-    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control", inputmode: "numeric", placeholder: "20-12345678-9", oninput: "var d=this.value.replace(/[^0-9]/g,'').slice(0,11);this.value=d.length<=2?d:d.length<=10?d.slice(0,2)+'-'+d.slice(2):d.slice(0,2)+'-'+d.slice(2,10)+'-'+d.slice(10)" %></div>
-    <div><%= form.label :phone_number, "Teléfono", class: "form-label" %><%= form.text_field :phone_number, class: "form-control" %></div>
-    <div><%= form.label :name, "Nombre completo", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
-    <div><%= form.label :location, "Domicilio", class: "form-label" %><%= form.text_field :location, class: "form-control", data: { "field-map-target": "location" } %></div>
-    <div><%= form.label :birth_date, "Fecha de nacimiento", class: "form-label" %><%= form.date_field :birth_date, class: "form-control" %></div>
+    <div>
+      <%= form.label :cuit, "CUIT", class: "form-label" %>
+      <%= form.text_field :cuit, class: "form-control" %>
+    </div>
+
+    <div>
+      <%= form.label :phone_number, "Teléfono", class: "form-label" %>
+      <%= form.text_field :phone_number, class: "form-control" %>
+    </div>
+
+    <div class="ui-form-grid--span-2">
+      <%= form.label :name, "Nombre completo", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="ui-form-grid--span-2">
+      <%= form.label :location, "Domicilio", class: "form-label" %>
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"
+              style="border:1.5px solid #c8d0e7;border-right:none;border-radius:10px 0 0 10px">
+          <i class="bi bi-search text-muted"></i>
+        </span>
+        <%= form.text_field :location,
+              class: "form-control border-start-0",
+              placeholder: "Buscá la dirección con Google Maps...",
+              autocomplete: "off",
+              style: "border-radius:0 10px 10px 0;border:1.5px solid #c8d0e7;border-left:none",
+              data: { "field-map-target": "location search" } %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :birth_date, "Fecha de nacimiento", class: "form-label" %>
+      <%= form.date_field :birth_date, class: "form-control" %>
+    </div>
+
+    <div>
+      <%= form.label :licencia_vencimiento, "Venc. licencia", class: "form-label" %>
+      <%= form.date_field :licencia_vencimiento, class: "form-control" %>
+    </div>
+
     <div>
       <span class="form-label d-block">Apto Físico</span>
       <div class="ui-radio-group mt-1">
-        <label><%= form.radio_button :aptofisico, true %> Sí</label>
-        <label><%= form.radio_button :aptofisico, false %> No</label>
+        <label>
+          <%= form.radio_button :aptofisico, true,
+                data: { action: "change->driver-form#toggleApto" } %>
+          Sí
+        </label>
+        <label>
+          <%= form.radio_button :aptofisico, false,
+                data: { action: "change->driver-form#toggleApto" } %>
+          No
+        </label>
       </div>
     </div>
-    <div><%= form.label :licencia_vencimiento, "Venc. licencia", class: "form-label" %><%= form.date_field :licencia_vencimiento, class: "form-control" %></div>
-    <div><%= form.label :apto_vencimiento, "Venc. apto físico", class: "form-label" %><%= form.date_field :apto_vencimiento, class: "form-control" %></div>
+
+    <div data-driver-form-target="aptoWrap">
+      <%= form.label :apto_vencimiento, "Venc. apto físico", class: "form-label" %>
+      <%= form.date_field :apto_vencimiento, class: "form-control",
+            data: { "driver-form-target": "aptoVencimiento" } %>
+    </div>
   </div>
+
   <%= form.hidden_field :latitude,  data: { "field-map-target": "latitude" } %>
   <%= form.hidden_field :longitude, data: { "field-map-target": "longitude" } %>
 
   <div class="ui-form-actions">
-    <%= form.submit "Continuar", class: "btn-pill-primary" %>
+    <%= form.submit driver.new_record? ? "Guardar chofer" : "Actualizar chofer", class: "btn-pill-primary" %>
     <%= link_to "Cancelar", drivers_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

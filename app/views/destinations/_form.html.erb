@@ -1,23 +1,58 @@
 <%= form_with(model: destination) do |form| %>
   <% if destination.errors.any? %>
-    <div class="form-errors">
-      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
-      <div class="form-errors__body">
-        <p class="form-errors__title"><%= destination.errors.count == 1 ? "1 error" : "#{destination.errors.count} errores" %> impidieron guardar:</p>
-        <ul class="form-errors__list">
-          <% destination.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
-        </ul>
-      </div>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% destination.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
-  <div class="ui-form-grid ui-form-grid--single">
-    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control", inputmode: "numeric", placeholder: "20-12345678-9", oninput: "var d=this.value.replace(/[^0-9]/g,'').slice(0,11);this.value=d.length<=2?d:d.length<=10?d.slice(0,2)+'-'+d.slice(2):d.slice(0,2)+'-'+d.slice(2,10)+'-'+d.slice(10)" %></div>
-    <div><%= form.label :name, "Nombre", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
-    <div><%= form.label :location, "Ubicación", class: "form-label" %><%= form.text_field :location, class: "form-control", data: { "field-map-target": "location" } %></div>
+
+  <div class="ui-form-grid">
+    <div>
+      <%= form.label :cuit, "CUIT", class: "form-label" %>
+      <%= form.text_field :cuit, class: "form-control", placeholder: "Ej: 30-50001234-5" %>
+    </div>
+
+    <div>
+      <%= form.label :name, "Nombre", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Ej: Terminal Puerto Rosario" %>
+    </div>
+
+    <div class="ui-form-grid--span-2">
+      <%= form.label :location, "Ubicación", class: "form-label" %>
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0" style="border:1.5px solid #c8d0e7;border-right:none;border-radius:10px 0 0 10px">
+          <i class="bi bi-search text-muted"></i>
+        </span>
+        <%= form.text_field :location,
+              class: "form-control border-start-0",
+              placeholder: "Buscá la ubicación con Google Maps...",
+              autocomplete: "off",
+              style: "border-radius:0 10px 10px 0;border:1.5px solid #c8d0e7;border-left:none",
+              data: { "field-map-target": "location search" } %>
+      </div>
+      <small class="text-muted mt-1 d-block">
+        <i class="bi bi-info-circle me-1"></i>Escribí la dirección y seleccioná una sugerencia para ubicar en el mapa.
+      </small>
+    </div>
+
+    <div>
+      <%= form.label :latitude, "Latitud", class: "form-label" %>
+      <%= form.text_field :latitude, class: "form-control", placeholder: "Se completa automáticamente",
+            data: { "field-map-target": "latitude" } %>
+    </div>
+
+    <div>
+      <%= form.label :longitude, "Longitud", class: "form-label" %>
+      <%= form.text_field :longitude, class: "form-control", placeholder: "Se completa automáticamente",
+            data: { "field-map-target": "longitude" } %>
+    </div>
   </div>
 
-  <div class="ui-form-actions">
-    <%= form.submit "Continuar", class: "btn-pill-primary" %>
+  <div class="ui-form-actions mt-2">
+    <%= form.submit destination.new_record? ? "Guardar destino" : "Actualizar destino", class: "btn-pill-primary" %>
     <%= link_to "Cancelar", destinations_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

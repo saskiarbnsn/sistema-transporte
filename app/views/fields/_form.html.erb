@@ -1,55 +1,56 @@
 <%= form_with(model: field) do |form| %>
   <% if field.errors.any? %>
-    <div class="form-errors">
-      <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
-      <div class="form-errors__body">
-        <p class="form-errors__title"><%= field.errors.count == 1 ? "1 error" : "#{field.errors.count} errores" %> impidieron guardar:</p>
-        <ul class="form-errors__list">
-          <% field.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-        </ul>
-      </div>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% field.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 
   <div class="ui-form-grid">
-    <div>
+    <div class="ui-form-grid--span-2">
       <%= form.label :name, "Nombre del campo", class: "form-label" %>
-      <%= form.text_field :name, class: "form-control" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Ej: Establecimiento La Aurora" %>
     </div>
+
+    <div>
+      <%= form.label :customer_id, "Cliente propietario", class: "form-label" %>
+      <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+            { prompt: "Seleccionar cliente" }, class: "form-select" %>
+    </div>
+
     <div>
       <%= form.label :province, "Provincia", class: "form-label" %>
-      <%= form.select :province, [
-            "Buenos Aires", "Catamarca", "Chaco", "Chubut", "Córdoba",
-            "Corrientes", "Entre Ríos", "Formosa", "Jujuy", "La Pampa",
-            "La Rioja", "Mendoza", "Misiones", "Neuquén", "Río Negro",
-            "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
-            "Santiago del Estero", "Tierra del Fuego", "Tucumán",
-            "Ciudad Autónoma de Buenos Aires"
-          ], { prompt: "Seleccionar..." }, { class: "form-select" } %>
-    </div>
-    <div class="ui-form-grid--span-2">
-      <%= form.label :customer_id, "Cliente (propietario)", class: "form-label" %>
-      <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
-          { prompt: "Seleccionar..." }, { class: "form-select" } %>
-    </div>
-    <div>
-      <%= form.label :latitude, "Latitud", class: "form-label" %>
-      <%= form.text_field :latitude, class: "form-control",
-          inputmode: "decimal",
-          oninput: "this.value=this.value.replace(/[^0-9.,-]/g,'')",
-          data: { "field-map-target": "latitude" } %>
-    </div>
-    <div>
-      <%= form.label :longitude, "Longitud", class: "form-label" %>
-      <%= form.text_field :longitude, class: "form-control",
-          inputmode: "decimal",
-          oninput: "this.value=this.value.replace(/[^0-9.,-]/g,'')",
-          data: { "field-map-target": "longitude" } %>
+      <%= form.text_field :province, class: "form-control", placeholder: "Ej: Córdoba",
+            data: { "field-map-target": "location" } %>
     </div>
   </div>
 
-  <div class="ui-form-actions">
-    <%= form.submit field.persisted? ? "Guardar cambios" : "Confirmar", class: "btn-pill-primary" %>
-    <%= link_to "Cancelar", field.persisted? ? field_path(field) : fields_path, class: "btn-pill-secondary" %>
+  <div class="ui-form-grid ui-form-grid--single mt-1">
+    <div>
+      <label class="form-label">Coordenadas</label>
+      <div class="d-flex gap-2">
+        <div class="flex-fill">
+          <%= form.label :latitude, "Latitud", class: "form-label" %>
+          <%= form.text_field :latitude, class: "form-control", placeholder: "Ej: -34.0167",
+                data: { "field-map-target": "latitude" } %>
+        </div>
+        <div class="flex-fill">
+          <%= form.label :longitude, "Longitud", class: "form-label" %>
+          <%= form.text_field :longitude, class: "form-control", placeholder: "Ej: -63.9333",
+                data: { "field-map-target": "longitude" } %>
+        </div>
+      </div>
+      <small class="text-muted mt-1 d-block">
+        <i class="bi bi-info-circle me-1"></i>Hacé click en el mapa o buscá una dirección para ubicar el campo automáticamente.
+      </small>
+    </div>
+  </div>
+
+  <div class="ui-form-actions mt-3">
+    <%= form.submit field.new_record? ? "Guardar campo" : "Actualizar campo", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", fields_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

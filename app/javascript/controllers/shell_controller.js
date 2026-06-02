@@ -13,7 +13,21 @@ export default class extends Controller {
   }
 
   clearBadge() {
-    if (this.hasBadgeTarget) this.badgeTarget.remove()
+    if (!this.hasBadgeTarget) return
+
+    const digest = this.badgeTarget.dataset.digest
+    this.badgeTarget.remove()
+
+    if (!digest) return
+
+    fetch("/notifications/dismiss", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content ?? ""
+      },
+      body: JSON.stringify({ digest })
+    })
   }
 
   initTooltips() {
@@ -21,9 +35,8 @@ export default class extends Controller {
 
     const items = this.element.querySelectorAll('[data-bs-toggle="tooltip"]')
     this.tooltips = Array.from(items).map(el => {
-      const t = new bootstrap.Tooltip(el, { trigger: 'hover' })
-      // Disable if already expanded
-      if (this.element.classList.contains('is-expanded')) t.disable()
+      const t = new bootstrap.Tooltip(el, { trigger: "hover" })
+      if (this.element.classList.contains("is-expanded")) t.disable()
       return t
     })
   }

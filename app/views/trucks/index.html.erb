@@ -16,7 +16,7 @@
         <th>Patente</th>
         <th>Marca / Modelo</th>
         <th>Combustible</th>
-        <th>Capacidad</th>
+        <th>Capacidad (kg)</th>
         <th>Km totales</th>
         <th>Estado servicio</th>
         <th class="dash-table__actions"></th>
@@ -28,14 +28,14 @@
           <td><strong><%= truck.plate %></strong></td>
           <td><%= [truck.brand, truck.model].compact.join(" ") %></td>
           <td><%= truck.fuel %></td>
-          <td><%= "#{number_with_delimiter(truck.capacity.to_i)} toneladas" if truck.capacity %></td>
+          <td><%= number_with_delimiter(truck.capacity.to_i) if truck.capacity %></td>
           <td><%= "#{number_with_delimiter(truck.kilometres.to_i)} km" if truck.kilometres %></td>
           <td>
             <% svc = truck.service_kilometres.to_f %>
             <% if svc >= 20_000 %>
               <span class="status-badge status-badge--danger"><i class="bi bi-wrench me-1"></i>Servicio requerido</span>
             <% elsif svc >= 15_000 %>
-              <span class="status-badge status-badge--warning"><%= number_with_delimiter(svc.to_i) %> km</span>
+              <span class="status-badge status-badge--warning"><i class="bi bi-exclamation-triangle me-1"></i><%= number_with_delimiter(svc.to_i) %> km</span>
             <% else %>
               <span class="status-badge status-badge--ok"><%= number_with_delimiter(svc.to_i) %> km</span>
             <% end %>

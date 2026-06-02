@@ -19,5 +19,14 @@ application.register("trip-status", TripStatusController)
 import TripMapController from "./trip_map_controller"
 application.register("trip-map", TripMapController)
 
-import TripCalculatorController from "./trip_calculator_controller"
-application.register("trip-calculator", TripCalculatorController)
+import DriverFormController from "./driver_form_controller"
+application.register("driver-form", DriverFormController)
+
+import GastoFormController from "./gasto_form_controller"
+application.register("gasto-form", GastoFormController)
+
+import GastosChartController from "./gastos_chart_controller"
+application.register("gastos-chart", GastosChartController)
+
+import TripCalcController from "./trip_calc_controller"
+application.register("trip-calc", TripCalcController)

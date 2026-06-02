@@ -1,49 +1,59 @@
-<% svc = @truck.service_kilometres.to_f %>
-<% trips = Trip.where(truck_id: @truck.id).includes(:field, :destination, :driver).order(date: :desc).limit(50) %>
-
 <div class="form-page">
+
+  <%# ── Columna izquierda: datos del camión ── %>
   <div class="ui-form-card">
     <div class="ui-form-card__header">
       <div class="ui-form-card__badge"><i class="bi bi-truck-front-fill"></i></div>
-      <div>
-        <h1 class="ui-form-card__title"><%= @truck.plate %></h1>
-        <p style="margin:0;font-size:0.8rem;color:#888;"><%= [@truck.brand, @truck.model].compact.join(" ") %></p>
-      </div>
+      <h1 class="ui-form-card__title">Detalle del camión</h1>
     </div>
     <div class="ui-form-card__body">
 
-      <div class="detail-grid">
-        <div class="detail-item">
-          <span class="detail-label">Patente</span>
-          <span class="detail-value"><%= @truck.plate %></span>
+      <div class="ui-form-grid">
+        <div>
+          <span class="form-label d-block">Patente</span>
+          <div class="form-control"><%= @truck.plate %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Marca / Modelo</span>
-          <span class="detail-value"><%= [@truck.brand, @truck.model].compact.join(" ").presence || "—" %></span>
+        <div>
+          <span class="form-label d-block">Combustible</span>
+          <div class="form-control"><%= @truck.fuel.presence || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Combustible</span>
-          <span class="detail-value"><%= @truck.fuel.presence || "—" %></span>
+        <div>
+          <span class="form-label d-block">Marca</span>
+          <div class="form-control"><%= @truck.brand.presence || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Capacidad</span>
-          <span class="detail-value"><%= @truck.capacity ? "#{number_with_delimiter(@truck.capacity.to_i)} toneladas" : "—" %></span>
+        <div>
+          <span class="form-label d-block">Modelo</span>
+          <div class="form-control"><%= @truck.model.presence || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Kilómetros totales</span>
-          <span class="detail-value"><%= @truck.kilometres ? "#{number_with_delimiter(@truck.kilometres.to_i)} km" : "—" %></span>
+        <div>
+          <span class="form-label d-block">Capacidad</span>
+          <div class="form-control">
+            <%= @truck.capacity ? "#{number_with_delimiter(@truck.capacity.to_i)} kg" : "—" %>
+          </div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Km desde último servicio</span>
-          <span class="detail-value">
+        <div>
+          <span class="form-label d-block">Kilómetros totales</span>
+          <div class="form-control">
+            <%= @truck.kilometres ? "#{number_with_delimiter(@truck.kilometres.to_i)} km" : "—" %>
+          </div>
+        </div>
+        <div class="ui-form-grid--span-2">
+          <span class="form-label d-block">Km desde último servicio</span>
+          <% svc = @truck.service_kilometres.to_f %>
+          <div class="form-control d-flex align-items-center gap-2">
+            <%= number_with_delimiter(svc.to_i) %> km
             <% if svc >= 20_000 %>
-              <span class="status-badge status-badge--danger"><i class="bi bi-wrench me-1"></i><%= number_with_delimiter(svc.to_i) %> km</span>
+              <span class="status-badge status-badge--danger ms-2">
+                <i class="bi bi-wrench me-1"></i>Servicio requerido
+              </span>
             <% elsif svc >= 15_000 %>
-              <span class="status-badge status-badge--warning"><%= number_with_delimiter(svc.to_i) %> km</span>
+              <span class="status-badge status-badge--warning ms-2">
+                <i class="bi bi-exclamation-triangle me-1"></i>Próximo a servicio
+              </span>
             <% else %>
-              <span class="status-badge status-badge--ok"><%= number_with_delimiter(svc.to_i) %> km</span>
+              <span class="status-badge status-badge--ok ms-2">Al día</span>
             <% end %>
-          </span>
+          </div>
         </div>
       </div>
 
@@ -51,8 +61,11 @@
         <%= link_to "Editar", edit_truck_path(@truck), class: "btn-pill-primary" %>
         <%= link_to "Volver", trucks_path, class: "btn-pill-secondary" %>
       </div>
+
     </div>
   </div>
 
-  <%= render "trips/related_trips", trips: trips %>
+  <%# ── Columna derecha: viajes ── %>
+  <%= render "trips/panel", trips: @trips %>
+
 </div>

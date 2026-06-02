@@ -1,0 +1,77 @@
+<div class="dash-panel" data-controller="trip-status">
+  <div class="dash-panel__header">
+    <h2 class="dash-panel__title" style="font-size:.95rem">
+      <i class="bi bi-map-fill"></i>
+      Viajes
+      <span class="dash-count"><%= trips.size %></span>
+    </h2>
+    <%= link_to trips_path, class: "btn-pill-secondary",
+          style: "width:auto;padding:.4rem 1rem;font-size:.8rem" do %>
+      <i class="bi bi-list me-1"></i>Ver todos
+    <% end %>
+  </div>
+
+  <% if trips.any? %>
+    <table class="dash-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Producto</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% trips.each do |trip| %>
+          <tr class="dash-table__row"
+              onclick="window.location='<%= trip_path(trip) %>'"
+              style="cursor:pointer">
+            <td style="white-space:nowrap"><%= trip.date&.strftime("%d/%m/%Y") %></td>
+            <td><%= trip.field&.name || trip.customer&.name %></td>
+            <td><%= trip.destination&.name %></td>
+            <td><%= trip.product %></td>
+            <td onclick="event.stopPropagation()">
+              <%= render "trips/status_button", trip: trip %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="text-center py-4">
+      <i class="bi bi-map" style="font-size:1.75rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+      <span class="text-muted" style="font-size:.875rem">No hay viajes registrados.</span>
+    </div>
+  <% end %>
+
+  <%# Modal para finalizar viaje %>
+  <div class="modal fade" id="trip-finalize-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content" style="border-radius:16px;border:none">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-semibold">Fecha de finalización</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label" style="color:#3b5bdb;font-weight:500;font-size:.85rem">
+            Seleccioná la fecha de finalización
+          </label>
+          <input type="date"
+                 class="form-control"
+                 style="background:#f4f6fc;border:none;border-radius:10px"
+                 data-trip-status-target="dateInput">
+          <input type="hidden" data-trip-status-target="tripId">
+          <p class="text-danger mt-2 mb-0" style="font-size:.82rem;display:none"
+             data-trip-status-target="error">
+            Seleccioná una fecha antes de continuar.
+          </p>
+        </div>
+        <div class="modal-footer border-0 pt-0 flex-column gap-2">
+          <button type="button" class="btn-pill-primary" data-action="click->trip-status#confirm">Aceptar</button>
+          <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

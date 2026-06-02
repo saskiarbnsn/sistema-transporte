@@ -1,130 +1,111 @@
 <% fields_data       = Field.all.map       { |f| { id: f.id, latitude: f.latitude, longitude: f.longitude, name: f.name, province: f.province } } %>
 <% destinations_data = Destination.all.map { |d| { id: d.id, latitude: d.latitude, longitude: d.longitude, name: d.name, location: d.location } } %>
 
-<%= form_with model: @trip, html: { multipart: true } do |form| %>
-<div class="form-page"
-     data-controller="trip-map trip-calculator"
+<div data-controller="trip-map trip-calc"
      data-trip-map-api-key-value="<%= ENV['GOOGLE_MAPS_API_KEY'] %>"
      data-trip-map-fields-value="<%= fields_data.to_json %>"
      data-trip-map-destinations-value="<%= destinations_data.to_json %>">
 
-  <%# ── Columna izquierda: campos del formulario ── %>
-  <div class="ui-form-card">
-    <div class="ui-form-card__header">
-      <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
-      <h1 class="ui-form-card__title">Cargar viaje</h1>
-    </div>
-    <div class="ui-form-card__body">
+  <%= form_with model: @trip, multipart: true do |form| %>
+    <div class="form-page">
 
-      <% if @trip.errors.any? %>
-        <div class="form-errors">
-          <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
-          <div class="form-errors__body">
-            <p class="form-errors__title"><%= @trip.errors.count == 1 ? "1 error" : "#{@trip.errors.count} errores" %> impidieron guardar:</p>
-            <ul class="form-errors__list">
-              <% @trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
-            </ul>
-          </div>
+      <%# ── Columna izquierda: campos del formulario ── %>
+      <div class="ui-form-card">
+        <div class="ui-form-card__header">
+          <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
+          <h1 class="ui-form-card__title">Cargar viaje</h1>
         </div>
-      <% end %>
+        <div class="ui-form-card__body">
+         <% if @trip.errors.any? %>
+            <div class="form-errors">
+              <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+              <div class="form-errors__body">
+                <p class="form-errors__title"><%= @trip.errors.count == 1 ? "1 error" : "#{@trip.errors.count} errores" %> impidieron guardar:</p>
+                <ul class="form-errors__list">
+                  <% @trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
 
-      <div class="ui-form-grid">
-        <div>
-          <%= form.label :customer_id, "Cliente", class: "form-label" %>
-          <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
-              { prompt: "Seleccionar..." }, { class: "form-select" } %>
-        </div>
-        <div>
-          <%= form.label :field_id, "Origen", class: "form-label" %>
-          <%= form.collection_select :field_id, Field.order(:name), :id, :name,
-              { prompt: "Seleccionar..." },
-              { class: "form-select", data: { "trip-map-target": "fieldSelect", action: "change->trip-map#update" } } %>
-        </div>
-        <div>
-          <%= form.label :destination_id, "Destino", class: "form-label" %>
-          <%= form.collection_select :destination_id, Destination.order(:name), :id, :name,
-              { prompt: "Seleccionar..." },
-              { class: "form-select", data: { "trip-map-target": "destinationSelect", action: "change->trip-map#update" } } %>
-        </div>
-        <div>
-          <%= form.label :driver_id, "Chofer", class: "form-label" %>
-          <%= form.collection_select :driver_id, Driver.order(:name), :id, :name,
-              { prompt: "Seleccionar..." }, { class: "form-select" } %>
-        </div>
-        <div>
-          <%= form.label :truck_id, "Camión", class: "form-label" %>
-          <%= form.collection_select :truck_id, Truck.order(:plate), :id, :plate,
-              { prompt: "Seleccionar..." }, { class: "form-select" } %>
-        </div>
-        <div>
-          <%= form.label :weight, "Peso", class: "form-label" %>
-          <div class="ui-input-unit">
-            <%= form.number_field :weight, class: "form-control", step: "any", placeholder: "0",
-                data: { "trip-calculator-target": "weight", action: "input->trip-calculator#calculate" } %>
-            <span class="ui-input-unit__label">Kg</span>
+          <div class="ui-form-grid">
+            <div>
+              <%= form.label :customer_id, "Cliente", class: "form-label" %>
+              <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+                  { prompt: "Seleccionar..." }, { class: "form-select" } %>
+            </div>
+            <div>
+              <%= form.label :field_id, "Origen", class: "form-label" %>
+              <%= form.collection_select :field_id, Field.order(:name), :id, :name,
+                  { prompt: "Seleccionar..." },
+                  { class: "form-select", data: { "trip-map-target": "fieldSelect", action: "change->trip-map#update" } } %>
+            </div>
+            <div>
+              <%= form.label :destination_id, "Destino", class: "form-label" %>
+              <%= form.collection_select :destination_id, Destination.order(:name), :id, :name,
+                  { prompt: "Seleccionar..." },
+                  { class: "form-select", data: { "trip-map-target": "destinationSelect", action: "change->trip-map#update" } } %>
+            </div>
+            <div>
+              <%= form.label :driver_id, "Chofer", class: "form-label" %>
+              <%= form.collection_select :driver_id, Driver.order(:name), :id, :name,
+                  { prompt: "Seleccionar..." }, { class: "form-select" } %>
+            </div>
+            <div>
+              <%= form.label :truck_id, "Camión", class: "form-label" %>
+              <%= form.collection_select :truck_id, Truck.order(:plate), :id, :plate,
+                  { prompt: "Seleccionar..." }, { class: "form-select" } %>
+            </div>
+            <div>
+              <%= form.label :weight, "Peso", class: "form-label" %>
+              <div class="ui-input-unit">
+                <%= form.number_field :weight, class: "form-control", step: "any", placeholder: "0",
+                    data: { "trip-calculator-target": "weight", action: "input->trip-calculator#calculate" } %>
+                <span class="ui-input-unit__label">Kg</span>
+              </div>
+            </div>
+            <div class="ui-form-grid--span-2">
+              <%= form.label :product, "Producto", class: "form-label" %>
+              <%= form.text_field :product, class: "form-control" %>
+            </div>
+            <div>
+              <%= form.label :tariff, "Tarifa ($/Kg)", class: "form-label" %>
+              <%= form.number_field :tariff, class: "form-control", step: "any", placeholder: "0",
+                  data: { "trip-calculator-target": "tariff", action: "input->trip-calculator#calculate" } %>
+            </div>
+            <div>
+              <%= form.label :kilometres, "Kilómetros", class: "form-label" %>
+              <%= form.number_field :kilometres, class: "form-control", step: "any", placeholder: "0" %>
+            </div>
+            <%= form.hidden_field :net,        data: { "trip-calculator-target": "netInput" } %>
+            <%= form.hidden_field :importeiva, data: { "trip-calculator-target": "ivaInput" } %>
+            <div>
+              <%= form.label :date, "Fecha de inicio", class: "form-label" %>
+              <%= form.date_field :date, class: "form-control" %>
+            </div>
+            <div>
+              <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
+              <%= form.date_field :date_end, class: "form-control", min: @trip.date %>
+            </div>
           </div>
-        </div>
-        <div class="ui-form-grid--span-2">
-          <%= form.label :product, "Producto", class: "form-label" %>
-          <%= form.text_field :product, class: "form-control" %>
-        </div>
-        <div>
-          <%= form.label :tariff, "Tarifa ($/Kg)", class: "form-label" %>
-          <%= form.number_field :tariff, class: "form-control", step: "any", placeholder: "0",
-              data: { "trip-calculator-target": "tariff", action: "input->trip-calculator#calculate" } %>
-        </div>
-        <div>
-          <%= form.label :kilometres, "Kilómetros", class: "form-label" %>
-          <%= form.number_field :kilometres, class: "form-control", step: "any", placeholder: "0" %>
-        </div>
-        <%= form.hidden_field :net,        data: { "trip-calculator-target": "netInput" } %>
-        <%= form.hidden_field :importeiva, data: { "trip-calculator-target": "ivaInput" } %>
-        <div>
-          <%= form.label :date, "Fecha de inicio", class: "form-label" %>
-          <%= form.date_field :date, class: "form-control" %>
-        </div>
-        <div>
-          <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
-          <%= form.date_field :date_end, class: "form-control", min: @trip.date %>
         </div>
       </div>
 
-    </div>
-  </div>
+      <%# ── Columna derecha ── %>
+      <div style="display:flex;flex-direction:column;gap:1rem">
 
-  <%# ── Columna derecha: mapa + resumen + documentos + acciones ── %>
-  <div class="trip-sidebar">
-    <div style="height:calc(52px + 2.2rem);flex-shrink:0;"></div>
-
-    <%# Mapa %>
-    <div class="ui-form-card">
-      <div class="ui-form-card__body" style="padding:0.75rem;">
-        <iframe data-trip-map-target="frame" width="100%" height="260"
-                style="border:0;border-radius:10px;display:none;" loading="lazy"
-                allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="about:blank">
-        </iframe>
-        <div class="map-placeholder" data-trip-map-target="placeholder"
-             style="min-height:260px;border-radius:10px;flex-direction:column;gap:0.75rem;">
-          <i class="bi bi-map" style="font-size:3rem;"></i>
-          <p data-trip-map-target="placeholderMsg"
-             style="font-size:0.82rem;text-align:center;padding:0 1rem;margin:0;">
-            Seleccioná origen y destino para ver la ruta.
-          </p>
-          <a data-trip-map-target="mapsLink" href="#" target="_blank" rel="noopener noreferrer"
-             class="btn-pill-primary" style="display:none;width:auto;padding:0.5rem 1.25rem;font-size:0.85rem;">
-            <i class="bi bi-truck me-1"></i> Ver ruta en Google Maps
-          </a>
+        <%# Mapa %>
+        <div class="ui-form-card">
+          <div class="ui-form-card__header">
+            <div class="ui-form-card__badge"><i class="bi bi-truck"></i></div>
+            <h2 class="ui-form-card__title">Ruta del viaje</h2>
+          </div>
+          <div class="ui-form-card__body" style="padding:.75rem .75rem 1rem">
+            <%= render "trips/map_panel" %>
+          </div>
         </div>
-        <div data-trip-map-target="openLinkWrap" style="display:none;margin-top:0.5rem;">
-          <a data-trip-map-target="openLink" href="#" target="_blank" rel="noopener noreferrer"
-             class="btn-pill-secondary" style="font-size:0.85rem;padding:0.5rem;">
-            <i class="bi bi-box-arrow-up-right me-1"></i> Abrir en Google Maps
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <%# Resumen financiero %>
+        <%# Resumen financiero %>
     <div class="trip-summary-card">
       <div class="trip-summary-card__row">
         <span class="trip-summary-card__label">Neto <small style="color:#bbb;">(Tarifa × Kg)</small></span>
@@ -163,12 +144,12 @@
     </div>
 
     <%# Acciones %>
-    <div class="d-flex flex-column gap-2">
-      <%= form.submit "Continuar", class: "btn-pill-primary" %>
-      <%= link_to "Cancelar", trips_path, class: "btn-pill-secondary" %>
-    </div>
-
-  </div>
+    <div class="ui-form-actions">
+    <%= form.submit field.persisted? ? "Guardar cambios" : "Confirmar", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", field.persisted? ? field_path(field) : fields_path, class: "btn-pill-secondary" %>
+      </div><%# /right column %>
+    </div><%# /form-page %>
+  <% end %>
 
 </div>
 <% end %>

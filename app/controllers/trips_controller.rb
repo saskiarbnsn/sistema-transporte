@@ -51,8 +51,8 @@ class TripsController < ApplicationController
   def trip_params
     params.require(:trip).permit(
       :field_id, :customer_id, :destination_id, :driver_id, :truck_id,
-      :weight, :product, :date, :date_end, :kilometres, :tariff, :net, :importeiva, :estado,
-      :carta_de_porte, :factura
+      :weight, :product, :date, :date_end, :kilometres, :tariff, :estado,
+      :factura, :carta_de_porte
     )
   end
 end

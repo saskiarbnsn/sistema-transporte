@@ -15,15 +15,27 @@
           <i class="bi bi-truck"></i>
           <span>Sistema de Transporte</span>
         </div>
+
         <% if flash[:alert] %>
-          <div class="flash-alert flash-alert--error mb-3" role="alert">
-            <i class="bi bi-exclamation-circle-fill flash-alert__icon"></i>
-            <span class="flash-alert__text"><%= flash[:alert] %></span>
-            <button class="flash-alert__close" onclick="this.closest('.flash-alert').remove()" aria-label="Cerrar">
-              <i class="bi bi-x-lg"></i>
-            </button>
+          <div class="alert alert-danger alert-dismissible fade show mb-3 py-2" role="alert">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-exclamation-circle-fill flex-shrink-0"></i>
+              <%= flash[:alert] %>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           </div>
         <% end %>
+
+        <% if flash[:notice] %>
+          <div class="alert alert-success alert-dismissible fade show mb-3 py-2" role="alert">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-check-circle-fill flex-shrink-0"></i>
+              <%= flash[:notice] %>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% end %>
+
         <%= yield %>
       </div>
     </div>

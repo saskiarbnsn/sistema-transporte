@@ -3,11 +3,14 @@ class TrucksController < ApplicationController
 
   # GET /trucks or /trucks.json
   def index
-    @trucks = Truck.all
+    @trucks = Truck.order(:plate)
   end
 
   # GET /trucks/1 or /trucks/1.json
-  def show; end
+  def show
+    @trips = @truck.trips.includes(:field, :customer, :destination, :driver)
+                   .order(date: :desc).limit(50)
+  end
 
   # GET /trucks/new
   def new
@@ -23,7 +26,7 @@ class TrucksController < ApplicationController
 
     respond_to do |format|
       if @truck.save
-        format.html { redirect_to truck_url(@truck), notice: "El camión se registró correctamente." }
+        format.html { redirect_to truck_url(@truck), notice: "Camión registrado correctamente." }
         format.json { render :show, status: :created, location: @truck }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,7 +39,7 @@ class TrucksController < ApplicationController
   def update
     respond_to do |format|
       if @truck.update(truck_params)
-        format.html { redirect_to truck_url(@truck), notice: "El camión se actualizó correctamente." }
+        format.html { redirect_to truck_url(@truck), notice: "Camión actualizado correctamente." }
         format.json { render :show, status: :ok, location: @truck }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,7 +53,7 @@ class TrucksController < ApplicationController
     @truck.destroy
 
     respond_to do |format|
-      format.html { redirect_to trucks_url, notice: "El camión se eliminó correctamente." }
+      format.html { redirect_to trucks_url, notice: "Camión eliminado." }
       format.json { head :no_content }
     end
   end
@@ -64,6 +67,6 @@ class TrucksController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def truck_params
-    params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres)
+    params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres, :service_kilometres)
   end
 end

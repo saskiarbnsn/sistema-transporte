@@ -6,7 +6,7 @@
   <div class="ui-form-card">
     <div class="ui-form-card__header">
       <div class="ui-form-card__badge"><i class="bi bi-geo-alt-fill"></i></div>
-      <h1 class="ui-form-card__title">Nuevo campo</h1>
+      <h1 class="ui-form-card__title">Registrar nuevo campo</h1>
     </div>
     <div class="ui-form-card__body">
       <%= render "form", field: @field %>
@@ -14,8 +14,9 @@
   </div>
 
   <div class="map-panel">
-    <div class="map-canvas" style="height:480px" data-field-map-target="canvas"></div>
+    <input class="map-search" type="text" placeholder="Buscar dirección o localidad..."
+           data-field-map-target="search">
+    <div class="map-canvas" data-field-map-target="canvas"></div>
     <p class="map-status" data-field-map-target="status"></p>
   </div>
-
 </div>

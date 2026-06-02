@@ -1,7 +1,27 @@
 <div id="<%= dom_id driver %>">
-  <p><strong>Nombre:</strong> <%= driver.name %></p>
-  <p><strong>CUIT:</strong> <%= driver.cuit %></p>
-  <p><strong>Teléfono:</strong> <%= driver.phone_number %></p>
-  <p><strong>Domicilio:</strong> <%= driver.location %></p>
-  <p><strong>Fecha de nacimiento:</strong> <%= driver.birth_date&.strftime("%d/%m/%Y") %></p>
+  <p>
+    <strong>Name:</strong>
+    <%= driver.name %>
+  </p>
+
+  <p>
+    <strong>Birth date:</strong>
+    <%= driver.birth_date %>
+  </p>
+
+  <p>
+    <strong>Phone number:</strong>
+    <%= driver.phone_number %>
+  </p>
+
+  <p>
+    <strong>Domicilio:</strong>
+    <%= driver.location %>
+  </p>
+
+  <p>
+    <strong>Cuit:</strong>
+    <%= driver.cuit %>
+  </p>
+
 </div>

@@ -1,62 +1,101 @@
-<% trips = Trip.where(customer_id: @customer.id).includes(:field, :destination, :driver, :truck).order(date: :desc).limit(50) %>
-
 <div class="form-page">
-  <div class="ui-form-card">
-    <div class="ui-form-card__header">
-      <div class="ui-form-card__badge"><i class="bi bi-people-fill"></i></div>
-      <div>
-        <h1 class="ui-form-card__title"><%= @customer.name %></h1>
-        <p style="margin:0;font-size:0.8rem;color:#888;">CUIT <%= @customer.cuit %></p>
+
+  <%# ── Columna izquierda: datos + campos ── %>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+
+    <div class="ui-form-card">
+      <div class="ui-form-card__header">
+        <div class="ui-form-card__badge"><i class="bi bi-person-badge-fill"></i></div>
+        <h1 class="ui-form-card__title">Detalle del cliente</h1>
       </div>
-      <span class="dash-count ms-auto" style="font-size:0.8rem;padding:0 10px;height:26px;"><%= @customer.fields.count %> campos</span>
+      <div class="ui-form-card__body">
+        <div class="ui-form-grid">
+          <div>
+            <span class="form-label d-block">CUIT</span>
+            <div class="form-control"><%= @customer.cuit.presence || "—" %></div>
+          </div>
+          <div>
+            <span class="form-label d-block">Propietario / Razón social</span>
+            <div class="form-control"><%= @customer.name %></div>
+          </div>
+        </div>
+        <div class="ui-form-actions">
+          <%= link_to "Editar", edit_customer_path(@customer), class: "btn-pill-primary" %>
+          <%= link_to "Volver", customers_path, class: "btn-pill-secondary" %>
+        </div>
+      </div>
     </div>
-    <div class="ui-form-card__body">
 
-      <div class="detail-grid">
-        <div class="detail-item">
-          <span class="detail-label">Propietario</span>
-          <span class="detail-value"><%= @customer.name %></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">CUIT</span>
-          <span class="detail-value"><%= @customer.cuit %></span>
-        </div>
+    <div class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title" style="font-size:.95rem">
+          <i class="bi bi-geo-alt-fill"></i>
+          Campos
+          <span class="dash-count"><%= @fields.size %></span>
+        </h2>
+        <%= link_to new_field_path, class: "btn-pill-primary",
+              style: "width:auto;padding:.4rem 1rem;font-size:.8rem" do %>
+          <i class="bi bi-plus-lg me-1"></i> Nuevo campo
+        <% end %>
       </div>
 
-      <% if @customer.fields.any? %>
-        <p class="detail-label" style="margin-bottom:0.5rem;">Campos asociados</p>
-        <table class="dash-table" style="margin-bottom:1.25rem;">
+      <% if @fields.any? %>
+        <table class="dash-table">
           <thead>
             <tr>
               <th>Nombre</th>
               <th>Provincia</th>
-              <th>Coordenadas</th>
+              <th>Ubicación</th>
+              <th class="dash-table__actions"></th>
             </tr>
           </thead>
           <tbody>
-            <% @customer.fields.each do |field| %>
-              <tr class="dash-table__row" onclick="window.location='<%= field_path(field) %>'" style="cursor:pointer">
-                <td><%= field.name %></td>
-                <td><%= field.province %></td>
-                <td style="font-size:0.82rem;color:#666;">
+            <% @fields.each do |field| %>
+              <tr class="dash-table__row"
+                  onclick="window.location='<%= field_path(field) %>'"
+                  style="cursor:pointer">
+                <td><strong><%= field.name %></strong></td>
+                <td><%= field.province.presence || "—" %></td>
+                <td>
                   <% if field.latitude && field.longitude %>
-                    <%= field.latitude %>, <%= field.longitude %>
+                    <span class="status-badge status-badge--ok">
+                      <i class="bi bi-pin-map-fill me-1"></i>Ubicado
+                    </span>
                   <% else %>
-                    <span style="color:#ccc;">—</span>
+                    <span class="status-badge status-badge--neutral">Sin ubicación</span>
                   <% end %>
+                </td>
+                <td class="dash-table__actions">
+                  <div class="d-flex gap-1 justify-content-end">
+                    <%= link_to edit_field_path(field),
+                          class: "dash-action dash-action--edit", title: "Editar",
+                          onclick: "event.stopPropagation()" do %>
+                      <i class="bi bi-pencil-fill"></i>
+                    <% end %>
+                    <%= button_to field_path(field), method: :delete,
+                          class: "dash-action dash-action--delete", title: "Eliminar",
+                          form: { data: { turbo_confirm: "¿Eliminar este campo?" },
+                                  style: "display:inline-flex" },
+                          onclick: "event.stopPropagation()" do %>
+                      <i class="bi bi-trash-fill"></i>
+                    <% end %>
+                  </div>
                 </td>
               </tr>
             <% end %>
           </tbody>
         </table>
+      <% else %>
+        <div class="text-center py-4">
+          <i class="bi bi-geo-alt" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+          <span class="text-muted" style="font-size:.875rem">Este cliente no tiene campos registrados.</span>
+        </div>
       <% end %>
-
-      <div class="ui-form-actions">
-        <%= link_to "Editar", edit_customer_path(@customer), class: "btn-pill-primary" %>
-        <%= link_to "Volver", customers_path, class: "btn-pill-secondary" %>
-      </div>
     </div>
+
   </div>
 
-  <%= render "trips/related_trips", trips: trips %>
+  <%# ── Columna derecha: viajes ── %>
+  <%= render "trips/panel", trips: @trips %>
+
 </div>

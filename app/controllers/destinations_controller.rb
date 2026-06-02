@@ -3,7 +3,7 @@ class DestinationsController < ApplicationController
 
   # GET /destinations or /destinations.json
   def index
-    @destinations = Destination.all
+    @destinations = Destination.order(:name)
   end
 
   # GET /destinations/1 or /destinations/1.json
@@ -25,7 +25,7 @@ class DestinationsController < ApplicationController
 
     respond_to do |format|
       if @destination.save
-        format.html { redirect_to destination_url(@destination), notice: "El destino se registró correctamente." }
+        format.html { redirect_to destination_url(@destination), notice: "Destino guardado correctamente." }
         format.json { render :show, status: :created, location: @destination }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class DestinationsController < ApplicationController
   def update
     respond_to do |format|
       if @destination.update(destination_params)
-        format.html { redirect_to destination_url(@destination), notice: "El destino se actualizó correctamente." }
+        format.html { redirect_to destination_url(@destination), notice: "Destino actualizado correctamente." }
         format.json { render :show, status: :ok, location: @destination }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class DestinationsController < ApplicationController
     @destination.destroy
 
     respond_to do |format|
-      format.html { redirect_to destinations_url, notice: "El destino se eliminó correctamente." }
+      format.html { redirect_to destinations_url, notice: "Destino eliminado." }
       format.json { head :no_content }
     end
   end

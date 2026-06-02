@@ -1,11 +1,8 @@
 <% if resource.errors.any? %>
-  <div class="form-errors">
-    <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
-    <div class="form-errors__body">
-      <p class="form-errors__title">
-        <%= resource.errors.count == 1 ? "1 error" : "#{resource.errors.count} errores" %> impidieron continuar:
-      </p>
-      <ul class="form-errors__list">
+  <div class="alert alert-danger py-2 mb-3" role="alert">
+    <div class="d-flex align-items-start gap-2">
+      <i class="bi bi-exclamation-circle-fill mt-1 flex-shrink-0"></i>
+      <ul class="mb-0 ps-0 list-unstyled">
         <% resource.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
