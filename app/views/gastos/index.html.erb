@@ -1,0 +1,178 @@
+<%# ── Filtro de período ──────────────────────────────────────── %>
+<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+  <h1 style="font-size:1.15rem;font-weight:700;color:#1a1a2e;margin:0">
+    <i class="bi bi-bar-chart-fill me-2" style="color:#3b5bdb"></i>Análisis de Rentabilidad
+  </h1>
+  <div class="d-flex gap-2 align-items-center">
+    <%= form_with url: gastos_path, method: :get, local: true, class: "d-flex gap-2" do |f| %>
+      <%= f.select :month,
+            (1..12).map { |m| [Date::MONTHNAMES[m], m] },
+            { selected: @month },
+            class: "form-select form-select-sm", style: "width:130px" %>
+      <%= f.select :year,
+            (Date.today.year - 3..Date.today.year).map { |y| [y, y] }.reverse,
+            { selected: @year },
+            class: "form-select form-select-sm", style: "width:90px" %>
+      <%= f.submit "Filtrar", class: "btn btn-sm btn-primary" %>
+    <% end %>
+    <%= link_to new_gasto_path, class: "btn-pill-primary",
+          style: "width:auto;padding:.4rem 1.1rem;font-size:.85rem" do %>
+      <i class="bi bi-plus-lg me-1"></i>Nuevo gasto
+    <% end %>
+  </div>
+</div>
+
+<%# ── Tarjetas de resumen ─────────────────────────────────── %>
+<div class="stats-grid mb-3">
+  <div class="stat-card">
+    <div class="stat-card__icon stat-card__icon--blue"><i class="bi bi-arrow-up-circle-fill"></i></div>
+    <div>
+      <div class="stat-card__label">Ingresos del período</div>
+      <div class="stat-card__value">$&thinsp;<%= number_with_delimiter(@total_ingresos.round(0).to_i) %></div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__icon stat-card__icon--red"><i class="bi bi-arrow-down-circle-fill"></i></div>
+    <div>
+      <div class="stat-card__label">Gastos del período</div>
+      <div class="stat-card__value">$&thinsp;<%= number_with_delimiter(@total_gastos.round(0).to_i) %></div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__icon <%= @resultado >= 0 ? 'stat-card__icon--green' : 'stat-card__icon--red' %>">
+      <i class="bi bi-<%= @resultado >= 0 ? 'graph-up-arrow' : 'graph-down-arrow' %>"></i>
+    </div>
+    <div>
+      <div class="stat-card__label">Resultado neto</div>
+      <div class="stat-card__value <%= @resultado >= 0 ? 'text-success' : 'text-danger' %>">
+        $&thinsp;<%= number_with_delimiter(@resultado.round(0).to_i) %>
+      </div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__icon <%= @margen >= 0 ? 'stat-card__icon--green' : 'stat-card__icon--red' %>">
+      <i class="bi bi-percent"></i>
+    </div>
+    <div>
+      <div class="stat-card__label">Margen de rentabilidad</div>
+      <div class="stat-card__value <%= @margen >= 0 ? 'text-success' : 'text-danger' %>">
+        <%= @margen %>%
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── Gráfico + Categorías ───────────────────────────────── %>
+<div class="dashboard-panels mb-3">
+
+  <%# Evolución 12 meses %>
+  <div class="dash-panel">
+    <div class="dash-panel__header">
+      <h2 class="dash-panel__title"><i class="bi bi-bar-chart"></i>Evolución mensual</h2>
+    </div>
+    <div style="height:260px;padding:.5rem"
+         data-controller="gastos-chart"
+         data-gastos-chart-labels-value="<%= @chart_labels.to_json %>"
+         data-gastos-chart-ingresos-value="<%= @chart_ingresos.to_json %>"
+         data-gastos-chart-gastos-value="<%= @chart_gastos.to_json %>">
+      <canvas style="width:100%;height:100%"></canvas>
+    </div>
+  </div>
+
+  <%# Por categoría %>
+  <div class="dash-panel">
+    <div class="dash-panel__header">
+      <h2 class="dash-panel__title"><i class="bi bi-pie-chart"></i>Por categoría</h2>
+    </div>
+    <% if @por_categoria.any? %>
+      <div style="padding:.25rem 0">
+        <% @por_categoria.each do |cat, monto| %>
+          <% pct = @total_gastos > 0 ? (monto / @total_gastos * 100).round(1) : 0 %>
+          <div class="mb-3 px-1">
+            <div class="d-flex justify-content-between mb-1" style="font-size:.83rem">
+              <span style="font-weight:600;color:#333"><%= cat %></span>
+              <span style="color:#666">$<%= number_with_delimiter(monto.round(0).to_i) %> &middot; <%= pct %>%</span>
+            </div>
+            <div class="progress" style="height:7px;border-radius:10px">
+              <div class="progress-bar" style="width:<%= pct %>%;background:#3b5bdb;border-radius:10px"></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-4 text-muted" style="font-size:.875rem">Sin gastos en el período.</div>
+    <% end %>
+  </div>
+
+</div>
+
+<%# ── Tabla de gastos del período ────────────────────────── %>
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <h2 class="dash-panel__title">
+      <i class="bi bi-receipt"></i>
+      Gastos registrados
+      <span class="dash-count"><%= @gastos.size %></span>
+    </h2>
+  </div>
+
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Categoría</th>
+        <th>Proveedor</th>
+        <th>Descripción</th>
+        <th>Camión</th>
+        <th>Chofer</th>
+        <th class="text-end">Total</th>
+        <th class="dash-table__actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @gastos.each do |g| %>
+        <tr class="dash-table__row"
+            onclick="window.location='<%= gasto_path(g) %>'"
+            style="cursor:pointer">
+          <td style="white-space:nowrap"><%= g.date&.strftime("%d/%m/%Y") %></td>
+          <td>
+            <span class="status-badge status-badge--neutral"><%= g.imputation&.imputation %></span>
+          </td>
+          <td><%= g.supplier.presence || "—" %></td>
+          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            <%= g.description.presence || "—" %>
+          </td>
+          <td><%= g.truck&.plate || "—" %></td>
+          <td><%= g.driver&.name&.split(" ")&.first || "—" %></td>
+          <td class="text-end"><strong>$<%= number_with_delimiter(g.total.to_i) %></strong></td>
+          <td class="dash-table__actions">
+            <div class="d-flex gap-1 justify-content-end">
+              <%= link_to edit_gasto_path(g),
+                    class: "dash-action dash-action--edit",
+                    title: "Editar",
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-pencil-fill"></i>
+              <% end %>
+              <%= button_to gasto_path(g), method: :delete,
+                    class: "dash-action dash-action--delete",
+                    title: "Eliminar",
+                    form: { data: { turbo_confirm: "¿Eliminar este gasto?" },
+                            style: "display:inline-flex" },
+                    onclick: "event.stopPropagation()" do %>
+                <i class="bi bi-trash-fill"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+      <% if @gastos.empty? %>
+        <tr>
+          <td colspan="8" class="text-center py-4">
+            <i class="bi bi-receipt" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+            <span class="text-muted" style="font-size:.875rem">No hay gastos registrados en este período.</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

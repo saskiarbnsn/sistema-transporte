@@ -1,13 +1,28 @@
 <%= form_with(model: customer) do |form| %>
   <% if customer.errors.any? %>
-    <div class="alert alert-danger mb-3"><ul class="mb-0 ps-3"><% customer.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% customer.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
-  <div class="ui-form-grid ui-form-grid--single">
-    <div><%= form.label :cuit, "CUIT", class: "form-label" %><%= form.text_field :cuit, class: "form-control" %></div>
-    <div><%= form.label :name, "Propietario", class: "form-label" %><%= form.text_field :name, class: "form-control" %></div>
+
+  <div class="ui-form-grid">
+    <div>
+      <%= form.label :cuit, "CUIT", class: "form-label" %>
+      <%= form.text_field :cuit, class: "form-control", placeholder: "Ej: 20-23456789-1" %>
+    </div>
+
+    <div>
+      <%= form.label :name, "Propietario / Razón social", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Ej: Mariano Fernández" %>
+    </div>
   </div>
-  <div class="ui-form-actions">
-    <%= form.submit "Continuar", class: "btn-pill-primary" %>
+
+  <div class="ui-form-actions mt-2">
+    <%= form.submit customer.new_record? ? "Guardar cliente" : "Actualizar cliente", class: "btn-pill-primary" %>
     <%= link_to "Cancelar", customers_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

@@ -1,10 +1,101 @@
-<p style="color: green"><%= notice %></p>
+<div class="form-page">
 
-<%= render @customer %>
+  <%# ── Columna izquierda: datos + campos ── %>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
 
-<div>
-  <%= link_to "Edit this customer", edit_customer_path(@customer) %> |
-  <%= link_to "Back to customers", customers_path %>
+    <div class="ui-form-card">
+      <div class="ui-form-card__header">
+        <div class="ui-form-card__badge"><i class="bi bi-person-badge-fill"></i></div>
+        <h1 class="ui-form-card__title">Detalle del cliente</h1>
+      </div>
+      <div class="ui-form-card__body">
+        <div class="ui-form-grid">
+          <div>
+            <span class="form-label d-block">CUIT</span>
+            <div class="form-control"><%= @customer.cuit.presence || "—" %></div>
+          </div>
+          <div>
+            <span class="form-label d-block">Propietario / Razón social</span>
+            <div class="form-control"><%= @customer.name %></div>
+          </div>
+        </div>
+        <div class="ui-form-actions">
+          <%= link_to "Editar", edit_customer_path(@customer), class: "btn-pill-primary" %>
+          <%= link_to "Volver", customers_path, class: "btn-pill-secondary" %>
+        </div>
+      </div>
+    </div>
 
-  <%= button_to "Destroy this customer", @customer, method: :delete %>
+    <div class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title" style="font-size:.95rem">
+          <i class="bi bi-geo-alt-fill"></i>
+          Campos
+          <span class="dash-count"><%= @fields.size %></span>
+        </h2>
+        <%= link_to new_field_path, class: "btn-pill-primary",
+              style: "width:auto;padding:.4rem 1rem;font-size:.8rem" do %>
+          <i class="bi bi-plus-lg me-1"></i> Nuevo campo
+        <% end %>
+      </div>
+
+      <% if @fields.any? %>
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Provincia</th>
+              <th>Ubicación</th>
+              <th class="dash-table__actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @fields.each do |field| %>
+              <tr class="dash-table__row"
+                  onclick="window.location='<%= field_path(field) %>'"
+                  style="cursor:pointer">
+                <td><strong><%= field.name %></strong></td>
+                <td><%= field.province.presence || "—" %></td>
+                <td>
+                  <% if field.latitude && field.longitude %>
+                    <span class="status-badge status-badge--ok">
+                      <i class="bi bi-pin-map-fill me-1"></i>Ubicado
+                    </span>
+                  <% else %>
+                    <span class="status-badge status-badge--neutral">Sin ubicación</span>
+                  <% end %>
+                </td>
+                <td class="dash-table__actions">
+                  <div class="d-flex gap-1 justify-content-end">
+                    <%= link_to edit_field_path(field),
+                          class: "dash-action dash-action--edit", title: "Editar",
+                          onclick: "event.stopPropagation()" do %>
+                      <i class="bi bi-pencil-fill"></i>
+                    <% end %>
+                    <%= button_to field_path(field), method: :delete,
+                          class: "dash-action dash-action--delete", title: "Eliminar",
+                          form: { data: { turbo_confirm: "¿Eliminar este campo?" },
+                                  style: "display:inline-flex" },
+                          onclick: "event.stopPropagation()" do %>
+                      <i class="bi bi-trash-fill"></i>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="text-center py-4">
+          <i class="bi bi-geo-alt" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
+          <span class="text-muted" style="font-size:.875rem">Este cliente no tiene campos registrados.</span>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+
+  <%# ── Columna derecha: viajes ── %>
+  <%= render "trips/panel", trips: @trips %>
+
 </div>

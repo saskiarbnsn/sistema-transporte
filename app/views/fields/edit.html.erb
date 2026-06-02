@@ -1,10 +1,22 @@
-<h1>Editing field</h1>
+<div class="form-page"
+     data-controller="field-map"
+     data-field-map-api-key-value="<%= google_maps_api_key %>"
+     data-field-map-readonly-value="false">
 
-<%= render "form", field: @field %>
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-geo-alt-fill"></i></div>
+      <h1 class="ui-form-card__title">Editar campo</h1>
+    </div>
+    <div class="ui-form-card__body">
+      <%= render "form", field: @field %>
+    </div>
+  </div>
 
-<br>
-
-<div>
-  <%= link_to "Show this field", @field %> |
-  <%= link_to "Back to fields", fields_path %>
+  <div class="map-panel">
+    <input class="map-search" type="text" placeholder="Buscar dirección o localidad..."
+           data-field-map-target="search">
+    <div class="map-canvas" data-field-map-target="canvas"></div>
+    <p class="map-status" data-field-map-target="status"></p>
+  </div>
 </div>

@@ -1,10 +1,71 @@
-<p style="color: green"><%= notice %></p>
+<div class="form-page">
 
-<%= render @truck %>
+  <%# ── Columna izquierda: datos del camión ── %>
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-truck-front-fill"></i></div>
+      <h1 class="ui-form-card__title">Detalle del camión</h1>
+    </div>
+    <div class="ui-form-card__body">
 
-<div>
-  <%= link_to "Edit this truck", edit_truck_path(@truck) %> |
-  <%= link_to "Back to trucks", trucks_path %>
+      <div class="ui-form-grid">
+        <div>
+          <span class="form-label d-block">Patente</span>
+          <div class="form-control"><%= @truck.plate %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Combustible</span>
+          <div class="form-control"><%= @truck.fuel.presence || "—" %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Marca</span>
+          <div class="form-control"><%= @truck.brand.presence || "—" %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Modelo</span>
+          <div class="form-control"><%= @truck.model.presence || "—" %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Capacidad</span>
+          <div class="form-control">
+            <%= @truck.capacity ? "#{number_with_delimiter(@truck.capacity.to_i)} kg" : "—" %>
+          </div>
+        </div>
+        <div>
+          <span class="form-label d-block">Kilómetros totales</span>
+          <div class="form-control">
+            <%= @truck.kilometres ? "#{number_with_delimiter(@truck.kilometres.to_i)} km" : "—" %>
+          </div>
+        </div>
+        <div class="ui-form-grid--span-2">
+          <span class="form-label d-block">Km desde último servicio</span>
+          <% svc = @truck.service_kilometres.to_f %>
+          <div class="form-control d-flex align-items-center gap-2">
+            <%= number_with_delimiter(svc.to_i) %> km
+            <% if svc >= 20_000 %>
+              <span class="status-badge status-badge--danger ms-2">
+                <i class="bi bi-wrench me-1"></i>Servicio requerido
+              </span>
+            <% elsif svc >= 15_000 %>
+              <span class="status-badge status-badge--warning ms-2">
+                <i class="bi bi-exclamation-triangle me-1"></i>Próximo a servicio
+              </span>
+            <% else %>
+              <span class="status-badge status-badge--ok ms-2">Al día</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-  <%= button_to "Destroy this truck", @truck, method: :delete %>
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_truck_path(@truck), class: "btn-pill-primary" %>
+        <%= link_to "Volver", trucks_path, class: "btn-pill-secondary" %>
+      </div>
+
+    </div>
+  </div>
+
+  <%# ── Columna derecha: viajes ── %>
+  <%= render "trips/panel", trips: @trips %>
+
 </div>

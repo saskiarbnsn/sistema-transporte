@@ -53,11 +53,19 @@
     <div class="app-sidebar__divider"></div>
 
     <%= link_to trips_path,
-        class: "app-sidebar__item #{'is-active' if controller_name == 'trips' && action_name == 'index'}",
+        class: "app-sidebar__item #{'is-active' if controller_name == 'trips'}",
         data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Historial" } do %>
       <i class="bi bi-clock-history"></i>
       <span class="app-sidebar__label">Historial</span>
     <% end %>
+
+    <%= link_to gastos_path,
+        class: "app-sidebar__item #{'is-active' if controller_name == 'gastos'}",
+        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Gastos" } do %>
+      <i class="bi bi-bar-chart-line-fill"></i>
+      <span class="app-sidebar__label">Gastos</span>
+    <% end %>
+
   </nav>
 
   <div class="app-sidebar__footer">

@@ -630,6 +630,85 @@ body { background: $surface; margin: 0; }
 }
 
 // ── Auth / Login ───────────────────────────────────────────────
+// ── File upload button ─────────────────────────────────────────
+.file-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .65rem 1rem;
+  border-radius: 12px;
+  background: $accent-light;
+  color: $accent;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid rgba($accent, .2);
+  transition: background .15s, border-color .15s;
+  text-align: center;
+  &:hover { background: darken(#e8edff, 4%); border-color: rgba($accent, .4); }
+  &--chosen { background: #d3f9d8; color: #2b6d31; border-color: #a9e9b0; }
+}
+
+// ── Trip calc panel ────────────────────────────────────────────
+.trip-calc-panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  border: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+
+.trip-calc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .9rem;
+}
+
+.trip-calc-row__label { color: #666; font-weight: 500; }
+.trip-calc-row__value { font-weight: 700; color: #1a1a2e; font-size: 1rem; }
+.trip-calc-row--total .trip-calc-row__value { font-size: 1.15rem; color: $accent; }
+
+// ── Stats grid (gastos/rentabilidad) ──────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  border: 1px solid $border;
+}
+
+.stat-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  &--blue  { background: #e8edff; color: $accent; }
+  &--red   { background: #ffe0e0; color: #c92a2a; }
+  &--green { background: #d3f9d8; color: #2b6d31; }
+}
+
+.stat-card__label { font-size: .78rem; color: #888; font-weight: 500; margin-bottom: .2rem; }
+.stat-card__value { font-size: 1.35rem; font-weight: 700; color: #1a1a2e; line-height: 1; }
+
+// ── Auth / Login ───────────────────────────────────────────────
 .auth-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -638,7 +717,7 @@ body { background: $surface; margin: 0; }
   justify-content: center;
 }
 
-.auth-wrapper { width: 100%; max-width: 420px; padding: 1.5rem; }
+.auth-wrapper { width: 100%; max-width: 480px; padding: 1.5rem; }
 
 .auth-card {
   background: #fff;

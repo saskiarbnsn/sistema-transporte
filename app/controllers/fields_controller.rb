@@ -3,7 +3,7 @@ class FieldsController < ApplicationController
 
   # GET /fields or /fields.json
   def index
-    @fields = Field.all
+    @fields = Field.includes(:customer).order(:name)
   end
 
   # GET /fields/1 or /fields/1.json
@@ -23,7 +23,7 @@ class FieldsController < ApplicationController
 
     respond_to do |format|
       if @field.save
-        format.html { redirect_to field_url(@field), notice: "Field was successfully created." }
+        format.html { redirect_to field_url(@field), notice: "Campo guardado correctamente." }
         format.json { render :show, status: :created, location: @field }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,7 +36,7 @@ class FieldsController < ApplicationController
   def update
     respond_to do |format|
       if @field.update(field_params)
-        format.html { redirect_to field_url(@field), notice: "Field was successfully updated." }
+        format.html { redirect_to field_url(@field), notice: "Campo actualizado correctamente." }
         format.json { render :show, status: :ok, location: @field }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,7 +50,7 @@ class FieldsController < ApplicationController
     @field.destroy
 
     respond_to do |format|
-      format.html { redirect_to fields_url, notice: "Field was successfully destroyed." }
+      format.html { redirect_to fields_url, notice: "Campo eliminado." }
       format.json { head :no_content }
     end
   end

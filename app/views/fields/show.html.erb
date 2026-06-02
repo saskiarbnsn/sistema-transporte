@@ -1,10 +1,54 @@
-<p style="color: green"><%= notice %></p>
+<div class="form-page"
+     data-controller="field-map"
+     data-field-map-api-key-value="<%= google_maps_api_key %>"
+     data-field-map-readonly-value="true">
 
-<%= render @field %>
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-geo-alt-fill"></i></div>
+      <h1 class="ui-form-card__title">Detalle del campo</h1>
+    </div>
+    <div class="ui-form-card__body">
 
-<div>
-  <%= link_to "Edit this field", edit_field_path(@field) %> |
-  <%= link_to "Back to fields", fields_path %>
+      <div class="ui-form-grid">
+        <div class="ui-form-grid--span-2">
+          <span class="form-label d-block">Nombre del campo</span>
+          <div class="form-control"><%= @field.name %></div>
+        </div>
 
-  <%= button_to "Destroy this field", @field, method: :delete %>
+        <div>
+          <span class="form-label d-block">Cliente propietario</span>
+          <div class="form-control"><%= @field.customer&.name || "—" %></div>
+        </div>
+
+        <div>
+          <span class="form-label d-block">Provincia</span>
+          <div class="form-control"><%= @field.province.presence || "—" %></div>
+        </div>
+
+        <div>
+          <span class="form-label d-block">Latitud</span>
+          <div class="form-control"><%= @field.latitude || "—" %></div>
+        </div>
+
+        <div>
+          <span class="form-label d-block">Longitud</span>
+          <div class="form-control"><%= @field.longitude || "—" %></div>
+        </div>
+      </div>
+
+      <%= hidden_field_tag :latitude,  @field.latitude,  data: { "field-map-target": "latitude" } %>
+      <%= hidden_field_tag :longitude, @field.longitude, data: { "field-map-target": "longitude" } %>
+
+      <div class="ui-form-actions">
+        <%= link_to "Editar", edit_field_path(@field), class: "btn-pill-primary" %>
+        <%= link_to "Volver", fields_path, class: "btn-pill-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-panel">
+    <div class="map-canvas" data-field-map-target="canvas"></div>
+    <p class="map-status" data-field-map-target="status"></p>
+  </div>
 </div>

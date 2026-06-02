@@ -1,32 +1,56 @@
 <%= form_with(model: field) do |form| %>
   <% if field.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(field.errors.count, "error") %> prohibited this field from being saved:</h2>
-
-      <ul>
-        <% field.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0 ps-3">
+        <% field.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="ui-form-grid">
+    <div class="ui-form-grid--span-2">
+      <%= form.label :name, "Nombre del campo", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Ej: Establecimiento La Aurora" %>
+    </div>
+
+    <div>
+      <%= form.label :customer_id, "Cliente propietario", class: "form-label" %>
+      <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+            { prompt: "Seleccionar cliente" }, class: "form-select" %>
+    </div>
+
+    <div>
+      <%= form.label :province, "Provincia", class: "form-label" %>
+      <%= form.text_field :province, class: "form-control", placeholder: "Ej: Córdoba",
+            data: { "field-map-target": "location" } %>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :address, style: "display: block" %>
-    <%= form.text_field :address %>
+  <div class="ui-form-grid ui-form-grid--single mt-1">
+    <div>
+      <label class="form-label">Coordenadas</label>
+      <div class="d-flex gap-2">
+        <div class="flex-fill">
+          <%= form.label :latitude, "Latitud", class: "form-label" %>
+          <%= form.text_field :latitude, class: "form-control", placeholder: "Ej: -34.0167",
+                data: { "field-map-target": "latitude" } %>
+        </div>
+        <div class="flex-fill">
+          <%= form.label :longitude, "Longitud", class: "form-label" %>
+          <%= form.text_field :longitude, class: "form-control", placeholder: "Ej: -63.9333",
+                data: { "field-map-target": "longitude" } %>
+        </div>
+      </div>
+      <small class="text-muted mt-1 d-block">
+        <i class="bi bi-info-circle me-1"></i>Hacé click en el mapa o buscá una dirección para ubicar el campo automáticamente.
+      </small>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :customer_id, style: "display: block" %>
-    <%= form.text_field :customer_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="ui-form-actions mt-3">
+    <%= form.submit field.new_record? ? "Guardar campo" : "Actualizar campo", class: "btn-pill-primary" %>
+    <%= link_to "Cancelar", fields_path, class: "btn-pill-secondary" %>
   </div>
 <% end %>

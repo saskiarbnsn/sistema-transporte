@@ -11,17 +11,33 @@
               aria-expanded="false"
               title="Notificaciones">
         <i class="bi bi-bell"></i>
-        <% if @notifications&.any? %>
-          <span class="app-topbar__badge" data-shell-target="badge"><%= @notifications.size %></span>
+        <% if @show_notification_badge %>
+          <span class="app-topbar__badge"
+                data-shell-target="badge"
+                data-digest="<%= @notifications_digest %>">
+            <%= @notifications.size %>
+          </span>
         <% end %>
       </button>
       <ul class="dropdown-menu dropdown-menu-end shadow-sm notification-dropdown">
         <% if @notifications&.any? %>
           <li class="dropdown-header">Alertas (<%= @notifications.size %>)</li>
-          <% @notifications.each do |msg| %>
+          <% @notifications.each do |n| %>
             <li>
-              <span class="dropdown-item notification-item">
-                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i><%= msg %>
+              <span class="dropdown-item notification-item d-flex align-items-start gap-2">
+                <span class="flex-shrink-0 d-flex align-items-center gap-1">
+                  <% if n[:entity] == :truck %>
+                    <i class="bi bi-truck text-secondary"></i>
+                  <% else %>
+                    <i class="bi bi-person-fill text-secondary"></i>
+                  <% end %>
+                  <% if n[:type] == :danger %>
+                    <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                  <% else %>
+                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                  <% end %>
+                </span>
+                <span><%= n[:msg] %></span>
               </span>
             </li>
           <% end %>

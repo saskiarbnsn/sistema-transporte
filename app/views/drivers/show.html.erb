@@ -2,6 +2,8 @@
      data-controller="field-map"
      data-field-map-api-key-value="<%= google_maps_api_key %>"
      data-field-map-readonly-value="true">
+
+  <%# ── Columna izquierda: datos del chofer ── %>
   <div class="ui-form-card">
     <div class="ui-form-card__header">
       <div class="ui-form-card__badge"><i class="bi bi-person-vcard"></i></div>
@@ -9,17 +11,67 @@
     </div>
     <div class="ui-form-card__body">
       <div class="ui-form-grid">
-        <div><span class="form-label d-block">CUIT</span><div class="form-control"><%= @driver.cuit %></div></div>
-        <div><span class="form-label d-block">Teléfono</span><div class="form-control"><%= @driver.phone_number %></div></div>
-        <div><span class="form-label d-block">Nombre</span><div class="form-control"><%= @driver.name %></div></div>
-        <div><span class="form-label d-block">Domicilio</span><div class="form-control"><%= @driver.location %></div></div>
-        <div><span class="form-label d-block">Fecha de nacimiento</span><div class="form-control"><%= @driver.birth_date&.strftime("%d/%m/%Y") %></div></div>
-        <div><span class="form-label d-block">Apto físico</span><div class="form-control"><%= @driver.aptofisico ? "Sí" : "No" %></div></div>
-        <div><span class="form-label d-block">Venc. licencia</span><div class="form-control"><%= @driver.licencia_vencimiento&.strftime("%d/%m/%Y") || "Sin fecha" %></div></div>
-        <div><span class="form-label d-block">Venc. apto</span><div class="form-control"><%= @driver.apto_vencimiento&.strftime("%d/%m/%Y") || "Sin fecha" %></div></div>
+        <div>
+          <span class="form-label d-block">CUIT</span>
+          <div class="form-control"><%= @driver.cuit %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Teléfono</span>
+          <div class="form-control"><%= @driver.phone_number %></div>
+        </div>
+        <div class="ui-form-grid--span-2">
+          <span class="form-label d-block">Nombre</span>
+          <div class="form-control"><%= @driver.name %></div>
+        </div>
+        <div class="ui-form-grid--span-2">
+          <span class="form-label d-block">Domicilio</span>
+          <div class="form-control"><%= @driver.location %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Fecha de nacimiento</span>
+          <div class="form-control"><%= @driver.birth_date&.strftime("%d/%m/%Y") || "—" %></div>
+        </div>
+        <div>
+          <span class="form-label d-block">Apto físico</span>
+          <div class="form-control">
+            <% if @driver.aptofisico %>
+              <span class="status-badge status-badge--ok">Sí</span>
+            <% else %>
+              <span class="status-badge status-badge--danger">No</span>
+            <% end %>
+          </div>
+        </div>
+        <div>
+          <span class="form-label d-block">Venc. licencia</span>
+          <div class="form-control d-flex align-items-center gap-2">
+            <%= @driver.licencia_vencimiento&.strftime("%d/%m/%Y") || "—" %>
+            <% if @driver.licencia_vencimiento %>
+              <% if @driver.licencia_vencimiento < Date.today %>
+                <span class="status-badge status-badge--danger ms-1">Vencida</span>
+              <% elsif @driver.licencia_vencimiento <= Date.today + 30 %>
+                <span class="status-badge status-badge--warning ms-1">Vence pronto</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <div>
+          <span class="form-label d-block">Venc. apto físico</span>
+          <div class="form-control d-flex align-items-center gap-2">
+            <%= @driver.apto_vencimiento&.strftime("%d/%m/%Y") || "—" %>
+            <% if @driver.apto_vencimiento && @driver.aptofisico %>
+              <% if @driver.apto_vencimiento < Date.today %>
+                <span class="status-badge status-badge--danger ms-1">Vencido</span>
+              <% elsif @driver.apto_vencimiento <= Date.today + 30 %>
+                <span class="status-badge status-badge--warning ms-1">Vence pronto</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
       </div>
+
       <%= hidden_field_tag :latitude,  @driver.latitude,  data: { "field-map-target": "latitude" } %>
       <%= hidden_field_tag :longitude, @driver.longitude, data: { "field-map-target": "longitude" } %>
+
       <div class="ui-form-actions">
         <%= link_to "Editar", edit_driver_path(@driver), class: "btn-pill-primary" %>
         <%= link_to "Volver", drivers_path, class: "btn-pill-secondary" %>
@@ -27,8 +79,11 @@
     </div>
   </div>
 
-  <div class="map-panel">
-    <div class="map-canvas" data-field-map-target="canvas"></div>
-    <p class="map-status" data-field-map-target="status"></p>
+  <%# ── Columna derecha: mapa + viajes ── %>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+
+    <%= render "trips/panel", trips: @trips %>
+
   </div>
+
 </div>

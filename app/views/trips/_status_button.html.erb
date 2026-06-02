@@ -1,13 +1,19 @@
 <div id="trip_status_<%= trip.id %>">
-  <% if trip.date_end.present? %>
-    <%= trip.date_end.strftime("%d/%m/%Y") %>
+  <% if trip.date_end.present? && trip.date_end > Date.today %>
+    <span class="trip-status-btn trip-status-btn--active" style="cursor:default">
+      <i class="bi bi-clock me-1"></i>En viaje hasta <%= trip.date_end.strftime("%d/%m/%Y") %>
+    </span>
+  <% elsif trip.date_end.present? %>
+    <span class="trip-date-end">
+      <i class="bi bi-check-circle-fill me-1" style="color:#2b6d31"></i><%= trip.date_end.strftime("%d/%m/%Y") %>
+    </span>
   <% else %>
     <button type="button"
             class="trip-status-btn trip-status-btn--active"
             data-action="click->trip-status#open"
             data-trip-id="<%= trip.id %>"
             data-trip-start="<%= trip.date %>">
-      En viaje
+      <i class="bi bi-truck me-1"></i>En viaje
     </button>
   <% end %>
 </div>
