@@ -1,82 +1,174 @@
 <% fields_data       = Field.all.map       { |f| { id: f.id, latitude: f.latitude, longitude: f.longitude, name: f.name, province: f.province } } %>
 <% destinations_data = Destination.all.map { |d| { id: d.id, latitude: d.latitude, longitude: d.longitude, name: d.name, location: d.location } } %>
 
-<div data-controller="trip-map trip-calc"
+<%= form_with model: @trip, html: { multipart: true } do |form| %>
+<div class="form-page"
+     data-controller="trip-map trip-calculator"
      data-trip-map-api-key-value="<%= ENV['GOOGLE_MAPS_API_KEY'] %>"
      data-trip-map-fields-value="<%= fields_data.to_json %>"
      data-trip-map-destinations-value="<%= destinations_data.to_json %>">
 
-  <%= form_with model: @trip, multipart: true do |form| %>
-    <div class="form-page">
+  <%# ── Columna izquierda: campos del formulario ── %>
+  <div class="ui-form-card">
+    <div class="ui-form-card__header">
+      <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
+      <h1 class="ui-form-card__title">Editar viaje</h1>
+    </div>
+    <div class="ui-form-card__body">
 
-      <%# ── Columna izquierda ── %>
-      <div class="ui-form-card">
-        <div class="ui-form-card__header">
-          <div class="ui-form-card__badge"><i class="bi bi-map"></i></div>
-          <h1 class="ui-form-card__title">Editar viaje</h1>
+      <% if @trip.errors.any? %>
+        <div class="form-errors">
+          <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
+          <div class="form-errors__body">
+            <p class="form-errors__title"><%= @trip.errors.count == 1 ? "1 error" : "#{@trip.errors.count} errores" %> impidieron guardar:</p>
+            <ul class="form-errors__list">
+              <% @trip.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+            </ul>
+          </div>
         </div>
-        <div class="ui-form-card__body">
-          <%= render "form", trip: @trip, form: form %>
+      <% end %>
+
+      <div class="ui-form-grid">
+        <div>
+          <%= form.label :customer_id, "Cliente", class: "form-label" %>
+          <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
+              { prompt: "Seleccionar..." }, { class: "form-select" } %>
+        </div>
+        <div>
+          <%= form.label :field_id, "Origen", class: "form-label" %>
+          <%= form.collection_select :field_id, Field.order(:name), :id, :name,
+              { prompt: "Seleccionar..." },
+              { class: "form-select", data: { "trip-map-target": "fieldSelect", action: "change->trip-map#update" } } %>
+        </div>
+        <div>
+          <%= form.label :destination_id, "Destino", class: "form-label" %>
+          <%= form.collection_select :destination_id, Destination.order(:name), :id, :name,
+              { prompt: "Seleccionar..." },
+              { class: "form-select", data: { "trip-map-target": "destinationSelect", action: "change->trip-map#update" } } %>
+        </div>
+        <div>
+          <%= form.label :driver_id, "Chofer", class: "form-label" %>
+          <%= form.collection_select :driver_id, Driver.order(:name), :id, :name,
+              { prompt: "Seleccionar..." }, { class: "form-select" } %>
+        </div>
+        <div>
+          <%= form.label :truck_id, "Camión", class: "form-label" %>
+          <%= form.collection_select :truck_id, Truck.order(:plate), :id, :plate,
+              { prompt: "Seleccionar..." }, { class: "form-select" } %>
+        </div>
+        <div>
+          <%= form.label :weight, "Peso", class: "form-label" %>
+          <div class="ui-input-unit">
+            <%= form.number_field :weight, class: "form-control", step: "any", placeholder: "0",
+                data: { "trip-calculator-target": "weight", action: "input->trip-calculator#calculate" } %>
+            <span class="ui-input-unit__label">Kg</span>
+          </div>
+        </div>
+        <div class="ui-form-grid--span-2">
+          <%= form.label :product, "Producto", class: "form-label" %>
+          <%= form.text_field :product, class: "form-control" %>
+        </div>
+        <div>
+          <%= form.label :tariff, "Tarifa ($/Kg)", class: "form-label" %>
+          <%= form.number_field :tariff, class: "form-control", step: "any", placeholder: "0",
+              data: { "trip-calculator-target": "tariff", action: "input->trip-calculator#calculate" } %>
+        </div>
+        <div>
+          <%= form.label :kilometres, "Kilómetros", class: "form-label" %>
+          <%= form.number_field :kilometres, class: "form-control", step: "any", placeholder: "0" %>
+        </div>
+        <%= form.hidden_field :net,        data: { "trip-calculator-target": "netInput" } %>
+        <%= form.hidden_field :importeiva, data: { "trip-calculator-target": "ivaInput" } %>
+        <div>
+          <%= form.label :date, "Fecha de inicio", class: "form-label" %>
+          <%= form.date_field :date, class: "form-control" %>
+        </div>
+        <div>
+          <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
+          <%= form.date_field :date_end, class: "form-control", min: @trip.date %>
         </div>
       </div>
 
-      <%# ── Columna derecha ── %>
-      <div style="display:flex;flex-direction:column;gap:1rem">
+    </div>
+  </div>
 
-        <div class="ui-form-card">
-          <div class="ui-form-card__header">
-            <div class="ui-form-card__badge"><i class="bi bi-truck"></i></div>
-            <h2 class="ui-form-card__title">Ruta del viaje</h2>
-          </div>
-          <div class="ui-form-card__body" style="padding:.75rem .75rem 1rem">
-            <%= render "trips/map_panel" %>
-          </div>
+  <%# ── Columna derecha: mapa + resumen + documentos + acciones ── %>
+  <div class="trip-sidebar">
+    <div style="height:calc(52px + 2.2rem);flex-shrink:0;"></div>
+
+    <%# Mapa %>
+    <div class="ui-form-card">
+      <div class="ui-form-card__body" style="padding:0.75rem;">
+        <iframe data-trip-map-target="frame" width="100%" height="260"
+                style="border:0;border-radius:10px;display:none;" loading="lazy"
+                allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="about:blank">
+        </iframe>
+        <div class="map-placeholder" data-trip-map-target="placeholder"
+             style="min-height:260px;border-radius:10px;flex-direction:column;gap:0.75rem;">
+          <i class="bi bi-map" style="font-size:3rem;"></i>
+          <p data-trip-map-target="placeholderMsg"
+             style="font-size:0.82rem;text-align:center;padding:0 1rem;margin:0;">
+            Seleccioná origen y destino para ver la ruta.
+          </p>
+          <a data-trip-map-target="mapsLink" href="#" target="_blank" rel="noopener noreferrer"
+             class="btn-pill-primary" style="display:none;width:auto;padding:0.5rem 1.25rem;font-size:0.85rem;">
+            <i class="bi bi-truck me-1"></i> Ver ruta en Google Maps
+          </a>
         </div>
-
-        <div class="trip-calc-panel">
-          <div class="trip-calc-row">
-            <span class="trip-calc-row__label">Tarifa</span>
-            <span class="trip-calc-row__value" data-trip-calc-target="tariffDisplay">—</span>
-          </div>
-          <hr style="margin:.1rem 0;border-color:#eee">
-          <div class="trip-calc-row">
-            <span class="trip-calc-row__label">Neto</span>
-            <span class="trip-calc-row__value" data-trip-calc-target="netDisplay">—</span>
-          </div>
-          <div class="trip-calc-row trip-calc-row--total">
-            <span class="trip-calc-row__label">Importe con IVA (21%)</span>
-            <span class="trip-calc-row__value" data-trip-calc-target="ivaDisplay">—</span>
-          </div>
+        <div data-trip-map-target="openLinkWrap" style="display:none;margin-top:0.5rem;">
+          <a data-trip-map-target="openLink" href="#" target="_blank" rel="noopener noreferrer"
+             class="btn-pill-secondary" style="font-size:0.85rem;padding:0.5rem;">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Abrir en Google Maps
+          </a>
         </div>
-
-        <div class="ui-form-card">
-          <div class="ui-form-card__body">
-            <p class="form-label mb-2">Adjuntar archivos</p>
-            <div class="d-flex gap-2 mb-3">
-              <label class="file-upload-btn flex-fill <%= 'file-upload-btn--chosen' if @trip.factura.attached? %>"
-                     data-default-label="Factura">
-                <i class="bi bi-<%= @trip.factura.attached? ? 'check-circle-fill' : 'upload' %>"></i>
-                <span data-filename><%= @trip.factura.attached? ? @trip.factura.filename : "Factura" %></span>
-                <%= form.file_field :factura, class: "visually-hidden",
-                      accept: ".pdf,.jpg,.jpeg,.png",
-                      data: { action: "change->trip-calc#fileChosen" } %>
-              </label>
-              <label class="file-upload-btn flex-fill <%= 'file-upload-btn--chosen' if @trip.carta_de_porte.attached? %>"
-                     data-default-label="Carta de Porte">
-                <i class="bi bi-<%= @trip.carta_de_porte.attached? ? 'check-circle-fill' : 'upload' %>"></i>
-                <span data-filename><%= @trip.carta_de_porte.attached? ? @trip.carta_de_porte.filename : "Carta de Porte" %></span>
-                <%= form.file_field :carta_de_porte, class: "visually-hidden",
-                      accept: ".pdf,.jpg,.jpeg,.png",
-                      data: { action: "change->trip-calc#fileChosen" } %>
-              </label>
-            </div>
-            <%= form.submit "Guardar cambios", class: "btn-pill-primary w-100" %>
-            <%= link_to "Cancelar", trip_path(@trip), class: "btn-pill-secondary w-100 text-center mt-2 d-block" %>
-          </div>
-        </div>
-
       </div>
     </div>
-  <% end %>
+
+    <%# Resumen financiero %>
+    <div class="trip-summary-card">
+      <div class="trip-summary-card__row">
+        <span class="trip-summary-card__label">Neto <small style="color:#bbb;">(Tarifa × Kg)</small></span>
+        <span class="trip-summary-card__value" data-trip-calculator-target="netDisplay">$ 0,00</span>
+      </div>
+      <div class="trip-summary-card__row">
+        <span class="trip-summary-card__label">IVA (21%)</span>
+        <span class="trip-summary-card__value" data-trip-calculator-target="ivaDisplay">$ 0,00</span>
+      </div>
+      <div class="trip-summary-card__row">
+        <span class="trip-summary-card__label" style="font-weight:700;color:#1a1a2e;">Total con IVA</span>
+        <span class="trip-summary-card__value" style="font-weight:700;color:#1a1a2e;" data-trip-calculator-target="totalDisplay">$ 0,00</span>
+      </div>
+    </div>
+
+    <%# Adjuntar documentos %>
+    <div class="trip-docs-section">
+      <p class="trip-docs-section__title">Adjuntar archivos</p>
+      <div class="trip-docs-section__buttons">
+        <label for="trip_factura"
+               class="upload-btn <%= 'upload-btn--attached' if @trip.factura.attached? %>">
+          <i class="bi bi-upload"></i>
+          <span><%= @trip.factura.attached? ? @trip.factura.filename.base.truncate(14) : "Factura" %></span>
+        </label>
+        <%= form.file_field :factura, id: "trip_factura", class: "d-none",
+            accept: ".pdf,.jpg,.jpeg,.png" %>
+
+        <label for="trip_carta_de_porte"
+               class="upload-btn <%= 'upload-btn--attached' if @trip.carta_de_porte.attached? %>">
+          <i class="bi bi-upload"></i>
+          <span><%= @trip.carta_de_porte.attached? ? @trip.carta_de_porte.filename.base.truncate(12) : "Carta de Porte" %></span>
+        </label>
+        <%= form.file_field :carta_de_porte, id: "trip_carta_de_porte", class: "d-none",
+            accept: ".pdf,.jpg,.jpeg,.png" %>
+      </div>
+    </div>
+
+    <%# Acciones %>
+    <div class="d-flex flex-column gap-2">
+      <%= form.submit "Actualizar Viaje", class: "btn-pill-primary" %>
+      <%= link_to "Cancelar", trip_path(@trip), class: "btn-pill-secondary" %>
+    </div>
+
+  </div>
 
 </div>
+<% end %>
