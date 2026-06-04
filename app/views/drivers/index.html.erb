@@ -1,7 +1,7 @@
 <div class="dash-panel">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
-      <i class="bi bi-person-badge-fill"></i>
+      <i class="bi bi-person-vcard"></i>
       Choferes
       <span class="dash-count"><%= @drivers.size %></span>
     </h1>
@@ -28,6 +28,8 @@
           <td><strong><%= driver.name %></strong></td>
           <td><%= driver.cuit %></td>
           <td><%= driver.phone_number %></td>
+
+          <%# — Apto físico —%>
           <td>
             <% if driver.apto_vencimiento.nil? %>
               <span class="status-badge status-badge--neutral">Sin fecha</span>
@@ -39,6 +41,8 @@
               <span class="status-badge status-badge--ok">Vigente</span>
             <% end %>
           </td>
+
+          <%# — Licencia —%>
           <td>
             <% if driver.licencia_vencimiento.nil? %>
               <span class="status-badge status-badge--neutral">Sin fecha</span>
@@ -47,9 +51,10 @@
             <% elsif driver.licencia_vencimiento <= today + 30 %>
               <span class="status-badge status-badge--warning">Vence <%= driver.licencia_vencimiento.strftime("%d/%m/%Y") %></span>
             <% else %>
-              <span class="status-badge status-badge--ok"><%= driver.licencia_vencimiento.strftime("%d/%m/%Y") %></span>
+              <span class="status-badge status-badge--ok">Vigente</span>
             <% end %>
           </td>
+
           <td class="dash-table__actions">
             <div class="d-flex gap-1 justify-content-end">
               <%= link_to edit_driver_path(driver),
@@ -80,3 +85,4 @@
     </tbody>
   </table>
 </div>
+

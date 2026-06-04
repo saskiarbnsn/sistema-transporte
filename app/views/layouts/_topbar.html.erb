@@ -1,7 +1,10 @@
 <header class="app-topbar">
+  <% today = Time.zone.today
+     dias   = %w[Domingo Lunes Martes Miércoles Jueves Viernes Sábado]
+     meses  = %w[Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre] %>
   <div class="app-topbar__date">
-    <span class="app-topbar__day"><%= Time.zone.today.strftime("%A %-d").upcase %></span>
-    <span class="app-topbar__month"><%= Time.zone.today.strftime("%B, %Y").upcase %></span>
+    <span class="app-topbar__day"><%= "#{dias[today.wday]} #{today.day}".upcase %></span>
+    <span class="app-topbar__month"><%= "#{meses[today.month - 1]}, #{today.year}" %></span>
   </div>
 
   <div class="app-topbar__actions">
@@ -12,9 +15,7 @@
               title="Notificaciones">
         <i class="bi bi-bell"></i>
         <% if @show_notification_badge %>
-          <span class="app-topbar__badge"
-                data-shell-target="badge"
-                data-digest="<%= @notifications_digest %>">
+          <span class="app-topbar__badge" data-shell-target="badge">
             <%= @notifications.size %>
           </span>
         <% end %>
@@ -24,7 +25,8 @@
           <li class="dropdown-header">Alertas (<%= @notifications.size %>)</li>
           <% @notifications.each do |n| %>
             <li>
-              <span class="dropdown-item notification-item d-flex align-items-start gap-2">
+              <%= link_to(n[:entity] == :truck ? truck_path(n[:id]) : driver_path(n[:id]),
+                    class: "dropdown-item notification-item d-flex align-items-start gap-2") do %>
                 <span class="flex-shrink-0 d-flex align-items-center gap-1">
                   <% if n[:entity] == :truck %>
                     <i class="bi bi-truck text-secondary"></i>
@@ -38,7 +40,7 @@
                   <% end %>
                 </span>
                 <span><%= n[:msg] %></span>
-              </span>
+              <% end %>
             </li>
           <% end %>
         <% else %>

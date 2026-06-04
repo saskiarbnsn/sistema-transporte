@@ -21,7 +21,7 @@
   end
 %>
 
-<div class="form-page">
+<div class="form-page" data-controller="trip-status">
 
   <%# ── Columna izquierda: datos del viaje ── %>
   <div class="ui-form-card">
@@ -80,20 +80,7 @@
         <div>
           <span class="form-label d-block">Fecha de finalización</span>
           <div class="form-control d-flex align-items-center gap-2">
-            <% if @trip.date_end.present? && @trip.date_end > Date.today %>
-              <%= @trip.date_end.strftime("%d/%m/%Y") %>
-              <span class="status-badge status-badge--warning ms-1">
-                <i class="bi bi-clock me-1"></i>En viaje hasta esa fecha
-              </span>
-            <% elsif @trip.date_end.present? %>
-              <span class="status-badge status-badge--ok">
-                <i class="bi bi-check-circle-fill me-1"></i><%= @trip.date_end.strftime("%d/%m/%Y") %>
-              </span>
-            <% else %>
-              <span class="status-badge status-badge--warning">
-                <i class="bi bi-truck me-1"></i>En viaje
-              </span>
-            <% end %>
+            <%= render "trips/status_button", trip: @trip %>
           </div>
         </div>
       </div>
@@ -218,6 +205,36 @@
     </div>
   </div>
 
+</div>
+
+<%# ── Modal finalización de viaje ── %>
+<div class="modal fade" id="trip-finalize-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-semibold">Fecha de finalización</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label" style="color:#3b5bdb;font-weight:500;font-size:.85rem">
+          Seleccioná la fecha de finalización
+        </label>
+        <input type="date"
+               class="form-control"
+               style="background:#f4f6fc;border:none;border-radius:10px"
+               data-trip-status-target="dateInput">
+        <input type="hidden" data-trip-status-target="tripId">
+        <p class="text-danger mt-2 mb-0" style="font-size:.82rem;display:none"
+           data-trip-status-target="error">
+          Seleccioná una fecha antes de continuar.
+        </p>
+      </div>
+      <div class="modal-footer border-0 pt-0 flex-column gap-2">
+        <button type="button" class="btn-pill-primary" data-action="click->trip-status#confirm">Aceptar</button>
+        <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%# ── Modal visor de documentos ── %>

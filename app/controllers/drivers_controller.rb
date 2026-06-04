@@ -1,5 +1,5 @@
 class DriversController < ApplicationController
-  before_action :set_driver, only: %i[show edit update destroy]
+  before_action :set_driver, only: %i[show edit update destroy renew_apto renew_licencia]
 
   # GET /drivers or /drivers.json
   def index
@@ -58,9 +58,20 @@ class DriversController < ApplicationController
     end
   end
 
+  def renew_apto
+    date = Date.parse(params[:renewal_date]) rescue nil
+    @driver.update(apto_vencimiento: date, aptofisico: true)
+    redirect_back fallback_location: drivers_path, notice: "Apto físico renovado hasta #{date&.strftime('%d/%m/%Y')}."
+  end
+
+  def renew_licencia
+    date = Date.parse(params[:renewal_date]) rescue nil
+    @driver.update(licencia_vencimiento: date)
+    redirect_back fallback_location: drivers_path, notice: "Licencia renovada hasta #{date&.strftime('%d/%m/%Y')}."
+  end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_driver
     @driver = Driver.find(params[:id])
   end

@@ -3,14 +3,17 @@ Rails.application.routes.draw do
     path_names: { sign_in: "login", sign_out: "logout" },
     controllers: { registrations: "users/registrations" }
 
-  post "notifications/dismiss", to: "application#dismiss_notifications"
-
   root "homes#index"
 
   resources :fields
   resources :customers
-  resources :trucks
-  resources :drivers
+  resources :trucks do
+    patch :reset_service, on: :member
+  end
+  resources :drivers do
+    patch :renew_apto,     on: :member
+    patch :renew_licencia, on: :member
+  end
   resources :destinations
   resources :gastos
 

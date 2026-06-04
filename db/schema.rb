@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_02_001000) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_03_131254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -145,6 +145,16 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_02_001000) do
     t.index ["truck_id"], name: "index_trips_on_truck_id"
   end
 
+  create_table "truck_services", force: :cascade do |t|
+    t.bigint "truck_id", null: false
+    t.date "service_date"
+    t.float "kilometres_at_service"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["truck_id"], name: "index_truck_services_on_truck_id"
+  end
+
   create_table "trucks", force: :cascade do |t|
     t.string "plate"
     t.string "brand"
@@ -185,4 +195,5 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_02_001000) do
   add_foreign_key "trips", "drivers"
   add_foreign_key "trips", "fields"
   add_foreign_key "trips", "trucks"
+  add_foreign_key "truck_services", "trucks"
 end

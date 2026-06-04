@@ -12,17 +12,17 @@
   <div class="ui-form-grid">
     <div>
       <%= form.label :cuit, "CUIT", class: "form-label" %>
-      <%= form.text_field :cuit, class: "form-control" %>
+      <%= form.text_field :cuit, class: "form-control", placeholder: "Ej: 20-23456789-1" %>
     </div>
 
     <div>
       <%= form.label :phone_number, "Teléfono", class: "form-label" %>
-      <%= form.text_field :phone_number, class: "form-control" %>
+      <%= form.text_field :phone_number, class: "form-control", placeholder: "Ej: 11-2345-6789" %>
     </div>
 
     <div class="ui-form-grid--span-2">
       <%= form.label :name, "Nombre completo", class: "form-label" %>
-      <%= form.text_field :name, class: "form-control" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Ej: Mariano Fernández" %>
     </div>
 
     <div class="ui-form-grid--span-2">

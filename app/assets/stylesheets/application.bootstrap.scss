@@ -39,10 +39,10 @@ body { background: $surface; margin: 0; }
 .app-sidebar__header {
   display: flex;
   align-items: center;
-  height: 64px;
+  height: 52px;
   flex-shrink: 0;
   border-bottom: 1px solid $border;
-  padding-left: calc(($sidebar-w - 40px) / 2);
+  padding-left: calc(($sidebar-w - 36px) / 2);
   gap: 0.75rem;
   overflow: hidden;
   white-space: nowrap;
@@ -62,10 +62,10 @@ body { background: $surface; margin: 0; }
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   color: #555;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -77,24 +77,26 @@ body { background: $surface; margin: 0; }
 
 .app-sidebar__nav {
   flex: 1;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  overflow: hidden;
+  gap: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  justify-content: space-evenly;
 }
 
 .app-sidebar__item {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.65rem 0;
-  padding-left: calc(($sidebar-w - 24px) / 2);
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  padding-left: calc(($sidebar-w - 22px) / 2);
   color: #666;
   text-decoration: none;
   white-space: nowrap;
   transition: color 0.15s, background 0.15s;
-  i { font-size: 1.2rem; flex-shrink: 0; }
+  i { font-size: 1.15rem; flex-shrink: 0; }
   &:hover { color: $accent; background: $accent-light; }
   &.is-active { color: $accent; background: $accent-light; font-weight: 600; }
   &--muted { color: #999; }
@@ -111,12 +113,12 @@ body { background: $surface; margin: 0; }
 .app-sidebar__divider {
   height: 1px;
   background: $border;
-  margin: 0.5rem 1rem;
+  margin: 0.3rem 1rem;
 }
 
 .app-sidebar__footer {
   border-top: 1px solid $border;
-  padding: 0.75rem 0;
+  padding: 0.4rem 0;
 }
 
 // ── Main ───────────────────────────────────────────────────────
@@ -129,7 +131,7 @@ body { background: $surface; margin: 0; }
 
 // ── Topbar ─────────────────────────────────────────────────────
 .app-topbar {
-  height: 64px;
+  height: 52px;
   background: #fff;
   border-bottom: 1px solid $border;
   display: flex;
@@ -404,11 +406,20 @@ body { background: $surface; margin: 0; }
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+  border: none;
 
   &--ok      { background: #d3f9d8; color: #2b6d31; }
   &--warning { background: #fff3bf; color: #7b5e00; }
   &--danger  { background: #ffe0e0; color: #c92a2a; }
   &--neutral { background: #e9ecef; color: #666; }
+}
+
+button.status-badge {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  &:focus, &:active { outline: none !important; box-shadow: none !important; }
 }
 
 // ── Detail / Show pages ────────────────────────────────────────
@@ -855,6 +866,417 @@ body { background: $surface; margin: 0; }
   }
 }
 
+// ── Renew button & modal ──────────────────────────────────────
+.renew-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: #e8edff;
+  color: $accent;
+  font-size: 0.75rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+  &:hover { background: darken(#e8edff, 6%); transform: rotate(90deg); }
+}
+
+.renew-modal {
+  border-radius: 20px;
+  overflow: hidden;
+  border: none;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.25rem 1.5rem 0.75rem;
+    border-bottom: 1px solid #f0f2f8;
+  }
+
+  &__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: $accent-light;
+    color: $accent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+
+    &--truck {
+      background: #fff3bf;
+      color: #7b5e00;
+    }
+  }
+
+  &__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 0.78rem;
+    color: #999;
+    margin: 0.1rem 0 0;
+  }
+
+  &__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+}
+
+// ── Home rentabilidad panel ───────────────────────────────────
+.home-rent-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.home-rent-stat {
+  background: $surface;
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+
+  &__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    &--blue  { color: $accent; }
+    &--red   { color: #c92a2a; }
+    &--green { color: #2b6d31; }
+  }
+}
+
+// ── Gasto index ───────────────────────────────────────────────
+.gasto-index-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  &__icon {
+    font-size: 1.25rem;
+    color: $accent;
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+}
+
+.gasto-filter-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gasto-filter-select {
+  border-radius: 50px;
+  border: 1.5px solid #dde0ea;
+  background: #f8f9fc;
+  padding: 0.35rem 1rem;
+  font-size: 0.82rem;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  &:focus { outline: none; border-color: $accent; }
+}
+
+.gasto-new-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 1.1rem;
+  border-radius: 50px;
+  background: $accent;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.15s;
+  white-space: nowrap;
+  &:hover { filter: brightness(0.9); color: #fff; }
+}
+
+.gasto-table-desc {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gasto-total-cell { color: $accent; }
+
+// ── Gasto form ────────────────────────────────────────────────
+.gasto-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.gasto-card {
+  background: #edf0f8;
+  border-radius: 20px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.5rem;
+  }
+
+  &__badge {
+    width: 52px;
+    height: 52px;
+    background: $navy;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  &__body {
+    background: #fff;
+    margin: 0 0.75rem 0.75rem;
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+}
+
+.gasto-propios {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  &__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $accent;
+    min-width: 60px;
+  }
+
+  &__opt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: #444;
+    cursor: pointer;
+    margin: 0;
+
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: $accent;
+      cursor: pointer;
+    }
+  }
+}
+
+.gasto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gasto-field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.gasto-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $accent;
+  margin: 0;
+}
+
+.gasto-input, .gasto-select {
+  border-radius: 50px;
+  border: none;
+  background: #f2f4f8;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  line-height: 1.5;
+  transition: box-shadow 0.15s;
+  display: block;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($accent, .2);
+    background: #fff;
+  }
+
+  &--disabled { background: #ebebeb; cursor: default; }
+  &--readonly { background: #f2f4f8; cursor: default; }
+}
+
+.gasto-select {
+  appearance: auto;
+  padding-right: 2rem;
+}
+
+.gasto-totals {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+  }
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $accent;
+    margin: 0;
+  }
+
+  &__breakdown {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #f8f9fc;
+    border-radius: 14px;
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+  }
+
+  &__col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+  }
+
+  &__col-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__col-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+
+  &__sep {
+    width: 1px;
+    height: 32px;
+    background: #dde0ea;
+    flex-shrink: 0;
+  }
+}
+
+.gasto-input--readonly {
+  background: #f2f4f8;
+  color: #1a1a2e;
+  cursor: default;
+}
+
+.gasto-total-input {
+  width: 100%;
+  background: $navy;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: text;
+  transition: filter 0.15s;
+
+  &::placeholder { color: rgba(255,255,255,0.5); }
+  &:focus { outline: none; filter: brightness(1.15); }
+}
+
+.gasto-total-display {
+  width: 100%;
+  background: $navy;
+  color: #fff;
+  border-radius: 50px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.gasto-btn-delete {
+  background: #fff0f0;
+  color: #c92a2a;
+  border: none;
+}
+
+.gasto-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
 // ── Auth / Login ───────────────────────────────────────────────
 // ── File upload button ─────────────────────────────────────────
 .file-upload-btn {
@@ -902,7 +1324,7 @@ body { background: $surface; margin: 0; }
 // ── Stats grid (gastos/rentabilidad) ──────────────────────────
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 

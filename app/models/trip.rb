@@ -8,6 +8,10 @@ class Trip < ApplicationRecord
   has_one_attached :factura
   has_one_attached :carta_de_porte
 
+  scope :active_today, -> {
+    where("date <= ? AND (date_end IS NULL OR date_end >= ?)", Date.current, Date.current)
+  }
+
   validate :date_end_not_before_date
   before_save :calculate_net
 

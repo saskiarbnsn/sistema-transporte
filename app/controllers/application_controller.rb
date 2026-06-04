@@ -4,11 +4,6 @@ class ApplicationController < ActionController::Base
 
   layout :layout_by_resource
 
-  def dismiss_notifications
-    session[:notifications_dismissed_digest] = params[:digest]
-    head :no_content
-  end
-
   private
 
   def after_sign_out_path_for(resource_or_scope)
@@ -24,30 +19,30 @@ class ApplicationController < ActionController::Base
 
     @notifications = []
 
-    Truck.where("service_kilometres >= ?", 20_000).find_each do |truck|
-      @notifications << { type: :warning, entity: :truck, msg: "Camión #{truck.plate}: #{truck.service_kilometres.to_i} km desde último servicio" }
+    Truck.includes(:trips, :truck_services).find_each do |truck|
+      if truck.service_kilometres >= 20_000
+        @notifications << { type: :danger, entity: :truck, id: truck.id, msg: "Camión #{truck.plate}: servicio técnico requerido" }
+      end
     end
 
     today = Date.current
 
     Driver.where(aptofisico: false).find_each do |driver|
-      @notifications << { type: :danger, entity: :driver, msg: "#{driver.name}: sin apto físico" }
+      @notifications << { type: :danger, entity: :driver, id: driver.id, msg: "#{driver.name}: sin apto físico" }
     end
 
     Driver.where("licencia_vencimiento <= ?", today + 30).find_each do |driver|
       status = driver.licencia_vencimiento < today ? "vencida" : "vence pronto"
-      @notifications << { type: :warning, entity: :driver, msg: "#{driver.name}: licencia #{status} (#{driver.licencia_vencimiento.strftime('%d/%m/%Y')})" }
+      @notifications << { type: :warning, entity: :driver, id: driver.id, msg: "#{driver.name}: licencia #{status} (#{driver.licencia_vencimiento.strftime('%d/%m/%Y')})" }
     end
 
     Driver.where(aptofisico: true).where("apto_vencimiento <= ?", today + 30).find_each do |driver|
       next unless driver.apto_vencimiento
       status = driver.apto_vencimiento < today ? "vencido" : "vence pronto"
-      @notifications << { type: :warning, entity: :driver, msg: "#{driver.name}: apto físico #{status} (#{driver.apto_vencimiento.strftime('%d/%m/%Y')})" }
+      @notifications << { type: :warning, entity: :driver, id: driver.id, msg: "#{driver.name}: apto físico #{status} (#{driver.apto_vencimiento.strftime('%d/%m/%Y')})" }
     end
 
-    digest = Digest::MD5.hexdigest(@notifications.map { |n| n[:msg] }.sort.join)
-    @notifications_digest = digest
-    @show_notification_badge = @notifications.any? && digest != session[:notifications_dismissed_digest]
+    @show_notification_badge = @notifications.any?
   rescue StandardError
     @notifications = []
     @show_notification_badge = false

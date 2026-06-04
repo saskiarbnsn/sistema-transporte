@@ -1,55 +1,87 @@
-<div class="form-page form-page--single">
-  <div class="ui-form-card">
-    <div class="ui-form-card__header">
-      <div class="ui-form-card__badge"><i class="bi bi-receipt-cutoff"></i></div>
-      <h1 class="ui-form-card__title">Detalle del gasto</h1>
+<div class="gasto-page">
+  <div class="gasto-card">
+    <div class="gasto-card__header">
+      <div class="gasto-card__badge"><i class="bi bi-receipt-cutoff"></i></div>
+      <h1 class="gasto-card__title">Detalle del gasto</h1>
     </div>
-    <div class="ui-form-card__body">
+    <div class="gasto-card__body">
 
-      <div class="ui-form-grid">
-        <div>
-          <span class="form-label d-block">Fecha</span>
-          <div class="form-control"><%= @gasto.date&.strftime("%d/%m/%Y") || "—" %></div>
+      <%# — Propios indicator —%>
+      <div class="gasto-propios">
+        <span class="gasto-propios__label">Propios</span>
+        <label class="gasto-propios__opt">
+          <input type="radio" disabled <%= "checked" if @gasto.truck_disabled? %>>
+          <span>Si</span>
+        </label>
+        <label class="gasto-propios__opt">
+          <input type="radio" disabled <%= "checked" unless @gasto.truck_disabled? %>>
+          <span>No</span>
+        </label>
+      </div>
+
+      <%# — Grid de campos (solo lectura) —%>
+      <div class="gasto-grid">
+        <div class="gasto-field">
+          <span class="gasto-label">Imputación</span>
+          <div class="gasto-input gasto-input--readonly"><%= @gasto.imputation&.imputation || "—" %></div>
         </div>
-        <div>
-          <span class="form-label d-block">Categoría</span>
-          <div class="form-control"><%= @gasto.imputation&.imputation || "—" %></div>
+        <div class="gasto-field">
+          <span class="gasto-label">Fecha</span>
+          <div class="gasto-input gasto-input--readonly"><%= @gasto.date&.strftime("%d/%m/%Y") || "—" %></div>
         </div>
-        <div class="ui-form-grid--span-2">
-          <span class="form-label d-block">Proveedor</span>
-          <div class="form-control"><%= @gasto.supplier.presence || "—" %></div>
+        <div class="gasto-field">
+          <span class="gasto-label">Proveedor</span>
+          <div class="gasto-input gasto-input--readonly"><%= @gasto.supplier.presence || "—" %></div>
         </div>
-        <div class="ui-form-grid--span-2">
-          <span class="form-label d-block">Descripción</span>
-          <div class="form-control"><%= @gasto.description.presence || "—" %></div>
+        <div class="gasto-field">
+          <span class="gasto-label">Concepto / Descripción</span>
+          <div class="gasto-input gasto-input--readonly"><%= @gasto.description.presence || "—" %></div>
         </div>
-        <div>
-          <span class="form-label d-block">Camión</span>
-          <div class="form-control"><%= @gasto.truck&.plate || "—" %></div>
+        <div class="gasto-field">
+          <span class="gasto-label">Camión</span>
+          <div class="gasto-input gasto-input--readonly"><%= @gasto.truck&.plate || "Sin asignar" %></div>
         </div>
-        <div>
-          <span class="form-label d-block">Chofer</span>
-          <div class="form-control"><%= @gasto.driver&.name || "—" %></div>
+        <div class="gasto-field">
+          <span class="gasto-label">Adelantos</span>
+          <div class="gasto-input gasto-input--disabled">—</div>
         </div>
-        <div>
-          <span class="form-label d-block">Gravado (sin IVA)</span>
-          <div class="form-control">$&thinsp;<%= number_with_delimiter(@gasto.gravado.to_f.round(2)) %></div>
-        </div>
-        <div>
-          <span class="form-label d-block">IVA (21%)</span>
-          <div class="form-control">$&thinsp;<%= number_with_delimiter(@gasto.iva.to_f.round(2)) %></div>
-        </div>
-        <div class="ui-form-grid--span-2">
-          <span class="form-label d-block">Total con IVA</span>
-          <div class="form-control" style="font-size:1.1rem;font-weight:700;color:#1a1a2e">
+      </div>
+
+      <%# — Importe total —%>
+      <div class="gasto-totals">
+        <div class="gasto-totals__left">
+          <p class="gasto-totals__title">Importe Total</p>
+          <div class="gasto-total-display">
             $&thinsp;<%= number_with_delimiter(@gasto.total.to_f.round(2)) %>
+          </div>
+        </div>
+        <div class="gasto-totals__breakdown">
+          <div class="gasto-totals__col">
+            <span class="gasto-totals__col-label">Neto</span>
+            <span class="gasto-totals__col-value">$&thinsp;<%= number_with_delimiter(@gasto.gravado.to_f.round(2)) %></span>
+          </div>
+          <div class="gasto-totals__sep"></div>
+          <div class="gasto-totals__col">
+            <span class="gasto-totals__col-label">IVA</span>
+            <span class="gasto-totals__col-value">$&thinsp;<%= number_with_delimiter(@gasto.iva.to_f.round(2)) %></span>
+          </div>
+          <div class="gasto-totals__sep"></div>
+          <div class="gasto-totals__col">
+            <span class="gasto-totals__col-label">Gravado</span>
+            <span class="gasto-totals__col-value">$0,00</span>
           </div>
         </div>
       </div>
 
-      <div class="ui-form-actions">
+      <%# — Acciones —%>
+      <div class="gasto-actions">
         <%= link_to "Editar", edit_gasto_path(@gasto), class: "btn-pill-primary" %>
-        <%= link_to "Volver", gastos_path, class: "btn-pill-secondary" %>
+        <%= link_to "Volver al listado", gastos_path, class: "btn-pill-secondary" %>
+        <%= button_to gasto_path(@gasto), method: :delete,
+              class: "btn-pill-secondary gasto-btn-delete",
+              form: { data: { turbo_confirm: "¿Eliminar este gasto?" } } do %>
+          <i class="bi bi-trash-fill me-1"></i>Eliminar
+        <% end %>
       </div>
 
     </div>

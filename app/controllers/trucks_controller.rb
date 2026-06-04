@@ -1,5 +1,5 @@
 class TrucksController < ApplicationController
-  before_action :set_truck, only: %i[show edit update destroy]
+  before_action :set_truck, only: %i[show edit update destroy reset_service]
 
   # GET /trucks or /trucks.json
   def index
@@ -8,8 +8,9 @@ class TrucksController < ApplicationController
 
   # GET /trucks/1 or /trucks/1.json
   def show
-    @trips = @truck.trips.includes(:field, :customer, :destination, :driver)
-                   .order(date: :desc).limit(50)
+    @trips    = @truck.trips.includes(:field, :customer, :destination, :driver)
+                      .order(date: :desc).limit(50)
+    @services = @truck.truck_services.limit(20)
   end
 
   # GET /trucks/new
@@ -58,15 +59,26 @@ class TrucksController < ApplicationController
     end
   end
 
+  def reset_service
+    date = Date.parse(params[:service_date]) rescue Date.today
+    TruckService.create!(
+      truck:                @truck,
+      service_date:         date,
+      kilometres_at_service: @truck.service_kilometres.to_f,
+      notes:                params[:notes].presence
+    )
+    redirect_back fallback_location: trucks_path,
+      notice: "Servicio registrado el #{date.strftime('%d/%m/%Y')}."
+  end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_truck
     @truck = Truck.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.
   def truck_params
-    params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres, :service_kilometres)
+    params.require(:truck).permit(:plate, :brand, :model, :capacity, :fuel, :kilometres)
   end
 end

@@ -44,10 +44,51 @@
   <div class="dashboard-panels">
     <section class="dash-panel">
       <div class="dash-panel__header">
-        <h2 class="dash-panel__title">Rentabilidad</h2>
-        <i class="bi bi-three-dots-vertical"></i>
+        <h2 class="dash-panel__title">
+          <i class="bi bi-bar-chart-line-fill"></i>
+          Rentabilidad <%= Date.today.year %>
+        </h2>
+        <%= link_to gastos_path, class: "dash-action dash-action--edit", title: "Ver análisis completo" do %>
+          <i class="bi bi-arrow-right"></i>
+        <% end %>
       </div>
-      <p class="text-muted text-center mt-4 mb-4">Próximamente</p>
+
+      <%# Mini stats 2x2 %>
+      <div class="home-rent-stats">
+        <div class="home-rent-stat">
+          <span class="home-rent-stat__label">Ingresos</span>
+          <span class="home-rent-stat__value home-rent-stat__value--blue">
+            $&thinsp;<%= number_with_delimiter(@total_ingresos.round(0).to_i) %>
+          </span>
+        </div>
+        <div class="home-rent-stat">
+          <span class="home-rent-stat__label">Gastos</span>
+          <span class="home-rent-stat__value home-rent-stat__value--red">
+            $&thinsp;<%= number_with_delimiter(@total_gastos.round(0).to_i) %>
+          </span>
+        </div>
+        <div class="home-rent-stat">
+          <span class="home-rent-stat__label">Resultado neto</span>
+          <span class="home-rent-stat__value <%= @resultado >= 0 ? 'home-rent-stat__value--green' : 'home-rent-stat__value--red' %>">
+            $&thinsp;<%= number_with_delimiter(@resultado.round(0).to_i) %>
+          </span>
+        </div>
+        <div class="home-rent-stat">
+          <span class="home-rent-stat__label">Margen</span>
+          <span class="home-rent-stat__value <%= @margen >= 0 ? 'home-rent-stat__value--green' : 'home-rent-stat__value--red' %>">
+            <%= @margen %>%
+          </span>
+        </div>
+      </div>
+
+      <%# Gráfico de evolución mensual %>
+      <div style="height:180px;margin-top:.75rem"
+           data-controller="gastos-chart"
+           data-gastos-chart-labels-value="<%= @chart_labels.to_json %>"
+           data-gastos-chart-ingresos-value="<%= @chart_ingresos.to_json %>"
+           data-gastos-chart-gastos-value="<%= @chart_gastos.to_json %>">
+        <canvas style="width:100%;height:100%"></canvas>
+      </div>
     </section>
 
     <section class="dash-panel">

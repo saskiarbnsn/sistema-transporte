@@ -1,28 +1,36 @@
-<%# ── Filtro de período ──────────────────────────────────────── %>
-<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-  <h1 style="font-size:1.15rem;font-weight:700;color:#1a1a2e;margin:0">
-    <i class="bi bi-bar-chart-fill me-2" style="color:#3b5bdb"></i>Análisis de Rentabilidad
-  </h1>
-  <div class="d-flex gap-2 align-items-center">
-    <%= form_with url: gastos_path, method: :get, local: true, class: "d-flex gap-2" do |f| %>
-      <%= f.select :month,
-            (1..12).map { |m| [Date::MONTHNAMES[m], m] },
-            { selected: @month },
-            class: "form-select form-select-sm", style: "width:130px" %>
+<%# ── Encabezado de página ────────────────────────────────────── %>
+<div class="gasto-index-header mb-3">
+  <div class="gasto-index-header__left">
+    <i class="bi bi-bar-chart-line-fill gasto-index-header__icon"></i>
+    <h1 class="gasto-index-header__title">Análisis de Rentabilidad</h1>
+  </div>
+  <div class="gasto-index-header__right">
+    <%= form_with url: gastos_path, method: :get, local: true, class: "gasto-filter-form" do |f| %>
+      <%= f.select :period,
+            [["Anual", "annual"], ["Mensual", "monthly"]],
+            { selected: @period },
+            class: "gasto-filter-select",
+            onchange: "this.form.submit()" %>
+      <% if @period == "monthly" %>
+        <%= f.select :month,
+              (1..12).map { |m| [Date::MONTHNAMES[m], m] },
+              { selected: @month },
+              class: "gasto-filter-select",
+              onchange: "this.form.submit()" %>
+      <% end %>
       <%= f.select :year,
             (Date.today.year - 3..Date.today.year).map { |y| [y, y] }.reverse,
             { selected: @year },
-            class: "form-select form-select-sm", style: "width:90px" %>
-      <%= f.submit "Filtrar", class: "btn btn-sm btn-primary" %>
+            class: "gasto-filter-select",
+            onchange: "this.form.submit()" %>
     <% end %>
-    <%= link_to new_gasto_path, class: "btn-pill-primary",
-          style: "width:auto;padding:.4rem 1.1rem;font-size:.85rem" do %>
-      <i class="bi bi-plus-lg me-1"></i>Nuevo gasto
+    <%= link_to new_gasto_path, class: "gasto-new-btn" do %>
+      <i class="bi bi-plus-lg"></i>Nuevo gasto
     <% end %>
   </div>
 </div>
 
-<%# ── Tarjetas de resumen ─────────────────────────────────── %>
+<%# ── Tarjetas de resumen ─────────────────────────────────────── %>
 <div class="stats-grid mb-3">
   <div class="stat-card">
     <div class="stat-card__icon stat-card__icon--blue"><i class="bi bi-arrow-up-circle-fill"></i></div>
@@ -62,10 +70,9 @@
   </div>
 </div>
 
-<%# ── Gráfico + Categorías ───────────────────────────────── %>
+<%# ── Gráfico + Categorías ────────────────────────────────────── %>
 <div class="dashboard-panels mb-3">
 
-  <%# Evolución 12 meses %>
   <div class="dash-panel">
     <div class="dash-panel__header">
       <h2 class="dash-panel__title"><i class="bi bi-bar-chart"></i>Evolución mensual</h2>
@@ -79,7 +86,6 @@
     </div>
   </div>
 
-  <%# Por categoría %>
   <div class="dash-panel">
     <div class="dash-panel__header">
       <h2 class="dash-panel__title"><i class="bi bi-pie-chart"></i>Por categoría</h2>
@@ -93,8 +99,8 @@
               <span style="font-weight:600;color:#333"><%= cat %></span>
               <span style="color:#666">$<%= number_with_delimiter(monto.round(0).to_i) %> &middot; <%= pct %>%</span>
             </div>
-            <div class="progress" style="height:7px;border-radius:10px">
-              <div class="progress-bar" style="width:<%= pct %>%;background:#3b5bdb;border-radius:10px"></div>
+            <div class="progress" style="height:6px;border-radius:10px;background:#edf0f8">
+              <div class="progress-bar" style="width:<%= pct %>%;background:$accent;border-radius:10px;background:#3b5bdb"></div>
             </div>
           </div>
         <% end %>
@@ -106,12 +112,11 @@
 
 </div>
 
-<%# ── Tabla de gastos del período ────────────────────────── %>
+<%# ── Tabla de gastos ─────────────────────────────────────────── %>
 <div class="dash-panel">
   <div class="dash-panel__header">
     <h2 class="dash-panel__title">
-      <i class="bi bi-receipt"></i>
-      Gastos registrados
+      <i class="bi bi-receipt"></i>Gastos registrados
       <span class="dash-count"><%= @gastos.size %></span>
     </h2>
   </div>
@@ -139,12 +144,12 @@
             <span class="status-badge status-badge--neutral"><%= g.imputation&.imputation %></span>
           </td>
           <td><%= g.supplier.presence || "—" %></td>
-          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-            <%= g.description.presence || "—" %>
-          </td>
+          <td class="gasto-table-desc"><%= g.description.presence || "—" %></td>
           <td><%= g.truck&.plate || "—" %></td>
           <td><%= g.driver&.name&.split(" ")&.first || "—" %></td>
-          <td class="text-end"><strong>$<%= number_with_delimiter(g.total.to_i) %></strong></td>
+          <td class="text-end">
+            <strong class="gasto-total-cell">$<%= number_with_delimiter(g.total.to_i) %></strong>
+          </td>
           <td class="dash-table__actions">
             <div class="d-flex gap-1 justify-content-end">
               <%= link_to edit_gasto_path(g),
@@ -167,9 +172,9 @@
       <% end %>
       <% if @gastos.empty? %>
         <tr>
-          <td colspan="8" class="text-center py-4">
-            <i class="bi bi-receipt" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>
-            <span class="text-muted" style="font-size:.875rem">No hay gastos registrados en este período.</span>
+          <td colspan="8" class="text-center py-5">
+            <i class="bi bi-receipt" style="font-size:2.5rem;color:#d0d5e8;display:block;margin-bottom:.75rem"></i>
+            <span style="color:#aaa;font-size:.875rem">No hay gastos registrados en este período.</span>
           </td>
         </tr>
       <% end %>

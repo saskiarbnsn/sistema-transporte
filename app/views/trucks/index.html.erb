@@ -1,7 +1,7 @@
 <div class="dash-panel">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
-      <i class="bi bi-truck-front-fill"></i>
+      <i class="bi bi-truck"></i>
       Camiones
       <span class="dash-count"><%= @trucks.size %></span>
     </h1>
@@ -33,7 +33,13 @@
           <td>
             <% svc = truck.service_kilometres.to_f %>
             <% if svc >= 20_000 %>
-              <span class="status-badge status-badge--danger"><i class="bi bi-wrench me-1"></i>Servicio requerido</span>
+              <button class="status-badge status-badge--danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#serviceModal"
+                      data-service-url="<%= reset_service_truck_path(truck) %>"
+                      data-service-plate="<%= truck.plate %>"
+                      onclick="event.stopPropagation()">Servicio requerido
+              </button>
             <% elsif svc >= 15_000 %>
               <span class="status-badge status-badge--warning"><i class="bi bi-exclamation-triangle me-1"></i><%= number_with_delimiter(svc.to_i) %> km</span>
             <% else %>
@@ -70,3 +76,50 @@
     </tbody>
   </table>
 </div>
+
+<%# ── Modal registrar servicio ──────────────────────────────── %>
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:360px">
+    <div class="modal-content renew-modal">
+      <div class="renew-modal__header">
+        <div class="renew-modal__icon renew-modal__icon--truck"><i class="bi bi-wrench"></i></div>
+        <div>
+          <h5 class="renew-modal__title">Registrar servicio</h5>
+          <p class="renew-modal__sub" id="servicePlate"></p>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="renew-modal__body">
+        <form id="serviceForm" method="post" data-turbo="false">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <input type="hidden" name="_method" value="patch">
+          <div class="mb-3">
+            <label class="gasto-label mb-1" for="serviceDate">Fecha del servicio</label>
+            <input type="date" id="serviceDate" name="service_date"
+                   class="form-control gasto-input" required
+                   value="<%= Date.today %>"
+                   style="border-radius:12px">
+          </div>
+          <div class="mb-3">
+            <label class="gasto-label mb-1" for="serviceNotes">Observaciones (opcional)</label>
+            <input type="text" id="serviceNotes" name="notes"
+                   class="form-control gasto-input"
+                   placeholder="Ej: cambio de aceite, filtros..."
+                   style="border-radius:12px">
+          </div>
+          <button type="submit" class="btn-pill-primary">
+            <i class="bi bi-check-lg me-1"></i>Confirmar servicio
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('serviceModal').addEventListener('show.bs.modal', function(e) {
+    const btn = e.relatedTarget
+    document.getElementById('serviceForm').action = btn.dataset.serviceUrl
+    document.getElementById('servicePlate').textContent = 'Camión ' + btn.dataset.servicePlate
+  })
+</script>

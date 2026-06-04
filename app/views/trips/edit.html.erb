@@ -48,12 +48,18 @@
         </div>
         <div>
           <%= form.label :driver_id, "Chofer", class: "form-label" %>
-          <%= form.collection_select :driver_id, Driver.order(:name), :id, :name,
+          <%= form.collection_select :driver_id,
+                Driver.where.not(id: Trip.active_today.where.not(id: @trip.id).select(:driver_id))
+                             .where("licencia_vencimiento IS NULL OR licencia_vencimiento >= ?", Date.current)
+                             .order(:name),
+                :id, :name,
               { prompt: "Seleccionar..." }, { class: "form-select" } %>
         </div>
         <div>
           <%= form.label :truck_id, "Camión", class: "form-label" %>
-          <%= form.collection_select :truck_id, Truck.order(:plate), :id, :plate,
+          <%= form.collection_select :truck_id,
+                Truck.where.not(id: Trip.active_today.where.not(id: @trip.id).select(:truck_id)).order(:plate),
+                :id, :plate,
               { prompt: "Seleccionar..." }, { class: "form-select" } %>
         </div>
         <div>

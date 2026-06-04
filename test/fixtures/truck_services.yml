@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  truck: one
+  service_date: 2026-06-03
+  kilometres_at_service: 1.5
+  notes: MyString
+
+two:
+  truck: two
+  service_date: 2026-06-03
+  kilometres_at_service: 1.5
+  notes: MyString

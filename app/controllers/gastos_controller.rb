@@ -2,10 +2,15 @@ class GastosController < ApplicationController
   before_action :set_gasto, only: %i[show edit update destroy]
 
   def index
-    @year  = params[:year]&.to_i  || Date.today.year
-    @month = params[:month]&.to_i || Date.today.month
+    @period = params[:period] || "annual"
+    @year   = params[:year]&.to_i  || Date.today.year
+    @month  = params[:month]&.to_i || Date.today.month
 
-    range = Date.new(@year, @month, 1)..Date.new(@year, @month, -1)
+    range = if @period == "monthly"
+              Date.new(@year, @month, 1)..Date.new(@year, @month, -1)
+            else
+              Date.new(@year, 1, 1)..Date.new(@year, 12, 31)
+            end
 
     @gastos = Gasto.includes(:imputation, :driver, :truck)
                    .where(date: range)
@@ -16,18 +21,19 @@ class GastosController < ApplicationController
     @resultado      = @total_ingresos - @total_gastos
     @margen         = @total_ingresos > 0 ? (@resultado / @total_ingresos * 100).round(1) : 0
 
-    @por_categoria = @gastos.joins(:imputation)
-                            .group("imputations.imputation")
-                            .sum(:total)
-                            .sort_by { |_, v| -v }
+    @por_categoria = Gasto.joins(:imputation)
+                      .where(date: range)
+                      .group("imputations.imputation")
+                      .sum(:total)
+                      .sort_by { |_, v| -v }
 
     @chart_labels   = []
     @chart_ingresos = []
     @chart_gastos   = []
-    12.downto(0) do |i|
-      d = Date.today.beginning_of_month - i.months
+    (1..12).each do |m|
+      d = Date.new(@year, m, 1)
       r = d..d.end_of_month
-      @chart_labels   << d.strftime("%b %Y")
+      @chart_labels   << d.strftime("%b")
       @chart_ingresos << Trip.where(date: r).sum(:net).round(2)
       @chart_gastos   << Gasto.where(date: r).sum(:total).round(2)
     end
