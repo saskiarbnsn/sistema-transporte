@@ -1,10 +1,11 @@
-<% fields_data       = Field.all.map       { |f| { id: f.id, latitude: f.latitude, longitude: f.longitude, name: f.name, province: f.province } } %>
+<% fields_data       = Field.all.map       { |f| { id: f.id, latitude: f.latitude, longitude: f.longitude, name: f.name, province: f.province, customer_id: f.customer_id } } %>
 <% destinations_data = Destination.all.map { |d| { id: d.id, latitude: d.latitude, longitude: d.longitude, name: d.name, location: d.location } } %>
 
-<div data-controller="trip-map trip-calculator"
+<div data-controller="trip-map trip-calculator trip-form"
      data-trip-map-api-key-value="<%= ENV['GOOGLE_MAPS_API_KEY'] %>"
      data-trip-map-fields-value="<%= fields_data.to_json %>"
-     data-trip-map-destinations-value="<%= destinations_data.to_json %>">
+     data-trip-map-destinations-value="<%= destinations_data.to_json %>"
+     data-trip-form-fields-value="<%= fields_data.to_json %>">
 
   <%= form_with model: @trip, multipart: true do |form| %>
     <div class="form-page">
@@ -32,13 +33,18 @@
             <div>
               <%= form.label :customer_id, "Cliente", class: "form-label" %>
               <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
-                  { prompt: "Seleccionar..." }, { class: "form-select" } %>
+                  { prompt: "Seleccionar..." },
+                  { class: "form-select",
+                    data: { "trip-form-target": "customerSelect",
+                            action: "change->trip-form#onCustomerChange" } } %>
             </div>
             <div>
               <%= form.label :field_id, "Origen", class: "form-label" %>
-              <%= form.collection_select :field_id, Field.order(:name), :id, :name,
-                  { prompt: "Seleccionar..." },
-                  { class: "form-select", data: { "trip-map-target": "fieldSelect", action: "change->trip-map#update" } } %>
+              <%= form.select :field_id, Field.order(:name).map { |f| [f.name, f.id] }, { prompt: "Seleccionar..." },
+                  { class: "form-select",
+                    data: { "trip-map-target": "fieldSelect",
+                            "trip-form-target": "fieldSelect",
+                            action: "change->trip-map#update change->trip-form#onFieldChange" } } %>
             </div>
             <div>
               <%= form.label :destination_id, "Destino", class: "form-label" %>

@@ -4,7 +4,7 @@ class Truck < ApplicationRecord
   has_many :trips, dependent: :destroy
   has_many :truck_services, dependent: :destroy
 
-  def service_kilometres
+  def service_kilometres_restart
     last_svc = truck_services.first
     start_date = last_svc&.service_date
     q = trips.where.not(kilometres: nil)

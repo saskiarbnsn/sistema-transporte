@@ -12,7 +12,7 @@ export default class extends Controller {
   calculate() {
     const tariff = this.parseNum(this.tariffTarget?.value)
     const weight = this.parseNum(this.weightTarget?.value)
-    const net    = tariff * weight
+    const net    = tariff * weight / 1000
     const iva    = net * 0.21
     const total  = net + iva
 

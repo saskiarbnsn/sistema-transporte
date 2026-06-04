@@ -4,7 +4,7 @@ class Trip < ApplicationRecord
   belongs_to :destination
   belongs_to :driver
   belongs_to :truck
-
+  
   has_one_attached :factura
   has_one_attached :carta_de_porte
 

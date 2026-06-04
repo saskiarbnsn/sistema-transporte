@@ -30,38 +30,38 @@
       <h1 class="ui-form-card__title">Detalle del viaje</h1>
     </div>
     <div class="ui-form-card__body">
-      <div class="detail-grid">
-        <div class="detail-item">
-          <span class="detail-label">Origen</span>
-          <span class="detail-value"><%= @trip.field&.name || @trip.customer&.name || "—" %></span>
+      <div class="ui-form-grid">
+        <div>
+          <span class="form-label d-block">Origen</span>
+          <div class="form-control"><%= "#{@trip.field&.name} - #{@trip.customer&.name}" || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Destino</span>
-          <span class="detail-value"><%= @trip.destination&.name || "—" %></span>
+        <div>
+          <span class="form-label d-block">Destino</span>
+          <div class="form-control"><%= @trip.destination&.name || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Chofer</span>
-          <span class="detail-value"><%= @trip.driver&.name || "—" %></span>
+        <div>
+          <span class="form-label d-block">Chofer</span>
+          <div class="form-control"><%= @trip.driver&.name || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Camión</span>
-          <span class="detail-value"><%= @trip.truck&.plate || "—" %></span>
+        <div>
+          <span class="form-label d-block">Camión</span>
+          <div class="form-control"><%= @trip.truck&.plate || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Producto</span>
-          <span class="detail-value"><%= @trip.product.presence || "—" %></span>
+        <div>
+          <span class="form-label d-block">Producto</span>
+          <div class="form-control"><%= @trip.product.presence || "—" %></div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Peso</span>
-          <span class="detail-value"><%= @trip.weight ? "#{@trip.weight} Kg" : "—" %></span>
+        <div>
+          <span class="form-label d-block">Peso</span>
+          <div class="form-control"><%= @trip.weight ? "#{@trip.weight} Kg" : "—" %></div>
         </div>
         <div>
           <span class="form-label d-block">Tarifa</span>
-          <div class="form-control"><%= @trip.tariff %> $/t</div>
+          <div class="form-control"><%= @trip.tariff %> $/kg</div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Kilómetros</span>
-          <span class="detail-value"><%= @trip.kilometres ? "#{@trip.kilometres} km" : "—" %></span>
+        <div>
+          <span class="form-label d-block">Kilómetros</span>
+          <div class="form-control"><%= @trip.kilometres ? "#{@trip.kilometres} km" : "—" %></div>
         </div>
         <div>
           <span class="form-label d-block">Neto</span>
