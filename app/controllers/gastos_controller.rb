@@ -84,7 +84,7 @@ class GastosController < ApplicationController
     params.require(:gasto).permit(
       :imputation_id, :supplier, :description,
       :driver_id, :truck_id, :date, :total,
-      :truck_disabled, :driver_disabled
+      :truck_disabled, :driver_disabled, :adelantos, :litros
     )
   end
 end

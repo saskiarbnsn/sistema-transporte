@@ -33,6 +33,8 @@
           <td>
             <% if driver.apto_vencimiento.nil? %>
               <span class="status-badge status-badge--neutral">Sin fecha</span>
+              <td on>
+              <td onclick="event.stopPropagation()"><%= render "trips/status_button", trip: trip %></td>
             <% elsif driver.apto_vencimiento < today %>
               <span class="status-badge status-badge--danger">Vencido</span>
             <% elsif driver.apto_vencimiento <= today + 30 %>

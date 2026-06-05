@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_03_131254) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_05_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,6 +101,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_03_131254) do
     t.datetime "updated_at", null: false
     t.boolean "truck_disabled"
     t.boolean "driver_disabled"
+    t.string "adelantos"
+    t.integer "litros"
     t.index ["driver_id"], name: "index_gastos_on_driver_id"
     t.index ["imputation_id"], name: "index_gastos_on_imputation_id"
     t.index ["truck_id"], name: "index_gastos_on_truck_id"

@@ -25,7 +25,7 @@ puts "Iniciando carga de datos de demostración..."
 # ─────────────────────────────────────────────────────────────
 puts "\n→ Creando imputaciones..."
 
-%w[Combustible Reparación Neumáticos Peaje Seguro Viáticos Documentación Otros].each do |nombre|
+%w[Adelanto Administración Combustible Mantenimiento Reparaciones Seguro].each do |nombre|
   imp = Imputation.find_or_create_by!(imputation: nombre)
   puts "   ✓ #{imp.imputation}"
 end

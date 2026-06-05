@@ -14,45 +14,61 @@
   <% end %>
 
   <%# — Propios —%>
-  <div class="gasto-propios">
-    <span class="gasto-propios__label">Propios</span>
-    <label class="gasto-propios__opt">
-      <%= f.radio_button :truck_disabled, "true" %>
-      <span>Si</span>
-    </label>
-    <label class="gasto-propios__opt">
-      <%= f.radio_button :truck_disabled, "false", checked: !gasto.truck_disabled? %>
-      <span>No</span>
-    </label>
+  <div class="mb-4">
+    <span class="form-label d-block">Propios</span>
+    <div class="ui-radio-group">
+      <label>
+        <%= f.radio_button :truck_disabled, "true", checked: gasto.truck_disabled?,
+              data: { action: "change->gasto-form#propiosChange" } %>
+        Sí
+      </label>
+      <label>
+        <%= f.radio_button :truck_disabled, "false", checked: !gasto.truck_disabled?,
+              data: { action: "change->gasto-form#propiosChange" } %>
+        No
+      </label>
+    </div>
   </div>
 
   <%# — Grid de campos —%>
-  <div class="gasto-grid">
-    <div class="gasto-field">
-      <%= f.label :imputation_id, "Imputación", class: "gasto-label" %>
+  <div class="ui-form-grid">
+    <div>
+      <%= f.label :imputation_id, "Imputación", class: "form-label" %>
       <%= f.collection_select :imputation_id, imputations, :id, :imputation,
-            { prompt: "Seleccionar" }, class: "form-select gasto-select" %>
+            { prompt: "Seleccionar" },
+            class: "form-select",
+            data: { "gasto-form-target": "imputacionSelect",
+                    action: "change->gasto-form#imputacionChange" } %>
     </div>
-    <div class="gasto-field">
-      <%= f.label :date, "Fecha", class: "gasto-label" %>
-      <%= f.date_field :date, class: "form-control gasto-input" %>
+    <div>
+      <%= f.label :date, "Fecha", class: "form-label" %>
+      <%= f.date_field :date, class: "form-control" %>
     </div>
-    <div class="gasto-field">
-      <%= f.label :supplier, "Proveedor", class: "gasto-label" %>
-      <%= f.text_field :supplier, class: "form-control gasto-input" %>
+    <div>
+      <%= f.label :supplier, "Proveedor", class: "form-label" %>
+      <%= f.text_field :supplier, class: "form-control" %>
     </div>
-    <div class="gasto-field">
-      <%= f.label :description, "Concepto / Descripción", class: "gasto-label" %>
-      <%= f.text_field :description, class: "form-control gasto-input" %>
+    <div>
+      <%= f.label :description, "Concepto / Descripción", class: "form-label" %>
+      <%= f.text_field :description, class: "form-control" %>
     </div>
-    <div class="gasto-field">
-      <%= f.label :truck_id, "Seleccionar camión", class: "gasto-label" %>
+    <div data-gasto-form-target="truckWrap">
+      <%= f.label :truck_id, "Camión", class: "form-label" %>
       <%= f.collection_select :truck_id, Truck.order(:plate), :id, :plate,
-            { include_blank: "Seleccionar" }, class: "form-select gasto-select" %>
+            { include_blank: "Seleccionar" },
+            class: "form-select",
+            data: { "gasto-form-target": "truckSelect" } %>
     </div>
-    <div class="gasto-field">
-      <label class="gasto-label">Adelantos</label>
-      <input class="form-control gasto-input gasto-input--disabled" disabled>
+    <div data-gasto-form-target="adelantosWrap">
+      <%= f.label :adelantos, "Adelantos", class: "form-label" %>
+      <%= f.text_field :adelantos, class: "form-control",
+            disabled: true,
+            data: { "gasto-form-target": "adelantosInput" } %>
+    </div>
+    <div class="d-none" data-gasto-form-target="litrosWrap">
+      <%= f.label :litros, "Litros", class: "form-label" %>
+      <%= f.number_field :litros, class: "form-control", min: 0,
+            data: { "gasto-form-target": "litrosInput" } %>
     </div>
   </div>
 
@@ -77,13 +93,13 @@
       <div class="gasto-totals__sep"></div>
       <div class="gasto-totals__col">
         <span class="gasto-totals__col-label">Gravado</span>
-        <span class="gasto-totals__col-value">$0,00</span>
+        <span class="gasto-totals__col-value" data-gasto-form-target="gravadoDisplay">$ 0,00</span>
       </div>
     </div>
   </div>
 
   <%# — Acciones —%>
-  <div class="gasto-actions">
+  <div class="ui-form-actions">
     <%= f.submit gasto.new_record? ? "Confirmar" : "Actualizar", class: "btn-pill-primary" %>
     <%= link_to "Cancelar", gastos_path, class: "btn-pill-secondary" %>
   </div>
