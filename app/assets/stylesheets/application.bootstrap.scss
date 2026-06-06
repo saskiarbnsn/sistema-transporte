@@ -409,9 +409,33 @@ body { background: $surface; margin: 0; }
   border: none;
 
   &--ok      { background: #d3f9d8; color: #2b6d31; }
-  &--warning { background: #fff3bf; color: #7b5e00; }
-  &--danger  { background: #ffe0e0; color: #c92a2a; }
-  &--neutral { background: #e9ecef; color: #666; }
+  &--warning { background: #fff3bf; color: #7b5e00; 
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+  }
+  &--danger  { background: #ffe0e0; color: #c92a2a; 
+    cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+      &:hover {
+        transform: scale(1.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      }
+  }
+  &--neutral { background: #e9ecef; color: #666; 
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+  }
 }
 
 button.status-badge {
@@ -440,7 +464,7 @@ button.status-badge {
   border-bottom: 1px solid #f0f2f8;
 
   &:nth-child(odd)  { border-right: 1px solid #f0f2f8; padding-left: 0; }
-  &:nth-child(even) { }
+ 
 
   &--full {
     grid-column: span 2;

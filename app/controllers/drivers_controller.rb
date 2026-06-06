@@ -48,6 +48,17 @@ class DriversController < ApplicationController
     end
   end
 
+  def update_status
+    @driver = Driver.find(params[:id])
+    @driver.update(aptofisico: false, apto_vencimiento: Date.current)
+    @driver.update(licencia_vencimiento: Date.current) if @driver.licencia_vencimiento.nil? || @driver.licencia_vencimiento > Date.current
+    render turbo_stream: turbo_stream.replace(
+      "driver_status_#{@driver.id}",
+      partial: "driver/status_button",
+      locals: { driver: @driver }
+    )
+  end
+
   # DELETE /drivers/1 or /drivers/1.json
   def destroy
     @driver.destroy
@@ -59,9 +70,11 @@ class DriversController < ApplicationController
   end
 
   def renew_apto
-    date = Date.parse(params[:renewal_date]) rescue nil
-    @driver.update(apto_vencimiento: date, aptofisico: true)
-    redirect_back fallback_location: drivers_path, notice: "Apto físico renovado hasta #{date&.strftime('%d/%m/%Y')}."
+    has_apto = params[:aptofisico] == "1"
+    date = has_apto ? (Date.parse(params[:renewal_date]) rescue nil) : nil
+    @driver.update(apto_vencimiento: date, aptofisico: has_apto)
+    notice = has_apto ? "Apto físico vigente hasta #{date&.strftime('%d/%m/%Y')}." : "Apto físico marcado como no vigente."
+    redirect_back fallback_location: drivers_path, notice: notice
   end
 
   def renew_licencia
