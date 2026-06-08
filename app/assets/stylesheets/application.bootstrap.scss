@@ -433,7 +433,11 @@ body { background: $surface; margin: 0; }
   white-space: nowrap;
   border: none;
 
-  &--ok      { background: #d3f9d8; color: #2b6d31; }
+  &--ok      { background: #d3f9d8; color: #2b6d31;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    &:hover { transform: scale(1.08); box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+  }
   &--warning { background: #fff3bf; color: #7b5e00; 
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;

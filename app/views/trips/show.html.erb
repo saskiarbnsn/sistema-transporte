@@ -21,7 +21,8 @@
   end
 %>
 
-<div class="form-page" data-controller="trip-status">
+<div data-controller="trip-status">
+<div class="form-page">
 
   <%# ── Columna izquierda: datos del viaje ── %>
   <div class="ui-form-card">
@@ -205,33 +206,32 @@
     </div>
   </div>
 
-</div>
-
-<%# ── Modal finalización de viaje ── %>
-<div class="modal fade" id="trip-finalize-modal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
-    <div class="modal-content" style="border-radius:16px;border:none">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-semibold">Fecha de finalización</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label" style="color:#3b5bdb;font-weight:500;font-size:.85rem">
-          Seleccioná la fecha de finalización
-        </label>
-        <input type="date"
-               class="form-control"
-               style="background:#f4f6fc;border:none;border-radius:10px"
-               data-trip-status-target="dateInput">
-        <input type="hidden" data-trip-status-target="tripId">
-        <p class="text-danger mt-2 mb-0" style="font-size:.82rem;display:none"
-           data-trip-status-target="error">
-          Seleccioná una fecha antes de continuar.
-        </p>
-      </div>
-      <div class="modal-footer border-0 pt-0 flex-column gap-2">
-        <button type="button" class="btn-pill-primary" data-action="click->trip-status#confirm">Aceptar</button>
-        <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">Cancelar</button>
+  <%# ── Modal finalización de viaje ── %>
+  <div class="modal fade" id="trip-finalize-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content" style="border-radius:16px;border:none">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-semibold">Fecha de finalización</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label" style="color:#3b5bdb;font-weight:500;font-size:.85rem">
+            Seleccioná la fecha de finalización
+          </label>
+          <input type="date"
+                 class="form-control"
+                 style="background:#f4f6fc;border:none;border-radius:10px"
+                 data-trip-status-target="dateInput">
+          <input type="hidden" data-trip-status-target="tripId">
+          <p class="text-danger mt-2 mb-0" style="font-size:.82rem;display:none"
+             data-trip-status-target="error">
+            Seleccioná una fecha antes de continuar.
+          </p>
+        </div>
+        <div class="modal-footer border-0 pt-0 flex-column gap-2">
+          <button type="button" class="btn-pill-primary" data-action="click->trip-status#confirm">Aceptar</button>
+          <button type="button" class="btn-pill-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
       </div>
     </div>
   </div>

@@ -38,9 +38,17 @@
           <span class="form-label d-block">Apto físico</span>
           <div class="form-control">
             <% if @driver.aptofisico %>
-              <span class="status-badge status-badge--ok">Sí</span>
+              <button class="status-badge status-badge--ok"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="1">Sí</button>
             <% else %>
-              <span class="status-badge status-badge--danger">No</span>
+              <button class="status-badge status-badge--danger"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="0">No</button>
             <% end %>
           </div>
         </div>
@@ -48,12 +56,27 @@
           <span class="form-label d-block">Venc. licencia</span>
           <div class="form-control d-flex align-items-center gap-2">
             <%= @driver.licencia_vencimiento&.strftime("%d/%m/%Y") || "—" %>
-            <% if @driver.licencia_vencimiento %>
-              <% if @driver.licencia_vencimiento < Date.today %>
-                <span class="status-badge status-badge--danger ms-1">Vencida</span>
-              <% elsif @driver.licencia_vencimiento <= Date.today + 30 %>
-                <span class="status-badge status-badge--warning ms-1">Vence pronto</span>
-              <% end %>
+            <% today = Date.current %>
+            <% if @driver.licencia_vencimiento.nil? %>
+              <button class="status-badge status-badge--neutral ms-1"
+                      data-bs-toggle="modal" data-bs-target="#licenciaModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>">Sin fecha</button>
+            <% elsif @driver.licencia_vencimiento < today %>
+              <button class="status-badge status-badge--danger ms-1"
+                      data-bs-toggle="modal" data-bs-target="#licenciaModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>">Vencida</button>
+            <% elsif @driver.licencia_vencimiento <= today + 30 %>
+              <button class="status-badge status-badge--warning ms-1"
+                      data-bs-toggle="modal" data-bs-target="#licenciaModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>">Vence pronto</button>
+            <% else %>
+              <button class="status-badge status-badge--ok ms-1"
+                      data-bs-toggle="modal" data-bs-target="#licenciaModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>">Vigente</button>
             <% end %>
           </div>
         </div>
@@ -61,12 +84,30 @@
           <span class="form-label d-block">Venc. apto físico</span>
           <div class="form-control d-flex align-items-center gap-2">
             <%= @driver.apto_vencimiento&.strftime("%d/%m/%Y") || "—" %>
-            <% if @driver.apto_vencimiento && @driver.aptofisico %>
-              <% if @driver.apto_vencimiento < Date.today %>
-                <span class="status-badge status-badge--danger ms-1">Vencido</span>
-              <% elsif @driver.apto_vencimiento <= Date.today + 30 %>
-                <span class="status-badge status-badge--warning ms-1">Vence pronto</span>
-              <% end %>
+            <% if @driver.apto_vencimiento.nil? %>
+              <button class="status-badge status-badge--neutral ms-1"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="<%= @driver.aptofisico ? '1' : '0' %>">Sin fecha</button>
+            <% elsif @driver.apto_vencimiento < today %>
+              <button class="status-badge status-badge--danger ms-1"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="<%= @driver.aptofisico ? '1' : '0' %>">Vencido</button>
+            <% elsif @driver.apto_vencimiento <= today + 30 %>
+              <button class="status-badge status-badge--warning ms-1"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="<%= @driver.aptofisico ? '1' : '0' %>">Vence pronto</button>
+            <% else %>
+              <button class="status-badge status-badge--ok ms-1"
+                      data-bs-toggle="modal" data-bs-target="#aptoModal"
+                      data-driver-id="<%= @driver.id %>"
+                      data-driver-name="<%= @driver.name %>"
+                      data-driver-has-apto="1">Vigente</button>
             <% end %>
           </div>
         </div>
@@ -90,3 +131,105 @@
   </div>
 
 </div>
+
+<%# ── Modal: Apto físico ── %>
+<div class="modal fade" id="aptoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:360px">
+    <div class="modal-content renew-modal">
+      <div class="renew-modal__header">
+        <div class="renew-modal__icon"><i class="bi bi-heart-pulse"></i></div>
+        <div>
+          <h5 class="renew-modal__title">Apto físico</h5>
+          <p class="renew-modal__sub" id="aptoDriverName"></p>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="renew-modal__body">
+        <form id="aptoForm" method="post" data-turbo="false">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <input type="hidden" name="_method" value="patch">
+          <div class="mb-3">
+            <label class="gasto-label mb-2">¿Tiene apto físico?</label>
+            <div class="d-flex gap-4 mt-1">
+              <label class="d-flex align-items-center gap-2" style="font-size:.9rem;cursor:pointer">
+                <input type="radio" name="aptofisico" id="aptoSi" value="1"
+                       style="width:18px;height:18px;accent-color:#3b5bdb;cursor:pointer">
+                Sí
+              </label>
+              <label class="d-flex align-items-center gap-2" style="font-size:.9rem;cursor:pointer">
+                <input type="radio" name="aptofisico" id="aptoNo" value="0"
+                       style="width:18px;height:18px;accent-color:#3b5bdb;cursor:pointer">
+                No
+              </label>
+            </div>
+          </div>
+          <div class="mb-3" id="aptoDateGroup">
+            <label class="gasto-label mb-1" for="aptoDate">Fecha de vencimiento</label>
+            <input type="date" id="aptoDate" name="renewal_date"
+                   class="form-control gasto-input"
+                   style="border-radius:12px">
+          </div>
+          <button type="submit" class="btn-pill-primary">
+            <i class="bi bi-check-lg me-1"></i>Confirmar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── Modal: Licencia de conducir ── %>
+<div class="modal fade" id="licenciaModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:360px">
+    <div class="modal-content renew-modal">
+      <div class="renew-modal__header">
+        <div class="renew-modal__icon"><i class="bi bi-card-text"></i></div>
+        <div>
+          <h5 class="renew-modal__title">Licencia de conducir</h5>
+          <p class="renew-modal__sub" id="licenciaDriverName"></p>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="renew-modal__body">
+        <form id="licenciaForm" method="post" data-turbo="false">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <input type="hidden" name="_method" value="patch">
+          <div class="mb-3">
+            <label class="gasto-label mb-1" for="licenciaDate">Nueva fecha de vencimiento</label>
+            <input type="date" id="licenciaDate" name="renewal_date"
+                   class="form-control gasto-input" required
+                   value="<%= Date.today %>"
+                   style="border-radius:12px">
+          </div>
+          <button type="submit" class="btn-pill-primary">
+            <i class="bi bi-check-lg me-1"></i>Confirmar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('aptoModal').addEventListener('show.bs.modal', function(e) {
+    var btn = e.relatedTarget;
+    document.getElementById('aptoDriverName').textContent = btn.dataset.driverName;
+    document.getElementById('aptoForm').action = '/drivers/' + btn.dataset.driverId + '/renew_apto';
+    var hasApto = btn.dataset.driverHasApto === '1';
+    document.getElementById('aptoSi').checked = hasApto;
+    document.getElementById('aptoNo').checked = !hasApto;
+    document.getElementById('aptoDateGroup').style.display = hasApto ? '' : 'none';
+  });
+
+  document.querySelectorAll('input[name="aptofisico"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.getElementById('aptoDateGroup').style.display = this.value === '1' ? '' : 'none';
+    });
+  });
+
+  document.getElementById('licenciaModal').addEventListener('show.bs.modal', function(e) {
+    var btn = e.relatedTarget;
+    document.getElementById('licenciaDriverName').textContent = btn.dataset.driverName;
+    document.getElementById('licenciaForm').action = '/drivers/' + btn.dataset.driverId + '/renew_licencia';
+  });
+</script>

@@ -94,7 +94,9 @@
     <section class="dash-panel">
       <div class="dash-panel__header">
         <h2 class="dash-panel__title">Historial de viajes</h2>
-        <i class="bi bi-three-dots-vertical"></i>
+        <%= link_to trips_path, class: "dash-action dash-action--edit", title: "Ver historial de viajes" do %>
+          <i class="bi bi-arrow-right"></i>
+        <% end %>
       </div>
       <table class="dash-table">
         <thead>

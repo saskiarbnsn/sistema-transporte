@@ -1,27 +1,41 @@
-<div class="dash-panel">
+<div class="dash-panel" data-controller="table-sort table-filter">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
       <i class="bi bi-geo-alt"></i>
       Destinos
       <span class="dash-count"><%= @destinations.size %></span>
     </h1>
-    <%= link_to new_destination_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem" do %>
-      <i class="bi bi-plus-lg me-1"></i> Nuevo destino
-    <% end %>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <div class="position-relative">
+        <i class="bi bi-search position-absolute" style="left:.65rem;top:50%;transform:translateY(-50%);color:#aaa;font-size:.8rem;pointer-events:none"></i>
+        <input type="text"
+               class="form-control form-control-sm"
+               placeholder="Buscar..."
+               data-table-filter-target="input"
+               data-action="input->table-filter#filter"
+               style="width:220px;padding-left:2rem;border-radius:8px;background:#f4f6fc;border:none;font-size:.82rem">
+      </div>
+      <%= link_to new_destination_path, class: "btn-pill-primary", style: "width:auto;padding:.5rem 1.25rem;font-size:.85rem;white-space:nowrap" do %>
+        <i class="bi bi-plus-lg me-1"></i> Nuevo destino
+      <% end %>
+    </div>
   </div>
 
   <table class="dash-table">
     <thead>
       <tr>
-        <th data-sortable style="cursor:pointer;user-select:none">Nombre <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
-        <th data-sortable style="cursor:pointer;user-select:none">CUIT <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
-        <th data-sortable style="cursor:pointer;user-select:none">Ubicación <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Nombre <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">CUIT <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Ubicación <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
         <th class="dash-table__actions"></th>
       </tr>
     </thead>
     <tbody>
       <% @destinations.each do |destination| %>
-        <tr class="dash-table__row" onclick="window.location='<%= destination_path(destination) %>'" style="cursor:pointer">
+        <tr class="dash-table__row"
+            data-table-filter-target="row"
+            onclick="window.location='<%= destination_path(destination) %>'"
+            style="cursor:pointer">
           <td><strong><%= destination.name %></strong></td>
           <td><%= destination.cuit %></td>
           <td><%= destination.location %></td>

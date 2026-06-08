@@ -1,30 +1,42 @@
-<div class="dash-panel" data-controller="trip-status">
+<div class="dash-panel" data-controller="trip-status table-sort table-filter">
   <div class="dash-panel__header">
     <h2 class="dash-panel__title" style="font-size:.95rem">
       <i class="bi bi-map-fill"></i>
       Viajes
       <span class="dash-count"><%= trips.size %></span>
     </h2>
-    <%= link_to trips_path, class: "btn-pill-secondary",
-          style: "width:auto;padding:.4rem 1rem;font-size:.8rem" do %>
-      <i class="bi bi-list me-1"></i>Ver todos
-    <% end %>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <div class="position-relative">
+        <i class="bi bi-search position-absolute" style="left:.65rem;top:50%;transform:translateY(-50%);color:#aaa;font-size:.8rem;pointer-events:none"></i>
+        <input type="text"
+               class="form-control form-control-sm"
+               placeholder="Buscar..."
+               data-table-filter-target="input"
+               data-action="input->table-filter#filter"
+               style="width:180px;padding-left:2rem;border-radius:8px;background:#f4f6fc;border:none;font-size:.82rem">
+      </div>
+      <%= link_to trips_path, class: "btn-pill-secondary",
+            style: "width:auto;padding:.4rem 1rem;font-size:.8rem;white-space:nowrap" do %>
+        <i class="bi bi-list me-1"></i>Ver todos
+      <% end %>
+    </div>
   </div>
 
   <% if trips.any? %>
     <table class="dash-table">
       <thead>
         <tr>
-          <th>Fecha</th>
-          <th>Origen</th>
-          <th>Destino</th>
-          <th>Producto</th>
-          <th>Estado</th>
+          <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Fecha <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+          <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Origen <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+          <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Destino <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+          <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Producto <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+          <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Estado <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
         </tr>
       </thead>
       <tbody>
         <% trips.each do |trip| %>
           <tr class="dash-table__row"
+              data-table-filter-target="row"
               onclick="window.location='<%= trip_path(trip) %>'"
               style="cursor:pointer">
             <td style="white-space:nowrap"><%= trip.date&.strftime("%d/%m/%Y") %></td>

@@ -39,3 +39,6 @@ application.register("trip-calculator", TripCalculatorController)
 
 import TableSortController from "./table_sort_controller"
 application.register("table-sort", TableSortController)
+
+import TableFilterController from "./table_filter_controller"
+application.register("table-filter", TableFilterController)

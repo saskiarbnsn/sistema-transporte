@@ -9,7 +9,7 @@ class TrucksController < ApplicationController
   # GET /trucks/1 or /trucks/1.json
   def show
     @trips    = @truck.trips.includes(:field, :customer, :destination, :driver)
-                      .order(date: :desc).limit(50)
+                      .order(date: :desc).limit(10)
     @services = @truck.truck_services.limit(20)
   end
 
