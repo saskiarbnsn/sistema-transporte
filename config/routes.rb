@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :customers
   resources :trucks do
     patch :reset_service, on: :member
+    resources :truck_services, only: %i[index show edit update destroy]
   end
   resources :drivers do
     patch :renew_apto,     on: :member

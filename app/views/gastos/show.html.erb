@@ -58,7 +58,7 @@
         <div class="gasto-totals__breakdown">
           <div class="gasto-totals__col">
             <span class="gasto-totals__col-label">Neto</span>
-            <span class="gasto-totals__col-value">$&thinsp;<%= number_with_delimiter(@gasto.gravado.to_f.round(2)) %></span>
+            <span class="gasto-totals__col-value">$&thinsp;<%= number_with_delimiter(@gasto.net.to_f.round(2)) %></span>
           </div>
           <div class="gasto-totals__sep"></div>
           <div class="gasto-totals__col">
@@ -68,7 +68,7 @@
           <div class="gasto-totals__sep"></div>
           <div class="gasto-totals__col">
             <span class="gasto-totals__col-label">Gravado</span>
-            <span class="gasto-totals__col-value">$0,00</span>
+            <span class="gasto-totals__col-value">$&thinsp;<%= number_with_delimiter(@gasto.gravado.to_f.round(2)) %></span>
           </div>
         </div>
       </div>

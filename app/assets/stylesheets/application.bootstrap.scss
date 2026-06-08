@@ -121,6 +121,31 @@ body { background: $surface; margin: 0; }
   padding: 0.4rem 0;
 }
 
+.sidebar-tooltip {
+  position: fixed;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1090;
+  box-shadow: 0 2px 8px rgba(0,0,0,.22);
+
+  &::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #1e293b;
+  }
+}
+
 // ── Main ───────────────────────────────────────────────────────
 .app-main {
   flex: 1;
@@ -1072,6 +1097,18 @@ button.status-badge {
 
 .gasto-total-cell { color: $accent; }
 
+.imp-chip {
+  display: inline-block;
+  padding: 0.18rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #e9ecef;
+  color: #555;
+  cursor: default;
+}
+
 // ── Gasto form ────────────────────────────────────────────────
 .gasto-page {
   max-width: 900px;
@@ -1299,6 +1336,89 @@ button.status-badge {
   gap: 0.5rem;
   max-width: 360px;
   margin: 0 auto;
+}
+
+// ── Confirm card modals ────────────────────────────────────────
+.confirm-card {
+  border: none !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15) !important;
+}
+
+.confirm-card__inner {
+  padding: 2.25rem 2rem 1.75rem;
+  text-align: center;
+}
+
+.confirm-card__icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.25rem;
+
+  &--warning { background: #fff3bf; color: #e67700; }
+  &--danger  { background: #ffe0e0; color: #c92a2a; }
+}
+
+.confirm-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 .4rem;
+}
+
+.confirm-card__msg {
+  font-size: .875rem;
+  color: #888;
+  margin: 0 0 1.4rem;
+  line-height: 1.5;
+}
+
+.confirm-card__list {
+  list-style: none;
+  padding: .65rem 1rem;
+  margin: 0 0 .85rem;
+  background: #f5f6fa;
+  border-radius: 10px;
+  text-align: left;
+  font-size: .85rem;
+  color: #1a1a2e;
+  li + li { margin-top: .25rem; }
+}
+
+.confirm-card__alert {
+  border-radius: 10px;
+  padding: .6rem .9rem;
+  font-size: .82rem;
+  text-align: left;
+  margin-bottom: 1.4rem;
+
+  &--danger { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+}
+
+.confirm-card__actions {
+  display: flex;
+  gap: .6rem;
+}
+
+.confirm-card__btn {
+  flex: 1;
+  padding: .72rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: .9rem;
+  border: none;
+  cursor: pointer;
+  transition: filter .15s;
+
+  &--cancel  { background: #e2e5ee; color: #555; &:hover { filter: brightness(.95); } }
+  &--confirm { background: $accent; color: #fff; &:hover { filter: brightness(.9); } }
+  &--delete  { background: #c92a2a; color: #fff; &:hover { filter: brightness(.9); } }
 }
 
 // ── Auth / Login ───────────────────────────────────────────────

@@ -1,4 +1,11 @@
-<%= form_with(model: gasto, data: { controller: "gasto-form" }) do |f| %>
+<%= form_with(model: gasto, data: {
+    controller: "gasto-form",
+    has_service:              gasto.persisted? && gasto.imputation&.imputation == "Mantenimiento" && gasto.truck.present?,
+    original_truck_id:        gasto.truck_id,
+    original_truck_plate:     gasto.truck&.plate,
+    original_imputation_id:   gasto.imputation_id,
+    original_imputation_name: gasto.imputation&.imputation
+  }) do |f| %>
   <% if gasto.errors.any? %>
     <div class="form-errors mb-3">
       <i class="bi bi-exclamation-circle-fill form-errors__icon"></i>
@@ -100,7 +107,30 @@
 
   <%# — Acciones —%>
   <div class="ui-form-actions">
-    <%= f.submit gasto.new_record? ? "Confirmar" : "Actualizar", class: "btn-pill-primary" %>
+    <button type="submit" class="btn-pill-primary" data-gasto-form-target="submitBtn">
+      <%= gasto.new_record? ? "Confirmar" : "Actualizar" %>
+    </button>
     <%= link_to "Cancelar", gastos_path, class: "btn-pill-secondary" %>
+  </div>
+
+  <%# — Modal de confirmación de cambios en servicio técnico —%>
+  <div class="modal fade" tabindex="-1" data-gasto-form-target="confirmModal">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:380px">
+      <div class="modal-content confirm-card">
+        <div class="confirm-card__inner">
+          <div class="confirm-card__icon confirm-card__icon--warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+          <h5 class="confirm-card__title">¿Estás seguro?</h5>
+          <p class="confirm-card__msg">Los siguientes campos cambiarán:</p>
+          <ul class="confirm-card__list" data-gasto-form-target="changeList"></ul>
+          <div class="confirm-card__alert confirm-card__alert--danger" data-gasto-form-target="impactMsg"></div>
+          <div class="confirm-card__actions">
+            <button type="button" class="confirm-card__btn confirm-card__btn--cancel" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="confirm-card__btn confirm-card__btn--confirm" data-action="click->gasto-form#doConfirm">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 <% end %>

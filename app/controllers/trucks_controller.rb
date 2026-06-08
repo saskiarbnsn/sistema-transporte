@@ -61,14 +61,25 @@ class TrucksController < ApplicationController
 
   def reset_service
     date = Date.parse(params[:service_date]) rescue Date.today
-    TruckService.create!(
-      truck:                @truck,
-      service_date:         date,
-      kilometres_at_service: @truck.service_kilometres.to_f,
-      notes:                params[:notes].presence
+    imputation = Imputation.find_by(imputation: "Mantenimiento")
+
+    gasto = Gasto.new(
+      truck:       @truck,
+      imputation:  imputation,
+      date:        date,
+      supplier:    params[:supplier].presence,
+      description: params[:description].presence,
+      total:       params[:total].to_f
     )
-    redirect_back fallback_location: trucks_path,
-      notice: "Servicio registrado el #{date.strftime('%d/%m/%Y')}."
+
+    if gasto.save
+      @truck.update_column(:service_kilometres, 0)
+      redirect_back fallback_location: trucks_path,
+        notice: "Servicio registrado el #{date.strftime('%d/%m/%Y')} y cargado en gastos."
+    else
+      redirect_back fallback_location: trucks_path,
+        alert: "Error al registrar: #{gasto.errors.full_messages.join(', ')}"
+    end
   end
 
   private

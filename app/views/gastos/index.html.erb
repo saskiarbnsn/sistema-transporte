@@ -124,13 +124,13 @@
   <table class="dash-table">
     <thead>
       <tr>
-        <th>Fecha</th>
-        <th>Categoría</th>
-        <th>Proveedor</th>
-        <th>Descripción</th>
-        <th>Camión</th>
-        <th>Chofer</th>
-        <th class="text-end">Total</th>
+        <th data-sortable style="cursor:pointer;user-select:none">Fecha <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable style="cursor:pointer;user-select:none">Categoría <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable style="cursor:pointer;user-select:none">Proveedor <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable style="cursor:pointer;user-select:none">Descripción <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable style="cursor:pointer;user-select:none">Camión <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable style="cursor:pointer;user-select:none">Chofer <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+        <th data-sortable class="text-end" style="cursor:pointer;user-select:none">Total <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
         <th class="dash-table__actions"></th>
       </tr>
     </thead>
@@ -141,7 +141,7 @@
             style="cursor:pointer">
           <td style="white-space:nowrap"><%= g.date&.strftime("%d/%m/%Y") %></td>
           <td>
-            <span class="status-badge status-badge--neutral"><%= g.imputation&.imputation %></span>
+            <span class="imp-chip"><%= g.imputation&.imputation %></span>
           </td>
           <td><%= g.supplier.presence || "—" %></td>
           <td class="gasto-table-desc"><%= g.description.presence || "—" %></td>

@@ -38,5 +38,115 @@
         <main class="app-content"><%= yield %></main>
       </div>
     </div>
+  <%# — Modal global para confirmaciones de eliminar (turbo-confirm) —%>
+  <div class="modal fade" id="appConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:360px">
+      <div class="modal-content confirm-card">
+        <div class="confirm-card__inner">
+          <div class="confirm-card__icon confirm-card__icon--danger">
+            <i class="bi bi-trash3-fill"></i>
+          </div>
+          <h5 class="confirm-card__title">¿Estás seguro?</h5>
+          <p class="confirm-card__msg" id="appConfirmMessage"></p>
+          <div class="confirm-card__actions">
+            <button type="button" class="confirm-card__btn confirm-card__btn--cancel" id="appConfirmCancel">Cancelar</button>
+            <button type="button" class="confirm-card__btn confirm-card__btn--delete" id="appConfirmOk">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Turbo confirm custom — agrega listener capture ANTES de que cargue Turbo (script inline) %>
+  <%# Bootstrap no está cargado aún, pero sí estará cuando el usuario haga click %>
+  <script>
+    document.addEventListener("submit", function(e) {
+      var form = e.target;
+      var msg = form.dataset.turboConfirm;
+      if (!msg) return;
+      if (form.dataset.confirmedOnce === "1") { delete form.dataset.confirmedOnce; return; }
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var el = document.getElementById("appConfirmModal");
+      if (!el) {
+        if (window.confirm(msg)) { form.dataset.confirmedOnce = "1"; form.requestSubmit(); }
+        return;
+      }
+      document.getElementById("appConfirmMessage").textContent = msg;
+      var modal = bootstrap.Modal.getOrCreateInstance(el);
+      var done = false;
+      function answer(val) {
+        if (done) return; done = true;
+        el.removeEventListener("hidden.bs.modal", onHide);
+        document.getElementById("appConfirmOk").removeEventListener("click", onOk);
+        document.getElementById("appConfirmCancel").removeEventListener("click", onCancel);
+        modal.hide();
+        if (val) { form.dataset.confirmedOnce = "1"; form.requestSubmit(); }
+      }
+      function onOk()   { answer(true);  }
+      function onCancel(){ answer(false); }
+      function onHide() { answer(false); }
+      document.getElementById("appConfirmOk").addEventListener("click", onOk);
+      document.getElementById("appConfirmCancel").addEventListener("click", onCancel);
+      el.addEventListener("hidden.bs.modal", onHide);
+      modal.show();
+    }, { capture: true });
+  </script>
+
+  <script>
+    (function() {
+      function tsDate(s) {
+        var m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+        return m ? new Date(m[3]+'-'+m[2]+'-'+m[1]).getTime() : null;
+      }
+      function tsNum(s) {
+        var t = s.trim().replace(/^[$\s]+/,'').replace(/\s*km$/i,'').replace(/\s*kg$/i,'');
+        if (!t || !/^[0-9]/.test(t) || /[a-zA-Z-]/.test(t)) return null;
+        var hasDot = t.indexOf('.') !== -1, hasComma = t.indexOf(',') !== -1, result;
+        if (hasComma) {
+          result = t.replace(/\./g,'').replace(',','.');
+        } else if (hasDot) {
+          var parts = t.split('.');
+          var thousandsFmt = parts.slice(1).every(function(p){ return p.length === 3 && /^\d+$/.test(p); });
+          result = thousandsFmt ? t.replace(/\./g,'') : t;
+        } else {
+          result = t;
+        }
+        var n = parseFloat(result);
+        return isNaN(n) ? null : n;
+      }
+      function tsCmp(a, b) {
+        var da = tsDate(a), db = tsDate(b);
+        if (da !== null && db !== null) return da - db;
+        var na = tsNum(a), nb = tsNum(b);
+        if (na !== null && nb !== null) return na - nb;
+        return a.localeCompare(b, 'es', { sensitivity: 'base' });
+      }
+      document.addEventListener('click', function(e) {
+        var th = e.target.closest('th[data-sortable]');
+        if (!th) return;
+        var table = th.closest('table');
+        if (!table) return;
+        var colIndex = Array.from(th.parentElement.children).indexOf(th);
+        var tbody = table.querySelector('tbody');
+        var rows = Array.from(tbody.querySelectorAll('tr.dash-table__row'));
+        var isAsc = th.dataset.sortDir !== 'asc';
+        th.closest('tr').querySelectorAll('th[data-sortable]').forEach(function(h) {
+          delete h.dataset.sortDir;
+          var c = h.querySelector('.sort-caret');
+          if (c) { c.className = 'sort-caret bi bi-caret-down-fill'; c.style.opacity = '0.3'; }
+        });
+        th.dataset.sortDir = isAsc ? 'asc' : 'desc';
+        var caret = th.querySelector('.sort-caret');
+        if (caret) { caret.className = 'sort-caret bi bi-caret-'+(isAsc?'up':'down')+'-fill'; caret.style.opacity = '1'; }
+        rows.sort(function(a, b) {
+          var at = (a.cells[colIndex] ? a.cells[colIndex].textContent : '').trim();
+          var bt = (b.cells[colIndex] ? b.cells[colIndex].textContent : '').trim();
+          return isAsc ? tsCmp(at, bt) : tsCmp(bt, at);
+        });
+        rows.forEach(function(r) { tbody.appendChild(r); });
+      });
+    })();
+  </script>
   </body>
 </html>

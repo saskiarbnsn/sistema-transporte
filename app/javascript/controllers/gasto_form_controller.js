@@ -4,13 +4,26 @@ export default class extends Controller {
   static targets = [
     "total", "netoDisplay", "ivaDisplay", "gravadoDisplay",
     "truckSelect", "truckWrap", "adelantosInput", "adelantosWrap",
-    "imputacionSelect", "litrosWrap", "litrosInput"
+    "imputacionSelect", "litrosWrap", "litrosInput",
+    "confirmModal", "changeList", "impactMsg",
+    "submitBtn"
   ]
 
   connect() {
+    this._confirmed = false
+    if (this.hasSubmitBtnTarget) {
+      this._boundClick = this._onSubmitClick.bind(this)
+      this.submitBtnTarget.addEventListener("click", this._boundClick)
+    }
     this._refreshFromState()
     this._toggleLitros()
     this.calculate()
+  }
+
+  disconnect() {
+    if (this._boundClick && this.hasSubmitBtnTarget) {
+      this.submitBtnTarget.removeEventListener("click", this._boundClick)
+    }
   }
 
   propiosChange() {
@@ -45,6 +58,56 @@ export default class extends Controller {
     if (this.hasGravadoDisplayTarget) this.gravadoDisplayTarget.textContent = fmt(gravado)
   }
 
+  doConfirm() {
+    bootstrap.Modal.getInstance(this.confirmModalTarget)?.hide()
+    this._confirmed = true
+    this.submitBtnTarget.click()
+  }
+
+  // ── Private ──────────────────────────────────────────────────
+
+  _onSubmitClick(event) {
+    if (this._confirmed) { this._confirmed = false; return }
+
+    const hasService = this.element.dataset.hasService === "true"
+    if (!hasService) return
+
+    const origTruckId    = this.element.dataset.originalTruckId    || ""
+    const origTruckPlate = this.element.dataset.originalTruckPlate || "—"
+    const origImpId      = this.element.dataset.originalImputationId   || ""
+    const origImpName    = this.element.dataset.originalImputationName || ""
+
+    const currentTruckId = this.hasTruckSelectTarget ? this.truckSelectTarget.value : origTruckId
+    const currentImpId   = this.hasImputacionSelectTarget ? this.imputacionSelectTarget.value : origImpId
+
+    const truckChanged      = currentTruckId !== origTruckId
+    const imputationChanged = currentImpId   !== origImpId
+
+    if (!truckChanged && !imputationChanged) return
+
+    event.preventDefault()
+
+    const items = []
+    if (truckChanged) {
+      const newPlate = this.hasTruckSelectTarget
+        ? (this.truckSelectTarget.selectedOptions[0]?.text || "Sin asignar")
+        : "—"
+      items.push(`<li><strong>Camión:</strong> ${origTruckPlate} → ${newPlate}</li>`)
+    }
+    if (imputationChanged) {
+      const newImpName = this.hasImputacionSelectTarget
+        ? (this.imputacionSelectTarget.selectedOptions[0]?.text || "—")
+        : "—"
+      items.push(`<li><strong>Imputación:</strong> ${origImpName} → ${newImpName}</li>`)
+    }
+    this.changeListTarget.innerHTML = items.join("")
+
+    this.impactMsgTarget.innerHTML =
+      '<i class="bi bi-trash me-1"></i>Esta acción <strong>eliminará</strong> el servicio técnico asociado (el camión vuelve a su estado previo).'
+
+    bootstrap.Modal.getOrCreateInstance(this.confirmModalTarget).show()
+  }
+
   _impNombre() {
     if (!this.hasImputacionSelectTarget) return ""
     return this.imputacionSelectTarget.selectedOptions[0]?.text ?? ""
@@ -55,8 +118,6 @@ export default class extends Controller {
     const esPropios = checked?.value === "true"
     const imputacion = this._impNombre()
 
-    console.log("refreshFromState:", { esPropios, imputacion })
-
     this._setTruck(!esPropios)
     this._setAdelantos(esPropios && imputacion === "Adelantos")
   }
@@ -65,8 +126,6 @@ export default class extends Controller {
     if (!this.hasTruckSelectTarget) return
     this.truckSelectTarget.disabled = !enabled
     if (!enabled) this.truckSelectTarget.value = ""
-
-    console.log("_setTruck:", { enabled, hasWrap: this.hasTruckWrapTarget })
 
     if (this.hasTruckWrapTarget) {
       this.truckWrapTarget.style.opacity = enabled ? "1" : "0.4"
