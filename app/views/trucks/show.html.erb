@@ -70,7 +70,7 @@
   <%# ── Columna derecha: historial servicios + viajes ── %>
   <div style="display:flex;flex-direction:column;gap:1rem">
 
-    <div class="dash-panel">
+    <div class="dash-panel" data-controller="table-sort">
       <div class="dash-panel__header">
         <%= link_to truck_truck_services_path(@truck) do %>
         <h2 class="dash-panel__title">
@@ -93,14 +93,17 @@
         <table class="dash-table">
           <thead>
             <tr>
-              <th data-sortable style="cursor:pointer;user-select:none">Fecha <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
-              <th data-sortable style="cursor:pointer;user-select:none">Km al momento <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
-              <th>Observaciones</th>
+              <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Fecha <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+              <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Km al momento <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+              <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Proveedor <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+              <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Concepto <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
+              <th data-sortable data-action="click->table-sort#sort" style="cursor:pointer;user-select:none">Importe <i class="sort-caret bi bi-caret-down-fill" style="font-size:.6rem;opacity:.3;margin-left:3px"></i></th>
               <th class="dash-table__actions"></th>
             </tr>
           </thead>
           <tbody>
             <% @services.each do |svc| %>
+              <% gasto = @maintenance_gastos[svc.service_date] %>
               <tr class="dash-table__row" onclick="window.location='<%= truck_truck_service_path(@truck, svc) %>'" style="cursor:pointer">
                 <td style="white-space:nowrap">
                   <strong><%= svc.service_date.strftime("%d/%m/%Y") %></strong>
@@ -111,7 +114,9 @@
                     <%= number_with_delimiter(km.to_i) %> km
                   </span>
                 </td>
-                <td style="color:#666"><%= svc.notes.presence || "—" %></td>
+                <td><%= gasto&.supplier.presence || "—" %></td>
+                <td><%= gasto&.description.presence || "—" %></td>
+                <td><%= gasto&.total ? "$ #{number_with_delimiter(gasto.total.to_i)}" : "—" %></td>
                 <td class="dash-table__actions" onclick="event.stopPropagation()">
                   <div class="d-flex gap-1 justify-content-end">
                     <%= link_to edit_truck_truck_service_path(@truck, svc),

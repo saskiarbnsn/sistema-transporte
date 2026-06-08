@@ -3,7 +3,9 @@ class TruckServicesController < ApplicationController
   before_action :set_service, only: %i[show edit update destroy]
 
   def index
-    @services = @truck.truck_services
+    @services = @truck.truck_services.order(service_date: :desc)
+    imputation = Imputation.find_by(imputation: "Mantenimiento")
+    @maintenance_gastos = Gasto.where(truck: @truck, imputation: imputation).index_by(&:date)
   end
 
   def show

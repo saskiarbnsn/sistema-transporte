@@ -10,7 +10,9 @@ class TrucksController < ApplicationController
   def show
     @trips    = @truck.trips.includes(:field, :customer, :destination, :driver)
                       .order(date: :desc).limit(10)
-    @services = @truck.truck_services.limit(20)
+    @services = @truck.truck_services.order(service_date: :desc).limit(20)
+    imputation = Imputation.find_by(imputation: "Mantenimiento")
+    @maintenance_gastos = Gasto.where(truck: @truck, imputation: imputation).index_by(&:date)
   end
 
   # GET /trucks/new
