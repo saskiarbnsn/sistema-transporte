@@ -2,7 +2,7 @@ class HomesController < ApplicationController
   def index
     @recent_trips = Trip.includes(:field, :customer, :destination, :driver)
                         .order(date: :desc)
-                        .limit(10)
+                        .limit(5)
 
     year = Date.today.year
     range = Date.new(year, 1, 1)..Date.new(year, 12, 31)
