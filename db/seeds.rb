@@ -223,7 +223,7 @@ camiones = [
     capacity:           30000.0,
     fuel:               "Gasoil",
     kilometres:         485000.0,
-    service_kilometres: 470000.0
+    service_kilometres: 21500.0   # > 20.000 km desde el último service → dispara alerta
   },
   {
     plate:              "AB234CD",
@@ -232,7 +232,7 @@ camiones = [
     capacity:           32000.0,
     fuel:               "Gasoil",
     kilometres:         210000.0,
-    service_kilometres: 200000.0
+    service_kilometres: 8400.0
   },
   {
     plate:              "BCD456",
@@ -241,7 +241,7 @@ camiones = [
     capacity:           30000.0,
     fuel:               "Gasoil",
     kilometres:         342000.0,
-    service_kilometres: 320000.0  # cerca del límite de 20.000 km → dispara alerta
+    service_kilometres: 18900.0   # cerca del límite de 20.000 km, todavía sin alerta
   },
   {
     plate:              "EFG789",
@@ -250,7 +250,7 @@ camiones = [
     capacity:           32000.0,
     fuel:               "Gasoil",
     kilometres:         128000.0,
-    service_kilometres: 120000.0
+    service_kilometres: 3100.0
   }
 ]
 
@@ -547,6 +547,180 @@ viajes.each do |v|
 end
 
 # ─────────────────────────────────────────────────────────────
+# GASTOS (uno por cada imputación, cubriendo todos los atributos)
+#
+# El modelo Gasto calcula solo el desglose impositivo (gravado / net / iva)
+# en un before_save, así que acá NO se cargan esos campos a mano.
+#
+#   • Combustible  → desglosa gravado/net/iva y guarda los litros
+#   • Mantenimiento→ dispara el callback que crea un TruckService asociado
+#   • Adelanto     → se vincula a un chofer y usa el campo "adelantos"
+#   • Los flags truck_disabled / driver_disabled muestran gastos cuyo
+#     camión o chofer quedó dado de baja pero el comprobante se conserva.
+# ─────────────────────────────────────────────────────────────
+puts "\n→ Creando gastos..."
+
+imputaciones_db = Imputation.all.index_by(&:imputation)
+
+def crear_gasto(attrs)
+  # Idempotente: la combinación imputación + fecha + total + proveedor
+  # alcanza para no duplicar al re-ejecutar el seed.
+  Gasto.find_or_create_by!(
+    imputation: attrs[:imputation],
+    date:       attrs[:date],
+    total:      attrs[:total],
+    supplier:   attrs[:supplier]
+  ) do |g|
+    g.assign_attributes(attrs)
+  end
+end
+
+gastos = [
+  # ── Combustible (con litros → desglosa gravado/net/iva)
+  {
+    imputation:  imputaciones_db["Combustible"],
+    truck:       camiones_db["AAA123"],
+    supplier:    "YPF Ruta 8",
+    description: "Carga de gasoil grado 2",
+    litros:      480,
+    total:       1_080_000,
+    date:        Date.today - 120.days
+  },
+  {
+    imputation:  imputaciones_db["Combustible"],
+    truck:       camiones_db["AB234CD"],
+    supplier:    "Shell Río Cuarto",
+    description: "Carga de gasoil",
+    litros:      510,
+    total:       1_150_000,
+    date:        Date.today - 70.days
+  },
+  {
+    imputation:  imputaciones_db["Combustible"],
+    truck:       camiones_db["EFG789"],
+    supplier:    "Axion General Levalle",
+    description: "Carga de gasoil",
+    litros:      360,
+    total:       820_000,
+    date:        Date.today - 18.days
+  },
+  # Combustible sin camión asignado y con el camión dado de baja (flag truck_disabled)
+  {
+    imputation:     imputaciones_db["Combustible"],
+    truck:          nil,
+    truck_disabled: true,
+    supplier:       "Estación de servicio (unidad de terceros)",
+    description:    "Carga eventual, unidad no propia",
+    litros:         300,
+    total:          690_000,
+    date:           Date.today - 40.days
+  },
+
+  # ── Mantenimiento (dispara la creación automática de un TruckService)
+  {
+    imputation:  imputaciones_db["Mantenimiento"],
+    truck:       camiones_db["EFG789"],
+    supplier:    "Taller Diésel del Sur",
+    description: "Cambio de aceite y filtros",
+    total:       340_000,
+    date:        Date.today - 95.days
+  },
+  {
+    imputation:  imputaciones_db["Mantenimiento"],
+    truck:       camiones_db["AB234CD"],
+    supplier:    "Servicio Scania Córdoba",
+    description: "Service programado de 200.000 km",
+    total:       920_000,
+    date:        Date.today - 50.days
+  },
+
+  # ── Reparaciones
+  {
+    imputation:  imputaciones_db["Reparaciones"],
+    truck:       camiones_db["AAA123"],
+    supplier:    "Gomería El Cruce",
+    description: "Cambio de dos cubiertas de tracción",
+    total:       1_480_000,
+    date:        Date.today - 60.days
+  },
+  {
+    imputation:  imputaciones_db["Reparaciones"],
+    truck:       camiones_db["BCD456"],
+    supplier:    "Electromecánica Vidal",
+    description: "Reparación de alternador",
+    total:       265_000,
+    date:        Date.today - 25.days
+  },
+
+  # ── Seguro (sin camión ni chofer puntual; gasto de flota)
+  {
+    imputation:  imputaciones_db["Seguro"],
+    supplier:    "La Segunda Seguros",
+    description: "Póliza de flota - cuota mensual",
+    total:       480_000,
+    date:        Date.today - 88.days
+  },
+  {
+    imputation:  imputaciones_db["Seguro"],
+    supplier:    "La Segunda Seguros",
+    description: "Póliza de flota - cuota mensual",
+    total:       495_000,
+    date:        Date.today - 30.days
+  },
+
+  # ── Administración (uno con descripción, otro sin proveedor ni descripción)
+  {
+    imputation:  imputaciones_db["Administración"],
+    supplier:    "Estudio Contable Pérez",
+    description: "Honorarios contables",
+    total:       220_000,
+    date:        Date.today - 75.days
+  },
+  {
+    imputation:  imputaciones_db["Administración"],
+    supplier:    nil,
+    description: nil,
+    total:       38_500,
+    date:        Date.today - 12.days
+  },
+
+  # ── Adelanto (vinculado a un chofer, usa el campo "adelantos")
+  {
+    imputation:  imputaciones_db["Adelanto"],
+    driver:      choferes_db["Sebastián Acuña"],
+    adelantos:   "Adelanto quincenal",
+    description: "A cuenta de liquidación",
+    total:       350_000,
+    date:        Date.today - 45.days
+  },
+  {
+    imputation:  imputaciones_db["Adelanto"],
+    driver:      choferes_db["Diego Roldán"],
+    adelantos:   "Adelanto de viáticos",
+    description: "Viáticos viaje a puerto",
+    total:       180_000,
+    date:        Date.today - 20.days
+  },
+  # Adelanto cuyo chofer quedó dado de baja (flag driver_disabled)
+  {
+    imputation:     imputaciones_db["Adelanto"],
+    driver:         nil,
+    driver_disabled: true,
+    adelantos:      "Adelanto chofer eventual",
+    description:    "Chofer ya no activo",
+    total:          120_000,
+    date:           Date.today - 8.days
+  }
+]
+
+gastos.each do |g|
+  gasto = crear_gasto(g)
+  etiqueta = gasto.imputation.imputation
+  unidad   = gasto.truck&.plate || gasto.driver&.name || "—"
+  puts "   ✓ Gasto: #{etiqueta} | #{unidad} | $#{gasto.total.to_i}"
+end
+
+# ─────────────────────────────────────────────────────────────
 # RESUMEN FINAL
 # ─────────────────────────────────────────────────────────────
 puts "\n" + ("═" * 60)
@@ -559,6 +733,9 @@ puts "  Destinos:   #{Destination.count}"
 puts "  Choferes:   #{Driver.count}"
 puts "  Camiones:   #{Truck.count}"
 puts "  Viajes:     #{Trip.count}"
+puts "  Gastos:     #{Gasto.count}"
+puts "  Servicios:  #{TruckService.count}  (generados por gastos de Mantenimiento)"
+puts "  Imputac.:   #{Imputation.count}"
 puts "═" * 60
 puts "\nCredenciales de acceso:"
 puts "  admin@demo.com     /  demo123456   (administrador)"
