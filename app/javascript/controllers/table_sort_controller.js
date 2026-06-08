@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   sort(event) {
+    event.stopImmediatePropagation()
     const th = event.currentTarget
     const colIndex = Array.from(th.parentElement.children).indexOf(th)
     const tbody = this.element.querySelector("tbody")
