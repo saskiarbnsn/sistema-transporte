@@ -14,6 +14,20 @@
       <i class="bi bi-house"></i>
       <span class="app-sidebar__label">Inicio</span>
     <% end %>
+    
+    <%= link_to trips_path,
+        class: "app-sidebar__item #{'is-active' if controller_name == 'trips'}",
+        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Historial de viajes" } do %>
+      <i class="bi bi-clock-history"></i>
+      <span class="app-sidebar__label">Historial</span>
+    <% end %>
+
+    <%= link_to gastos_path,
+        class: "app-sidebar__item #{'is-active' if controller_name == 'gastos'}",
+        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Gastos" } do %>
+      <i class="bi bi-bar-chart-line-fill"></i>
+      <span class="app-sidebar__label">Gastos</span>
+    <% end %>
 
     <%= link_to drivers_path,
         class: "app-sidebar__item #{'is-active' if controller_name == 'drivers'}",
@@ -48,22 +62,6 @@
         data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Destino" } do %>
       <i class="bi bi-geo-alt"></i>
       <span class="app-sidebar__label">Destino</span>
-    <% end %>
-
-    
-
-    <%= link_to trips_path,
-        class: "app-sidebar__item #{'is-active' if controller_name == 'trips'}",
-        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Historial de viajes" } do %>
-      <i class="bi bi-clock-history"></i>
-      <span class="app-sidebar__label">Historial</span>
-    <% end %>
-
-    <%= link_to gastos_path,
-        class: "app-sidebar__item #{'is-active' if controller_name == 'gastos'}",
-        data: { bs_toggle: "tooltip", bs_placement: "right", bs_title: "Gastos" } do %>
-      <i class="bi bi-bar-chart-line-fill"></i>
-      <span class="app-sidebar__label">Gastos</span>
     <% end %>
 
   </nav>
