@@ -1,4 +1,11 @@
 class ApplicationController < ActionController::Base
+  before_action :auto_login_demo
+
+  def auto_login_demo
+    return if user_signed_in?
+    sign_in(User.find_by(email: "admin@demo.com"))
+  end
+
   before_action :authenticate_user!
   before_action :load_notifications
 
