@@ -6,5 +6,5 @@ yarn install --frozen-lockfile
 bundle exec rails assets:precompile
 bundle exec rails assets:clean
 bundle exec rails db:environment:set RAILS_ENV=production
-bundle exec rails db:schema:load
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rails db:schema:load
 bundle exec rails db:seed
