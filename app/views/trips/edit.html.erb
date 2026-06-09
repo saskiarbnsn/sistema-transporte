@@ -28,7 +28,7 @@
         </div>
       <% end %>
 
-      <div class="ui-form-grid">
+      <div class="ui-form-grid" data-controller="trip-dates">
         <div>
           <%= form.label :customer_id, "Cliente", class: "form-label" %>
           <%= form.collection_select :customer_id, Customer.order(:name), :id, :name,
@@ -87,12 +87,19 @@
         <%= form.hidden_field :importeiva, data: { "trip-calculator-target": "ivaInput" } %>
         <div>
           <%= form.label :date, "Fecha de inicio", class: "form-label" %>
-          <%= form.date_field :date, class: "form-control" %>
+          <%= form.date_field :date, class: "form-control",
+                data: { action: "change->trip-dates#updateMin" } %>
         </div>
         <div>
           <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
-          <%= form.date_field :date_end, class: "form-control", min: @trip.date %>
+          <%= form.date_field :date_end, class: "form-control",
+                min: @trip.date&.to_date&.iso8601,
+                data: { "trip-dates-target": "dateEnd" } %>
         </div>
+      </div>
+      <div class="ui-form-actions">
+        <%= form.submit "Actualizar Viaje", class: "btn-pill-primary" %>
+        <%= link_to "Cancelar", trip_path(@trip), class: "btn-pill-secondary" %>
       </div>
 
     </div>
@@ -166,12 +173,6 @@
         <%= form.file_field :carta_de_porte, id: "trip_carta_de_porte", class: "d-none",
             accept: ".pdf,.jpg,.jpeg,.png" %>
       </div>
-    </div>
-
-    <%# Acciones %>
-    <div class="d-flex flex-column gap-2">
-      <%= form.submit "Actualizar Viaje", class: "btn-pill-primary" %>
-      <%= link_to "Cancelar", trip_path(@trip), class: "btn-pill-secondary" %>
     </div>
 
   </div>

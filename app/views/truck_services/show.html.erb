@@ -71,7 +71,7 @@
         <%= link_to "Volver", truck_truck_services_path(@truck), class: "btn-pill-secondary" %>
         <%= button_to truck_truck_service_path(@truck, @service), method: :delete,
               class: "btn-pill-secondary gasto-btn-delete",
-              form: { data: { turbo_confirm: "¿Eliminar este registro de servicio?" } } do %>
+              form: { data: { turbo_confirm: "Eliminar este registro de servicio" } } do %>
           <i class="bi bi-trash-fill me-1"></i>Eliminar
         <% end %>
       </div>

@@ -74,7 +74,7 @@
                     <% end %>
                     <%= button_to field_path(field), method: :delete,
                           class: "dash-action dash-action--delete", title: "Eliminar",
-                          form: { data: { turbo_confirm: "¿Eliminar este campo?" },
+                          form: { data: { turbo_confirm: "Eliminar este campo" },
                                   style: "display:inline-flex" },
                           onclick: "event.stopPropagation()" do %>
                       <i class="bi bi-trash-fill"></i>

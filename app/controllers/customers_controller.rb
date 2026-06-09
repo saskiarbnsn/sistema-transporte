@@ -10,7 +10,7 @@ class CustomersController < ApplicationController
   def show
     @fields = @customer.fields.order(:name)
     @trips  = @customer.trips.includes(:field, :destination, :driver, :truck)
-                        .order(date: :desc).limit(10)
+                        .order(date: :desc)
   end
 
   # GET /customers/new

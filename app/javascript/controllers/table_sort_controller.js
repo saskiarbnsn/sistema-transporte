@@ -26,6 +26,7 @@ export default class extends Controller {
     })
 
     rows.forEach(row => tbody.appendChild(row))
+    this.dispatch("sorted")
   }
 }
 

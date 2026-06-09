@@ -1,4 +1,5 @@
-<div class="dash-panel" data-controller="table-sort table-filter">
+<div class="dash-panel" data-controller="table-sort table-filter table-pagination"
+     data-action="table-filter:filtered->table-pagination#resetPage table-sort:sorted->table-pagination#resetPage">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
       <i class="bi bi-truck"></i>
@@ -37,6 +38,7 @@
       <% @trucks.each do |truck| %>
         <tr class="dash-table__row"
             data-table-filter-target="row"
+            data-table-pagination-target="row"
             onclick="window.location='<%= truck_path(truck) %>'"
             style="cursor:pointer">
           <td><strong><%= truck.plate %></strong></td>
@@ -71,7 +73,7 @@
               <%= button_to truck_path(truck), method: :delete,
                     class: "dash-action dash-action--delete",
                     title: "Eliminar",
-                    form: { data: { turbo_confirm: "¿Eliminar este camión?" }, style: "display:inline-flex" },
+                    form: { data: { turbo_confirm: "Eliminar este camión" }, style: "display:inline-flex" },
                     onclick: "event.stopPropagation()" do %>
                 <i class="bi bi-trash-fill"></i>
               <% end %>
@@ -89,6 +91,7 @@
       <% end %>
     </tbody>
   </table>
+  <div data-table-pagination-target="nav"></div>
 </div>
 
 <%# ── Modal registrar servicio ──────────────────────────────── %>

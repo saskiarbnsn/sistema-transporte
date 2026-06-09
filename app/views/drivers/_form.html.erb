@@ -12,7 +12,9 @@
   <div class="ui-form-grid">
     <div>
       <%= form.label :cuit, "CUIT", class: "form-label" %>
-      <%= form.text_field :cuit, class: "form-control", placeholder: "Ej: 20-23456789-1" %>
+      <%= form.text_field :cuit, class: "form-control", placeholder: "Ej: 20-23456789-1",
+            inputmode: "numeric",
+            data: { controller: "cuit-format", action: "input->cuit-format#format" } %>
     </div>
 
     <div>

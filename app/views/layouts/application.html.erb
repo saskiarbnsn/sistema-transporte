@@ -64,7 +64,6 @@
       var form = e.target;
       var msg = form.dataset.turboConfirm;
       if (!msg) return;
-      if (form.dataset.confirmedOnce === "1") { delete form.dataset.confirmedOnce; return; }
       e.preventDefault();
       e.stopImmediatePropagation();
       var el = document.getElementById("appConfirmModal");
@@ -81,7 +80,7 @@
         document.getElementById("appConfirmOk").removeEventListener("click", onOk);
         document.getElementById("appConfirmCancel").removeEventListener("click", onCancel);
         modal.hide();
-        if (val) { form.dataset.confirmedOnce = "1"; form.requestSubmit(); }
+        if (val) { delete form.dataset.turboConfirm; form.requestSubmit(); }
       }
       function onOk()   { answer(true);  }
       function onCancel(){ answer(false); }
@@ -147,6 +146,17 @@
         rows.forEach(function(r) { tbody.appendChild(r); });
       });
     })();
+  </script>
+  <script>
+    function updateDateEmptyClass(input) {
+      input.value ? input.classList.remove('is-empty') : input.classList.add('is-empty')
+    }
+    document.addEventListener('turbo:load', function() {
+      document.querySelectorAll('.ui-form-card input[type="date"]').forEach(function(el) {
+        updateDateEmptyClass(el)
+        el.addEventListener('change', function() { updateDateEmptyClass(el) })
+      })
+    })
   </script>
   </body>
 </html>

@@ -47,8 +47,15 @@ export default class extends Controller {
       },
       body: JSON.stringify({ date_end: dateEnd }),
     })
-      .then((r) => r.text())
+      .then((r) => {
+        if (!r.ok) return r.json().then(j => { throw new Error(j.error) })
+        return r.text()
+      })
       .then((html) => window.Turbo.renderStreamMessage(html))
+      .catch((err) => {
+        this.modal?.show()
+        this.showError(err.message || "Error al guardar la fecha.")
+      })
   }
 
   showError(msg) {

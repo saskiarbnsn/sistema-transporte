@@ -9,8 +9,8 @@ class TrucksController < ApplicationController
   # GET /trucks/1 or /trucks/1.json
   def show
     @trips    = @truck.trips.includes(:field, :customer, :destination, :driver)
-                      .order(date: :desc).limit(10)
-    @services = @truck.truck_services.order(service_date: :desc).limit(20)
+                      .order(date: :desc)
+    @services = @truck.truck_services.order(service_date: :desc)
     imputation = Imputation.find_by(imputation: "Mantenimiento")
     @maintenance_gastos = Gasto.where(truck: @truck, imputation: imputation).index_by(&:date)
   end

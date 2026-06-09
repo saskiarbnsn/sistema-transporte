@@ -1,4 +1,5 @@
-<div class="dash-panel" data-controller="table-sort table-filter">
+<div class="dash-panel" data-controller="table-sort table-filter table-pagination"
+     data-action="table-filter:filtered->table-pagination#resetPage table-sort:sorted->table-pagination#resetPage">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
       <i class="bi bi-wrench"></i>
@@ -43,6 +44,7 @@
         <% gasto = @maintenance_gastos[svc.service_date] %>
         <tr class="dash-table__row"
             data-table-filter-target="row"
+            data-table-pagination-target="row"
             onclick="window.location='<%= truck_truck_service_path(@truck, svc) %>'"
             style="cursor:pointer">
           <td style="white-space:nowrap">
@@ -67,7 +69,7 @@
               <%= button_to truck_truck_service_path(@truck, svc), method: :delete,
                     class: "dash-action dash-action--delete",
                     title: "Eliminar",
-                    form: { data: { turbo_confirm: "¿Eliminar este registro de servicio?" }, style: "display:inline-flex" } do %>
+                    form: { data: { turbo_confirm: "Eliminar este registro de servicio" }, style: "display:inline-flex" } do %>
                 <i class="bi bi-trash-fill"></i>
               <% end %>
             </div>
@@ -84,6 +86,7 @@
       <% end %>
     </tbody>
   </table>
+  <div data-table-pagination-target="nav"></div>
 </div>
 
 <%# ── Modal registrar servicio ──────────────────────────────── %>

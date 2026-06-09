@@ -67,10 +67,13 @@
   </div>
   <div>
     <%= form.label :date, "Fecha de inicio", class: "form-label" %>
-    <%= form.date_field :date, class: "form-control" %>
+    <%= form.date_field :date, class: "form-control",
+          data: { action: "change->trip-dates#updateMin" } %>
   </div>
   <div>
     <%= form.label :date_end, "Fecha de finalización", class: "form-label" %>
-    <%= form.date_field :date_end, class: "form-control", min: trip.date %>
+    <%= form.date_field :date_end, class: "form-control",
+          min: trip.date&.to_date&.iso8601,
+          data: { "trip-dates-target": "dateEnd" } %>
   </div>
 </div>

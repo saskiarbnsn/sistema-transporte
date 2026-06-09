@@ -113,7 +113,8 @@
 </div>
 
 <%# ── Tabla de gastos ─────────────────────────────────────────── %>
-<div class="dash-panel" data-controller="table-sort table-filter">
+<div class="dash-panel" data-controller="table-sort table-filter table-pagination"
+     data-action="table-filter:filtered->table-pagination#resetPage table-sort:sorted->table-pagination#resetPage">
   <div class="dash-panel__header">
     <h2 class="dash-panel__title">
       <i class="bi bi-receipt"></i>Gastos registrados
@@ -147,6 +148,7 @@
       <% @gastos.each do |g| %>
         <tr class="dash-table__row"
             data-table-filter-target="row"
+            data-table-pagination-target="row"
             onclick="window.location='<%= gasto_path(g) %>'"
             style="cursor:pointer">
           <td style="white-space:nowrap"><%= g.date&.strftime("%d/%m/%Y") %></td>
@@ -171,7 +173,7 @@
               <%= button_to gasto_path(g), method: :delete,
                     class: "dash-action dash-action--delete",
                     title: "Eliminar",
-                    form: { data: { turbo_confirm: "¿Eliminar este gasto?" },
+                    form: { data: { turbo_confirm: "Eliminar este gasto" },
                             style: "display:inline-flex" },
                     onclick: "event.stopPropagation()" do %>
                 <i class="bi bi-trash-fill"></i>
@@ -190,4 +192,5 @@
       <% end %>
     </tbody>
   </table>
+  <div data-table-pagination-target="nav"></div>
 </div>

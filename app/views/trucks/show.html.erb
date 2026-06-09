@@ -70,7 +70,8 @@
   <%# ── Columna derecha: historial servicios + viajes ── %>
   <div style="display:flex;flex-direction:column;gap:1rem">
 
-    <div class="dash-panel" data-controller="table-sort">
+    <div class="dash-panel" data-controller="table-sort table-filter table-pagination"
+         data-action="table-filter:filtered->table-pagination#resetPage table-sort:sorted->table-pagination#resetPage">
       <div class="dash-panel__header">
         <%= link_to truck_truck_services_path(@truck) do %>
         <h2 class="dash-panel__title">
@@ -79,7 +80,16 @@
           <span class="dash-count"><%= @services.size %></span>
         </h2>
         <% end %>
-        <div class="d-flex gap-2">
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <div class="position-relative">
+            <i class="bi bi-search position-absolute" style="left:.65rem;top:50%;transform:translateY(-50%);color:#aaa;font-size:.8rem;pointer-events:none"></i>
+            <input type="text"
+                   class="form-control form-control-sm"
+                   placeholder="Buscar..."
+                   data-table-filter-target="input"
+                   data-action="input->table-filter#filter"
+                   style="width:180px;padding-left:2rem;border-radius:8px;background:#f4f6fc;border:none;font-size:.82rem">
+          </div>
           <button class="btn-pill-primary"
                   style="width:auto;padding:.5rem 1.25rem;font-size:.85rem"
                   data-bs-toggle="modal"
@@ -104,7 +114,11 @@
           <tbody>
             <% @services.each do |svc| %>
               <% gasto = @maintenance_gastos[svc.service_date] %>
-              <tr class="dash-table__row" onclick="window.location='<%= truck_truck_service_path(@truck, svc) %>'" style="cursor:pointer">
+              <tr class="dash-table__row"
+                  data-table-filter-target="row"
+                  data-table-pagination-target="row"
+                  onclick="window.location='<%= truck_truck_service_path(@truck, svc) %>'"
+                  style="cursor:pointer">
                 <td style="white-space:nowrap">
                   <strong><%= svc.service_date.strftime("%d/%m/%Y") %></strong>
                 </td>
@@ -127,7 +141,7 @@
                     <%= button_to truck_truck_service_path(@truck, svc), method: :delete,
                           class: "dash-action dash-action--delete",
                           title: "Eliminar",
-                          form: { data: { turbo_confirm: "¿Eliminar este registro de servicio?" }, style: "display:inline-flex" } do %>
+                          form: { data: { turbo_confirm: "Eliminar este registro de servicio" }, style: "display:inline-flex" } do %>
                       <i class="bi bi-trash-fill"></i>
                     <% end %>
                   </div>
@@ -136,6 +150,7 @@
             <% end %>
           </tbody>
         </table>
+        <div data-table-pagination-target="nav"></div>
       <% else %>
         <div class="text-center py-4">
           <i class="bi bi-wrench" style="font-size:2rem;color:#ccc;display:block;margin-bottom:.5rem"></i>

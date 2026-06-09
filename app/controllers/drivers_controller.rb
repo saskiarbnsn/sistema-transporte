@@ -9,7 +9,7 @@ class DriversController < ApplicationController
   # GET /drivers/1 or /drivers/1.json
   def show
     @trips = @driver.trips.includes(:field, :customer, :destination, :truck)
-                    .order(date: :desc).limit(10)
+                    .order(date: :desc)
   end
 
   # GET /drivers/new

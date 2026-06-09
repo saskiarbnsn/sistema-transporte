@@ -7,11 +7,21 @@ export default class extends Controller {
     const q = normalize(this.inputTarget.value)
     this.rowTargets.forEach(row => {
       const text = normalize(Array.from(row.cells).map(c => c.textContent).join(" "))
-      row.style.display = q === "" || text.includes(q) ? "" : "none"
+      if (q === "" || text.includes(q)) {
+        delete row.dataset.filterHidden
+      } else {
+        row.dataset.filterHidden = "1"
+      }
     })
+    this.dispatch("filtered")
   }
 }
 
 function normalize(s) {
-  return s.toLowerCase().replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim()
+  return s
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
 }

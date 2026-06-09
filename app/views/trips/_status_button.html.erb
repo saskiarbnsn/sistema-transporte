@@ -12,7 +12,7 @@
             class="trip-status-btn trip-status-btn--active"
             data-action="click->trip-status#open"
             data-trip-id="<%= trip.id %>"
-            data-trip-start="<%= trip.date %>">
+            data-trip-start="<%= trip.date&.to_date&.iso8601 %>">
       <i class="bi bi-truck me-1"></i>En viaje
     </button>
   <% end %>

@@ -9,7 +9,7 @@ class DestinationsController < ApplicationController
   # GET /destinations/1 or /destinations/1.json
   def show
     @trips = @destination.trips.includes(:field, :customer, :driver, :truck)
-                         .order(date: :desc).limit(10)
+                         .order(date: :desc)
   end
 
   # GET /destinations/new

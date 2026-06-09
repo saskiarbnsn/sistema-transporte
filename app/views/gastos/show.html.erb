@@ -79,7 +79,7 @@
         <%= link_to "Volver al listado", gastos_path, class: "btn-pill-secondary" %>
         <%= button_to gasto_path(@gasto), method: :delete,
               class: "btn-pill-secondary gasto-btn-delete",
-              form: { data: { turbo_confirm: "¿Eliminar este gasto?" } } do %>
+              form: { data: { turbo_confirm: "Eliminar este gasto" } } do %>
           <i class="bi bi-trash-fill me-1"></i>Eliminar
         <% end %>
       </div>

@@ -38,12 +38,15 @@ class TripsController < ApplicationController
 
   def update_status
     @trip = Trip.find(params[:id])
-    @trip.update(estado: false, date_end: params[:date_end])
-    render turbo_stream: turbo_stream.replace(
-      "trip_status_#{@trip.id}",
-      partial: "trips/status_button",
-      locals: { trip: @trip }
-    )
+    if @trip.update(estado: false, date_end: params[:date_end])
+      render turbo_stream: turbo_stream.replace(
+        "trip_status_#{@trip.id}",
+        partial: "trips/status_button",
+        locals: { trip: @trip }
+      )
+    else
+      render json: { error: @trip.errors.full_messages.first }, status: :unprocessable_entity
+    end
   end
 
   private

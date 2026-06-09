@@ -475,6 +475,67 @@ button.status-badge {
   &:focus, &:active { outline: none !important; box-shadow: none !important; }
 }
 
+// ── Filter hidden rows ─────────────────────────────────────────
+tr[data-filter-hidden] { display: none !important; }
+
+// ── Table pagination ───────────────────────────────────────────
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1.25rem .85rem;
+  border-top: 1px solid #eef0f8;
+  background: #fafbff;
+  border-radius: 0 0 16px 16px;
+}
+.table-pagination__info {
+  font-size: .78rem;
+  color: #9aa0b8;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+.table-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  background: white;
+  border: 1px solid #e8ecf8;
+  border-radius: 10px;
+  padding: .25rem;
+  box-shadow: 0 1px 3px rgba(59,91,219,.06);
+}
+.table-pagination__btn {
+  min-width: 32px;
+  height: 30px;
+  padding: 0 .5rem;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #6b7280;
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .13s, color .13s;
+  &:hover:not(:disabled) { background: #eef1ff; color: $accent; }
+  &:disabled { opacity: .3; cursor: default; }
+  &--active {
+    background: $accent;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(59,91,219,.28);
+    &:hover { background: #3451c4; color: white; }
+  }
+}
+.table-pagination__ellipsis {
+  padding: 0 .3rem;
+  color: #c0c8e0;
+  font-size: .8rem;
+  user-select: none;
+}
+
 // ── Detail / Show pages ────────────────────────────────────────
 .detail-grid {
   display: grid;
@@ -591,6 +652,7 @@ button.status-badge {
   color: #1a1a2e;
   font-size: 0.95rem;
   transition: border-color 0.15s, box-shadow 0.15s;
+  &::placeholder { color: #b0b8d0; }
   &:hover:not(:focus) { border-color: #a8b4d4; }
   &:focus {
     background: #fff;
@@ -599,6 +661,10 @@ button.status-badge {
     outline: none;
   }
 }
+.ui-form-card .form-select:has(option[value=""]:checked) { color: #b0b8d0; }
+.ui-form-card .form-select option[value=""] { color: #b0b8d0; font-weight: 400; }
+.ui-form-card .form-select option:not([value=""]) { color: #1a1a2e; font-weight: 400; }
+.ui-form-card input[type="date"].is-empty { color: #b0b8d0; }
 
 .ui-form-grid {
   display: grid;

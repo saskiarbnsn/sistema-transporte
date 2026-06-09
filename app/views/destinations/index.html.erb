@@ -1,4 +1,5 @@
-<div class="dash-panel" data-controller="table-sort table-filter">
+<div class="dash-panel" data-controller="table-sort table-filter table-pagination"
+     data-action="table-filter:filtered->table-pagination#resetPage table-sort:sorted->table-pagination#resetPage">
   <div class="dash-panel__header">
     <h1 class="dash-panel__title">
       <i class="bi bi-geo-alt"></i>
@@ -34,6 +35,7 @@
       <% @destinations.each do |destination| %>
         <tr class="dash-table__row"
             data-table-filter-target="row"
+            data-table-pagination-target="row"
             onclick="window.location='<%= destination_path(destination) %>'"
             style="cursor:pointer">
           <td><strong><%= destination.name %></strong></td>
@@ -50,7 +52,7 @@
               <%= button_to destination_path(destination), method: :delete,
                     class: "dash-action dash-action--delete",
                     title: "Eliminar",
-                    form: { data: { turbo_confirm: "¿Eliminar este destino?" }, style: "display:inline-flex" },
+                    form: { data: { turbo_confirm: "Eliminar este destino" }, style: "display:inline-flex" },
                     onclick: "event.stopPropagation()" do %>
                 <i class="bi bi-trash-fill"></i>
               <% end %>
@@ -68,4 +70,5 @@
       <% end %>
     </tbody>
   </table>
+  <div data-table-pagination-target="nav"></div>
 </div>

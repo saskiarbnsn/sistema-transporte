@@ -42,3 +42,12 @@ application.register("table-sort", TableSortController)
 
 import TableFilterController from "./table_filter_controller"
 application.register("table-filter", TableFilterController)
+
+import TablePaginationController from "./table_pagination_controller"
+application.register("table-pagination", TablePaginationController)
+
+import TripDatesController from "./trip_dates_controller"
+application.register("trip-dates", TripDatesController)
+
+import CuitFormatController from "./cuit_format_controller"
+application.register("cuit-format", CuitFormatController)
