@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { perPage: { type: Number, default: 20 } }
+  static values = { perPage: { type: Number, default: 15 } }
   static targets = ["row", "nav"]
 
   connect() {
