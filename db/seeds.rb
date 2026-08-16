@@ -25,7 +25,7 @@ puts "Iniciando carga de datos de demostración..."
 # ─────────────────────────────────────────────────────────────
 puts "\n→ Creando imputaciones..."
 
-%w[Adelanto Administración Combustible Mantenimiento Reparaciones Seguro].each do |nombre|
+%w[Adelantos Administración Combustible Mantenimiento Reparaciones Seguro].each do |nombre|
   imp = Imputation.find_or_create_by!(imputation: nombre)
   puts "   ✓ #{imp.imputation}"
 end
@@ -686,7 +686,7 @@ gastos = [
 
   # ── Adelanto (vinculado a un chofer, usa el campo "adelantos")
   {
-    imputation:  imputaciones_db["Adelanto"],
+    imputation:  imputaciones_db["Adelantos"],
     driver:      choferes_db["Sebastián Acuña"],
     adelantos:   "Adelanto quincenal",
     description: "A cuenta de liquidación",
@@ -694,7 +694,7 @@ gastos = [
     date:        Date.today - 45.days
   },
   {
-    imputation:  imputaciones_db["Adelanto"],
+    imputation:  imputaciones_db["Adelantos"],
     driver:      choferes_db["Diego Roldán"],
     adelantos:   "Adelanto de viáticos",
     description: "Viáticos viaje a puerto",
@@ -703,7 +703,7 @@ gastos = [
   },
   # Adelanto cuyo chofer quedó dado de baja (flag driver_disabled)
   {
-    imputation:     imputaciones_db["Adelanto"],
+    imputation:     imputaciones_db["Adelantos"],
     driver:         nil,
     driver_disabled: true,
     adelantos:      "Adelanto chofer eventual",
