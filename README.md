@@ -4,6 +4,9 @@ Trabajo final de la carrera **Analista de Sistemas de Computación**, Colegio Un
 
 El proyecto parte del relevamiento de un caso real (Transportes Ceresoli, una empresa familiar de transporte del sur de Córdoba) y propone una aplicación web que reemplaza el registro manual en planillas de Excel por un sistema centralizado de gestión de viajes, choferes, camiones, clientes, destinos y gastos.
 
+🔗 **Demo en vivo:** [sistema-transporte-f84o.onrender.com](https://sistema-transporte-f84o.onrender.com)  
+Usuario: `admin@demo.com` · Contraseña: `demo123456`
+
 ## Contexto
 
 Transportes Ceresoli opera con cuatro camiones y veinte clientes en la región. Al momento del relevamiento, en 2022, los pedidos se anotaban en una agenda, los viajes en planillas de Excel separadas por chofer, y las cartas de porte se confeccionaban a mano en triplicado. Obtener una estadística de rentabilidad por período requería un trabajo manual de consolidación que en la práctica nadie hacía. El pedido del propietario fue agilizar lo administrativo, limitar el uso de Excel y poder analizar el rendimiento del negocio con datos.
