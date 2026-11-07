@@ -1,5 +1,7 @@
 # Sistema de Gestión de Transporte Agropecuario
 
+> **In English.** Web application that replaces a family freight company's Excel sheets and paper waybills with a centralized system for trips, drivers, trucks, clients, destinations and expenses, including automatic fee, net and VAT calculation and profitability statistics. Built as my final project for the Systems Analyst degree, based on a real requirements-gathering process (interviews, process observation, class and use case diagrams). Stack is Ruby on Rails 7, PostgreSQL, Hotwire, Bootstrap 5, Devise and the Google Maps API. Live demo at https://sistema-transporte-f84o.onrender.com (the first load may be slow if the server is idle). The rest of this README is in Spanish.
+
 Trabajo final de la carrera **Analista de Sistemas de Computación**, Colegio Universitario IES Siglo 21, Córdoba, Argentina.
 
 El proyecto parte del relevamiento de un caso real (Transportes Ceresoli, una empresa familiar de transporte del sur de Córdoba) y propone una aplicación web que reemplaza el registro manual en planillas de Excel por un sistema centralizado de gestión de viajes, choferes, camiones, clientes, destinos y gastos.
