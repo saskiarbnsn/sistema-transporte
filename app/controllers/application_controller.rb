@@ -40,13 +40,13 @@ class ApplicationController < ActionController::Base
 
     Driver.where("licencia_vencimiento <= ?", today + 30).find_each do |driver|
       status = driver.licencia_vencimiento < today ? "vencida" : "vence pronto"
-      @notifications << { type: :warning, entity: :driver, id: driver.id, msg: "#{driver.name}: licencia #{status} (#{driver.licencia_vencimiento.strftime('%d/%m/%Y')})" }
+      @notifications << { type: (status == "vencida" ? :danger : :warning), entity: :driver, id: driver.id, msg: "#{driver.name}: licencia #{status} (#{driver.licencia_vencimiento.strftime('%d/%m/%Y')})" }
     end
 
     Driver.where(aptofisico: true).where("apto_vencimiento <= ?", today + 30).find_each do |driver|
       next unless driver.apto_vencimiento
       status = driver.apto_vencimiento < today ? "vencido" : "vence pronto"
-      @notifications << { type: :warning, entity: :driver, id: driver.id, msg: "#{driver.name}: apto físico #{status} (#{driver.apto_vencimiento.strftime('%d/%m/%Y')})" }
+      @notifications << { type: (status == "vencido" ? :danger : :warning), entity: :driver, id: driver.id, msg: "#{driver.name}: apto físico #{status} (#{driver.apto_vencimiento.strftime('%d/%m/%Y')})" }
     end
 
     @show_notification_badge = @notifications.any?
