@@ -75,7 +75,7 @@
           <%= form.text_field :product, class: "form-control" %>
         </div>
         <div>
-          <%= form.label :tariff, "Tarifa ($/Kg)", class: "form-label" %>
+          <%= form.label :tariff, "Tarifa ($/t)", class: "form-label" %>
           <%= form.number_field :tariff, class: "form-control", step: "any", placeholder: "0",
               data: { "trip-calculator-target": "tariff", action: "input->trip-calculator#calculate" } %>
         </div>
