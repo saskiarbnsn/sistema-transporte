@@ -118,7 +118,7 @@
                 <td><%= trip.destination&.name %></td>
                 <td><%= trip.date&.strftime("%d/%m/%Y") %></td>
                 <td><%= trip.driver&.name %></td>
-                <td><%= trip.tariff %></td>
+                <td><%= number_with_precision(trip.tariff, precision: 2, strip_insignificant_zeros: true, delimiter: ".", separator: ",") %></td>
               </tr>
             <% end %>
           <% else %>
