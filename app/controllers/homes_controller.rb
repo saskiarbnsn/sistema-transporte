@@ -18,7 +18,7 @@ class HomesController < ApplicationController
     (1..12).each do |m|
       d = Date.new(year, m, 1)
       r = d..d.end_of_month
-      @chart_labels   << d.strftime("%b")
+      @chart_labels   << I18n.l(d, format: "%b")
       @chart_ingresos << Trip.where(date: r).sum(:net).round(2)
       @chart_gastos   << Gasto.where(date: r).sum(:total).round(2)
     end
