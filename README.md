@@ -9,6 +9,34 @@ El proyecto parte del relevamiento de un caso real (Transportes Ceresoli, una em
 🔗 **Demo en vivo:** [sistema-transporte-f84o.onrender.com](https://sistema-transporte-f84o.onrender.com)  
 Usuario: `admin@demo.com` · Contraseña: `demo123456`
 
+## Capturas
+
+Datos de demostración, todos ficticios.
+
+**Inicio.** Accesos directos para cargar viajes, choferes, camiones, clientes, destinos y campos, con el resumen de rentabilidad del año y los últimos viajes.
+
+![Pantalla de inicio](docs/screenshots/inicio.png)
+
+**Historial de viajes.** Listado con búsqueda, orden por columna, estado de cada viaje (en viaje o finalizado) y paginación.
+
+![Historial de viajes](docs/screenshots/historial-viajes.png)
+
+**Detalle del viaje.** Cálculo automático del neto y del importe con IVA (21%), y la ruta dibujada con Google Maps con alternativas de recorrido, distancia y tiempo estimado.
+
+![Detalle del viaje con ruta](docs/screenshots/detalle-viaje.png)
+
+**Análisis de rentabilidad.** Ingresos, gastos, resultado neto y margen del período, evolución mensual, desglose por categoría y listado de gastos registrados.
+
+![Análisis de rentabilidad](docs/screenshots/rentabilidad.png)
+
+**Camiones.** Listado de la flota con el estado de servicio de cada unidad según los kilómetros recorridos desde el último servicio.
+
+![Listado de camiones](docs/screenshots/camiones.png)
+
+**Alertas.** Aviso de servicio técnico requerido por kilometraje, y de licencias y aptos físicos de choferes por vencer (amarillo) o vencidos (rojo).
+
+![Alertas del sistema](docs/screenshots/alertas-camiones.png)
+
 ## Contexto
 
 Transportes Ceresoli opera con cuatro camiones y veinte clientes en la región. Al momento del relevamiento, en 2022, los pedidos se anotaban en una agenda, los viajes en planillas de Excel separadas por chofer, y las cartas de porte se confeccionaban a mano en triplicado. Obtener una estadística de rentabilidad por período requería un trabajo manual de consolidación que en la práctica nadie hacía. El pedido del propietario fue agilizar lo administrativo, limitar el uso de Excel y poder analizar el rendimiento del negocio con datos.
