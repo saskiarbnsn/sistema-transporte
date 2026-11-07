@@ -47,7 +47,7 @@
           <td><%= trip.driver&.name %></td>
           <td><%= trip.truck&.plate %></td>
           <td><%= trip.product %></td>
-          <td><%= trip.tariff %></td>
+          <td><%= number_with_precision(trip.tariff, precision: 2, strip_insignificant_zeros: true, delimiter: ".", separator: ",") %></td>
           <td><%= trip.date&.strftime("%d/%m/%Y") %></td>
           <td onclick="event.stopPropagation()"><%= render "trips/status_button", trip: trip %></td>
         </tr>
