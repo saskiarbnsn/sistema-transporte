@@ -1,4 +1,10 @@
 es:
+  date:
+    abbr_month_names: [~, Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic]
+  number:
+    format:
+      delimiter: "."
+      separator: ","
   activerecord:
     errors:
       messages:
